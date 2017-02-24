@@ -1,0 +1,10 @@
+{
+  "name": "quadro_demo_app",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "quadro": "^0.1.0"
+  }
+}

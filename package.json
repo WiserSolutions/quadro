@@ -1,0 +1,20 @@
+{
+  "name": "quadro",
+  "version": "0.1.0",
+  "keywords": [
+    "framework",
+    "quadro",
+    "node"
+  ],
+  "engines": {
+    "node": ">= 7.6.0"
+  },
+  "main": "lib/index.js",
+  "devDependencies": {
+    "glob": "^7.1.1"
+  },
+  "dependencies": {
+    "bunyan": "^1.8.5",
+    "mz": "^2.6.0"
+  }
+}
