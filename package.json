@@ -14,7 +14,10 @@
     "glob": "^7.1.1"
   },
   "dependencies": {
+    "bluebird": "^3.4.7",
     "bunyan": "^1.8.5",
+    "minimist": "^1.2.0",
+    "mocha": "^3.2.0",
     "mz": "^2.6.0"
   }
 }
