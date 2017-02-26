@@ -8,4 +8,9 @@ describe('Hello', function() {
   it('works with promises', async function() {
     await bluebird.delay(300)
   })
+
+  it('works with generators', function*() {
+    yield bluebird.delay(300)
+    expect(2).to.equal(2)
+  })
 })
