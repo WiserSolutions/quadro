@@ -6,15 +6,19 @@ describe('Hello', function() {
   })
 
   it('works with promises', async function() {
-    await bluebird.delay(300)
+    let start = Date.now()
+    await bluebird.delay(100)
+    expect(Date.now() - start).to.be.gt(100)
   })
 
   it('works with generators', function*() {
-    yield bluebird.delay(300)
-    expect(2).to.equal(2)
+    let start = Date.now()
+    yield bluebird.delay(100)
+    expect(Date.now() - start).to.be.gt(100)
   })
 
   it('does not crash the process on test failure', function*() {
+    log.info('In this test you should see a failure, but the process should not crash')
     expect(2).to.equal(1)
   })
 })
