@@ -13,4 +13,8 @@ describe('Hello', function() {
     yield bluebird.delay(300)
     expect(2).to.equal(2)
   })
+
+  it('does not crash the process on test failure', function*() {
+    expect(2).to.equal(1)
+  })
 })
