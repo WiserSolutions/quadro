@@ -1,3 +1,8 @@
 {
-  "key": "devValue"
+  "key": "devValue",
+  "nested": {
+    "nested1": {
+      "envSpecificKey": "devValue"
+    }
+  }
 }

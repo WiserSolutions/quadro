@@ -1,2 +1,7 @@
 ---
 key: yaml_value
+nested:
+  nested1:
+    key: nestedValue
+    envSpecificKey: toOverride
+  globalKey: globalVal
