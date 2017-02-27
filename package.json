@@ -1,6 +1,6 @@
 {
   "name": "quadro",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "keywords": [
     "framework",
     "quadro",
@@ -12,6 +12,10 @@
   "main": "lib/index.js",
   "devDependencies": {
     "glob": "^7.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WisePricer/quadro.git"
   },
   "dependencies": {
     "bluebird": "^3.4.7",
