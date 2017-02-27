@@ -5,6 +5,7 @@ TOC:
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Quadro framework](#quadro-framework)
+	- [Requirements](#requirements)
 	- [Installation](#installation)
 	- [Configuration manager](#configuration-manager)
 	- [Tests runner](#tests-runner)
@@ -12,6 +13,10 @@ TOC:
 		- [HTTP port](#http-port)
 
 <!-- /TOC -->
+
+## Requirements
+
+- NodeJS v7.6.0+
 
 ## Installation
 
