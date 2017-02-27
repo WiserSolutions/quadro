@@ -70,6 +70,32 @@ defaults to `3000` if such key doesn't exist
 app.config.get('someConfig.key.nestedKey', 3000)
 ```
 
+
+### Environment-specific configuration
+
+Quadro will load configuration from these paths (in the following order):
+
+- config/
+- config/$NODE_ENV
+- config/local
+
+Note: $NODE_ENV - is the NODE_ENV environment variable value
+
+Configurations are merged while loading. In the following example:
+
+```
+|-- config/quadro.yml
+  |- dev/quadro.yml
+  |- local/quadro.yml
+```
+
+Configuration keys from `local/quadro.yml` will override keys from `dev/quadro.yml`
+which in turn will override keys from `config/quadro.yml`.
+
+It is highly recommended that any config values that are tweaked during debugging/development
+will be added to `local/` configs. This way you can add `**/config/local/` to `.gitignore`
+and be able to keep your dev environment clean during commits/pushes.
+
 ## Tests runner
 To run tests use:
 
