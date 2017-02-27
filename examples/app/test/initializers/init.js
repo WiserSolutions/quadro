@@ -1,1 +1,1 @@
-console.log('Initializer being run')
+log.info('Initializer being run')
