@@ -89,3 +89,10 @@ node app.js test --watch
 
 Use config value: `quadro.http.port`
 Default: `3000`
+
+
+## Logger
+
+Use app.log.trace|debug|info|warn|error
+
+Set logging level through config `quadro.logger.level`. Default is `info`.
