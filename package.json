@@ -24,11 +24,13 @@
     "dot-object": "^1.5.4",
     "js-yaml": "^3.8.1",
     "koa": "^2.0.0-alpha.8",
+    "koa-router": "^7.0.1",
     "lodash": "^4.17.4",
     "minimist": "^1.2.0",
     "mocha": "^3.2.0",
     "mz": "^2.6.0",
     "nodemon": "^1.11.0",
-    "sinon": "^1.17.7"
+    "sinon": "^1.17.7",
+    "supertest": "^3.0.0"
   }
 }

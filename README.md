@@ -122,3 +122,20 @@ Default: `3000`
 Use app.log.trace|debug|info|warn|error
 
 Set logging level through config `quadro.logger.level`. Default is `info`.
+
+# Application instance
+
+## Key attributes
+
+- `.log` - Logger
+- `.env` - Runtime environment (dev|test|production), comes from NODE_ENV
+- `.name` - Application name. Taken from `package.json`
+- `.config` - Application configuration manager
+
+## Additional attributes
+
+- `.cliParams` - Parsed CLI parameters
+- `.appDir` - Application
+- `.quadroDir` - Location of quadro package
+- `.http` - HTTP Server reference
+- `.koaApp` - KOA Application
