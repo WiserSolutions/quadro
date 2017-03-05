@@ -40,6 +40,12 @@ describe('di', function() {
     expect(await container.get('svc')).to.eql(1234)
   })
 
+  it('registers destructuring', function() {
+    container.register('a', { a: 3 })
+    container.register('svc', ({ a } = a) => a ** 3 )
+    expect(container.get('svc')).to.eql(27)
+  })
+
   describe('dependencies resolution', function() {
     it('for functions', function() {
       function Test(a, b) { return a + b }
