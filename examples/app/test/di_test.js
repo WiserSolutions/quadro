@@ -64,6 +64,31 @@ describe('di', function() {
     })
   })
 
+  describe('create', function() {
+    it('creates an instance', function() {
+      class Test{}
+      expect(container.create(Test)).to.be.instanceOf(Test)
+    })
+
+    it('resolves dependencies', function() {
+      class Test { constructor(a) { this.a = a} }
+      container.register('a', 1)
+      let t = container.create(Test)
+      expect(t.a).to.eql(1)
+    })
+  })
+
+  describe('run', function() {
+    it('runs the function', function() {
+      expect(container.run(() => 1)).to.eql(1)
+    })
+
+    it('resolves dependencies', function() {
+      container.register('a', 3)
+      expect(container.run((a) => 2 * a)).to.eql(6)
+    })
+  })
+
   describe('createNested', function() {
     let nested
     beforeEach(function() { nested = container.createNested() })
