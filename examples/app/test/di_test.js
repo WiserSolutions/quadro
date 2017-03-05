@@ -25,6 +25,21 @@ describe('di', function() {
     expect(container.get('svc')).to.eql(123)
   })
 
+  it('registers arrow functions', function() {
+    container.register('svc', () => 123)
+    expect(container.get('svc')).to.eql(123)
+  })
+
+  it('registers async functions', async function() {
+    container.register('svc', async function() { return 123 })
+    expect(await container.get('svc')).to.eql(123)
+  })
+
+  it('registers async arrow functions', async function() {
+    container.register('svc', async () => 1234)
+    expect(await container.get('svc')).to.eql(1234)
+  })
+
   describe('dependencies resolution', function() {
     it('for functions', function() {
       function Test(a, b) { return a + b }

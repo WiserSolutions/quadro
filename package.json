@@ -23,6 +23,7 @@
     "chai": "^3.5.0",
     "co-mocha": "^1.2.0",
     "dot-object": "^1.5.4",
+    "espree": "^3.4.0",
     "js-yaml": "^3.8.1",
     "koa": "^2.0.1",
     "koa-bodyparser": "^4.0.0",
