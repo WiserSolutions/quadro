@@ -32,12 +32,12 @@ describe('di', function() {
 
   it('registers async functions', async function() {
     container.register('svc', async function() { return 123 })
-    expect(await container.get('svc')).to.eql(123)
+    expect(await container.getAsync('svc')).to.eql(123)
   })
 
   it('registers async arrow functions', async function() {
     container.register('svc', async () => 1234)
-    expect(await container.get('svc')).to.eql(1234)
+    expect(await container.getAsync('svc')).to.eql(1234)
   })
 
   it('registers destructuring', function() {
@@ -46,21 +46,67 @@ describe('di', function() {
     expect(container.get('svc')).to.eql(27)
   })
 
+  describe('initializable objects', function() {
+    it('initializes objects', function() {
+      container.register('a', class {
+        initialize() {
+          this.foo = 'bar'
+        }
+      })
+      expect(container.get('a').foo).to.eql('bar')
+    })
+
+    it('supports async initialize', async function() {
+      container.register('a', class {
+        async initialize() {
+          return await Promise.delay(50).then(() => this.foo = 'bar')
+        }
+      })
+      let svc = await container.getAsync('a')
+      expect(svc.foo).to.eql('bar')
+    })
+
+    it('supports generator initialize', async function() {
+      container.register('a', class {
+        *initialize() {
+          return yield Promise.delay(50).then(() => this.foo = 'bar')
+        }
+      })
+      let svc = await container.getAsync('a')
+      expect(svc.foo).to.eql('bar')
+    })
+
+    it('throws exception if `get` is called instead of `getAsync`', async function() {
+      container.register('a', class {
+        *initialize() {
+          return yield Promise.delay(50).then(() => this.foo = 'bar')
+        }
+      })
+      expect(() => container.get('a')).to.throw(Error, 'use `getAsync` instead')
+    })
+  })
+
   describe('dependencies resolution', function() {
-    it('for functions', function() {
-      function Test(a, b) { return a + b }
+    it('supports functions', function() {
+      function Test(a, b) { log.info({ a, b }); return a + b }
       container.register('svc', Test)
       container.register('a', 1)
       container.register('b', 2)
       expect(container.get('svc')).to.eql(3)
     })
 
-    it('classes', function() {
-      class Test{ constructor(a, b) {/*hello*/this.a = a; this.b = b}; foo() { return this.a**2 + this.b**2}}
+    it('supports classes', function() {
+      class Test{ constructor(a, b) { this.a = a; this.b = b}; foo() { return this.a**2 + this.b**2 } }
       container.register('svc', Test)
       container.register('a', 1)
       container.register('b', 2)
       expect(container.get('svc').foo()).to.eql(5)
+    })
+
+    it('supports async dependencies', async function() {
+      container.register('a', async function() { return 5 })
+      container.register('svc', function(a) { return 2 * a })
+      expect(await container.getAsync('svc')).to.eql(10)
     })
   })
 
