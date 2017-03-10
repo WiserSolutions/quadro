@@ -150,4 +150,22 @@ describe('di', function() {
       expect(nested.get('svc')).to.eql(3)
     })
   })
+
+  describe('scopes', function() {
+    describe('singleton', function() {
+      it('creates only one instance', function() {
+        class Test { constructor() { this.a = Math.random() } }
+        container.registerSingleton('a', Test)
+        expect(container.get('a')).to.equal(container.get('a'))
+      })
+    })
+
+    describe('transient', function() {
+      it('is default lifetime', function() {
+        class Test { constructor() { this.a = Math.random() } }
+        container.register('a', Test)
+        expect(container.get('a')).to.not.equal(container.get('a'))
+      })
+    })
+  })
 })
