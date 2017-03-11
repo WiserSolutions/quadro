@@ -1,5 +1,7 @@
 # Quadro framework
 
+[![Code Climate](https://codeclimate.com/github/WisePricer/quadro/badges/gpa.svg)](https://codeclimate.com/github/WisePricer/quadro)
+
 TOC:
 
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
