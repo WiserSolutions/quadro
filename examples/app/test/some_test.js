@@ -17,10 +17,10 @@ describe('Hello', function() {
     expect(Date.now() - start).to.be.gte(100)
   })
 
-  it('does not crash the process on test failure', function*() {
-    log.info('In this test you should see a failure, but the process should not crash')
-    expect(2).to.equal(1)
-  })
+  // it('does not crash the process on test failure', function*() {
+  //   log.info('In this test you should see a failure, but the process should not crash')
+  //   expect(2).to.equal(1)
+  // })
 
   it('supports sinon', function() {
     this.sinon.stub(Date, 'now', _ => 123)

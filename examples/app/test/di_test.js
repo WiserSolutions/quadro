@@ -122,6 +122,12 @@ describe('di', function() {
       let t = container.create(Test)
       expect(t.a).to.eql(1)
     })
+
+    it('runs a function', function() {
+      let called = false
+      container.create(function() { called = true })
+      expect(called).to.be.true
+    })
   })
 
   describe('run', function() {
