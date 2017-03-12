@@ -41,8 +41,8 @@ describe('di', function() {
   })
 
   it('registers destructuring', function() {
-    container.register('a', { a: 3 })
-    container.register('svc', ({ a } = a) => a ** 3 )
+    container.register('dep', { a: 3 })
+    container.register('svc', ({ a } = dep) => a ** 3 ) /* eslint no-undef: 0 */
     expect(container.get('svc')).to.eql(27)
   })
 
@@ -96,7 +96,10 @@ describe('di', function() {
     })
 
     it('supports classes', function() {
-      class Test{ constructor(a, b) { this.a = a; this.b = b}; foo() { return this.a**2 + this.b**2 } }
+      class Test {
+        constructor(a, b) { this.a = a; this.b = b }
+        foo() { return this.a ** 2 + this.b ** 2 }
+      }
       container.register('svc', Test)
       container.register('a', 1)
       container.register('b', 2)
@@ -112,12 +115,12 @@ describe('di', function() {
 
   describe('create', function() {
     it('creates an instance', function() {
-      class Test{}
+      class Test {}
       expect(container.create(Test)).to.be.instanceOf(Test)
     })
 
     it('resolves dependencies', function() {
-      class Test { constructor(a) { this.a = a} }
+      class Test { constructor(a) { this.a = a } }
       container.register('a', 1)
       let t = container.create(Test)
       expect(t.a).to.eql(1)
@@ -126,7 +129,7 @@ describe('di', function() {
     it('runs a function', function() {
       let called = false
       container.create(function() { called = true })
-      expect(called).to.be.true
+      expect(called).to.eql(true)
     })
   })
 

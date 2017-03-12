@@ -1,0 +1,28 @@
+{
+  "extends": "standard",
+  "rules": {
+    "generator-star-spacing": 0,
+    "yield-star-spacing": [ "error", "after" ],
+    "space-before-function-paren": [ 2, "never" ],
+    "no-return-assign": 0,
+    "radix": 0,
+    "space-in-parens": 0,
+    "operator-linebreak": [ 2, "after" ],
+    "no-new": 0
+  },
+  "env": {
+    "mocha": true,
+    "node": true
+  },
+  "globals": {
+    "expect": false,
+    "app": false,
+    "config": false,
+    "log": false,
+    "onMessage": false,
+    "httpTest": false
+  },
+  "parserOptions": {
+    "ecmaVersion": 2017
+  }
+}
