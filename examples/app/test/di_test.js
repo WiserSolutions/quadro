@@ -1,6 +1,6 @@
 const Container = require('../../../lib/di/container')
 
-describe('di', function() {
+describe.only('di', function() {
   let container
   beforeEach(function() { container = new Container() })
   it('registers constant', function() {
@@ -83,6 +83,12 @@ describe('di', function() {
         }
       })
       expect(() => container.get('a')).to.throw(Error, 'use `getAsync` instead')
+    })
+  })
+
+  describe('get', function() {
+    it('throws error if `name` can not be found', function() {
+      expect(() => container.get('a')).to.throw(Error, "'a' can not be resolved")
     })
   })
 
@@ -175,6 +181,21 @@ describe('di', function() {
         container.register('a', Test)
         expect(container.get('a')).to.not.equal(container.get('a'))
       })
+    })
+  })
+
+  describe('namespaces', function() {
+    it('registers services in namespaces', function() {
+      container.register('something:a', 1)
+      container.register('something:b', 2)
+      expect(container.find(/some/)).to.eql(['something:a', 'something:b'])
+    })
+
+    it('returns services from parent container(s)', function() {
+      container.register('something:a', 1)
+      let nested = container.createNested()
+      nested.register('something:b', 2)
+      expect(nested.find(/some/)).to.eql(['something:b', 'something:a'])
     })
   })
 })
