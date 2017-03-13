@@ -24,6 +24,7 @@
     "bluebird": "^3.4.7",
     "bunyan": "^1.8.5",
     "chai": "^3.5.0",
+    "co": "^4.6.0",
     "co-mocha": "^1.2.0",
     "dot-object": "^1.5.4",
     "eslint": "^3.17.1",
@@ -39,5 +40,8 @@
     "nodemon": "^1.11.0",
     "sinon": "^1.17.7",
     "supertest": "^3.0.0"
+  },
+  "scripts": {
+    "test": "cd examples/app && node --preserve-symlinks app.js test"
   }
 }
