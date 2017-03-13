@@ -1,6 +1,6 @@
 const Container = require('../../../lib/di/container')
 
-describe.only('di', function() {
+describe('di', function() {
   let container
   beforeEach(function() { container = new Container() })
   it('registers constant', function() {
@@ -195,7 +195,8 @@ describe.only('di', function() {
       container.register('something:a', 1)
       let nested = container.createNested()
       nested.register('something:b', 2)
-      expect(nested.find(/some/)).to.eql(['something:b', 'something:a'])
+      expect(nested.find(/some/)).to.eql(['something:b', 'something:a'], 'find should support regex')
+      expect(nested.find('some')).to.eql(['something:b', 'something:a'], 'find should support strings')
     })
   })
 })

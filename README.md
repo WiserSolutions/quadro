@@ -43,6 +43,14 @@ You're done! Run with:
 node app.js [--watch]
 ```
 
+Local configuration:
+You can maintain your local-machine specific configuration config/local.
+For git to ignore those changes use:
+
+```sh
+git update-index --skip-worktree **/config/local/*
+```
+
 Test with:
 
 ```sh
