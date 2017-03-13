@@ -1,6 +1,7 @@
 # Quadro framework
 
 [![Code Climate](https://codeclimate.com/github/WisePricer/quadro/badges/gpa.svg)](https://codeclimate.com/github/WisePricer/quadro)
+[![CircleCI](https://circleci.com/gh/WisePricer/quadro.svg?style=shield)](https://circleci.com/gh/WisePricer/quadro)
 
 TOC:
 
