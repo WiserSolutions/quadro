@@ -46,6 +46,12 @@ describe('di', function() {
     expect(container.get('svc')).to.eql(27)
   })
 
+  it('registers function as value', function() {
+    let func = function() {}
+    container.register('func', func, { type: 'object' })
+    expect(container.get('func')).to.equal(func)
+  })
+
   describe('initializable objects', function() {
     it('initializes objects', function() {
       container.register('a', class {
