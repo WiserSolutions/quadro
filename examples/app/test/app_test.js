@@ -22,4 +22,22 @@ describe('app', function() {
         ])
     })
   })
+
+  describe('glob with `verbose`', function() {
+    it('returns detailed information about the files', async function() {
+      expect(await app.glob('*.json', { dirs: ['quadro', 'app'], verbose: true }))
+        .to.eql([
+          {
+            relativePath: 'package.json',
+            absolutePath: `${app.quadroDir}/package.json`,
+            basePath: app.quadroDir
+          },
+          {
+            relativePath: 'package.json',
+            absolutePath: `${app.appDir}/package.json`,
+            basePath: app.appDir
+          }
+        ])
+    })
+  })
 })
