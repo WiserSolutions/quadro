@@ -20,7 +20,10 @@
     "config": false,
     "log": false,
     "onMessage": false,
-    "httpTest": false
+    "httpTest": false,
+    "pubsub": false,
+    "nock": false,
+    "requirep": false
   },
   "parserOptions": {
     "ecmaVersion": 2017
