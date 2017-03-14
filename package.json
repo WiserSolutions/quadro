@@ -1,6 +1,6 @@
 {
   "name": "quadro",
-  "version": "0.1.2",
+  "version": "0.4.0",
   "keywords": [
     "framework",
     "quadro",
@@ -42,6 +42,7 @@
     "request": "^2.81.0",
     "request-promise": "^4.1.1",
     "sinon": "^1.17.7",
+    "statsd-client": "^0.2.4",
     "supertest": "^3.0.0"
   },
   "scripts": {
