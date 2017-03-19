@@ -8,4 +8,4 @@ machine:
 dependencies:
   override:
     - npm install && npm link .
-    - cd examples/app && npm link quadro && npm install
+    - cd examples/app && npm install && npm link quadro
