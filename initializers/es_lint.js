@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = async function(app, log) {
   if (app.env === 'production') return
 
@@ -5,7 +7,8 @@ module.exports = async function(app, log) {
 
   let CLIEngine = require('eslint').CLIEngine
   let cli = new CLIEngine({
-    ignorePath: require('path').resolve(__dirname, '../.eslintignore')
+    ignorePath: path.resolve(__dirname, '../.eslintignore'),
+    configFile: path.resolve(__dirname, '../.eslintrc')
   })
   let report = cli.executeOnFiles([app.appDir])
   let formatter = cli.getFormatter('compact')
