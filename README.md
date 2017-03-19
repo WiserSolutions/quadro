@@ -44,14 +44,6 @@ You're done! Run with:
 node app.js [--watch]
 ```
 
-Local configuration:
-You can maintain your local-machine specific configuration config/local.
-For git to ignore those changes use:
-
-```sh
-git update-index --skip-worktree **/config/local/*
-```
-
 Test with:
 
 ```sh
@@ -103,9 +95,18 @@ Configurations are merged while loading. In the following example:
 Configuration keys from `local/quadro.yml` will override keys from `dev/quadro.yml`
 which in turn will override keys from `config/quadro.yml`.
 
+
+#### Local configuration:
 It is highly recommended that any config values that are tweaked during debugging/development
 will be added to `local/` configs. This way you can add `**/config/local/` to `.gitignore`
 and be able to keep your dev environment clean during commits/pushes.
+
+You can maintain your local-machine specific configuration config/local.
+For git to ignore those changes use:
+
+```sh
+git update-index --skip-worktree **/config/local/*
+```
 
 ## Tests runner
 To run tests use:
