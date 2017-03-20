@@ -88,7 +88,7 @@ describe('di', function() {
           return yield Promise.delay(50).then(() => this.foo = 'bar')
         }
       })
-      expect(() => container.get('a')).to.throw(Error, 'use `getAsync` instead')
+      expect(() => container.get('a')).to.throw(Error, "use 'getAsync' instead")
     })
   })
 
