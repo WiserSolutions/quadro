@@ -1,0 +1,18 @@
+version: 2
+jobs:
+  build:
+    working_directory: /tmp
+    docker:
+      - image: node:7.7.1
+      - image: redis@sha256:54057dd7e125ca41afe526a877e8bd35ec2cdd33b9217e022ed37bdcf7d09673
+    steps:
+      - checkout
+      - restore_cache:
+          key: quadro-{{ checksum "package.json" }}
+      - run: npm install && npm link .
+      - run: cd examples/app && npm install && npm link quadro
+      - run: npm test
+      - save_cache:
+          key: quadro-{{ checksum "package.json" }}
+          paths:
+            - /tmp/node_modules
