@@ -3,7 +3,7 @@ describe('UsersController', function() {
     it('responds', async function() {
       await httpTest
         .get('/users/1')
-        .expect(200, 'John')
+        .expect(200, 'John 1')
     })
   })
 })
