@@ -36,6 +36,13 @@ describe('config', function() {
         QT.stubConfig('quadro.logger.hello', 123)
         expect(Q.config.get('quadro.logger.level')).to.equal(level)
       })
+
+      it('allows to stub more than 1 value', function() {
+        QT.stubConfig('quadro.hello1', 123)
+        QT.stubConfig('quadro.hello2', 246)
+        expect(Q.config.get('quadro.hello1')).to.eql(123)
+        expect(Q.config.get('quadro.hello2')).to.eql(246)
+      })
     })
   })
 })
