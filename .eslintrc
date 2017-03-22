@@ -16,6 +16,7 @@
   },
   "globals": {
     "Q": false,
+    "QT": false,
     "expect": false,
     "onMessage": false,
     "httpTest": false,
