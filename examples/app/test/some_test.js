@@ -8,13 +8,13 @@ describe('Hello', function() {
   it('works with promises', async function() {
     let start = Date.now()
     await bluebird.delay(100)
-    expect(Date.now() - start).to.be.gte(100)
+    expect(Date.now() - start).to.be.gte(99)
   })
 
   it('works with generators', function*() {
     let start = Date.now()
     yield bluebird.delay(100)
-    expect(Date.now() - start).to.be.gte(100)
+    expect(Date.now() - start).to.be.gte(99)
   })
 
   // it('does not crash the process on test failure', function*() {
