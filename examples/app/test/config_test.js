@@ -23,11 +23,19 @@ describe('config', function() {
     })
   })
 
-  // describe('tests', function() {
-  //   describe('stubConfig', function() {
-  //     it('stubs value', function() {
-  //       Q.stubConfig('quadro.logger.hello', 123)
-  //     })
-  //   })
-  // })
+  describe('tests', function() {
+    describe('stubConfig', function() {
+      it('stubs value', function() {
+        QT.stubConfig('quadro.logger.hello', 123)
+        expect(Q.config.get('quadro.logger.hello')).to.equal(123)
+      })
+
+      it('does not override other config values', function() {
+        let level = Q.config.get('quadro.logger.level')
+        expect(level).to.not.eql(null)
+        QT.stubConfig('quadro.logger.hello', 123)
+        expect(Q.config.get('quadro.logger.level')).to.equal(level)
+      })
+    })
+  })
 })
