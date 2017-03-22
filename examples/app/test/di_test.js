@@ -100,7 +100,7 @@ describe('di', function() {
 
   describe('dependencies resolution', function() {
     it('supports functions', function() {
-      function Test(a, b) { log.info({ a, b }); return a + b }
+      function Test(a, b) { return a + b }
       container.register('svc', Test)
       container.register('a', 1)
       container.register('b', 2)

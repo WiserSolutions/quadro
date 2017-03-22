@@ -1,41 +1,41 @@
 describe('app', function() {
   describe('glob', function() {
     it('returns files', async function() {
-      expect(await app.glob('*.js'))
+      expect(await Q.app.glob('*.js'))
         .to.eql([
-          `${app.appDir}/app.js`
+          `${Q.app.appDir}/app.js`
         ])
     })
 
     it('returns files from quadro package if `opts.dir` has `quadro`', async function() {
-      expect(await app.glob('*.json', { dirs: ['quadro', 'app'] }))
+      expect(await Q.app.glob('*.json', { dirs: ['quadro', 'app'] }))
         .to.eql([
-          `${app.quadroDir}/package.json`,
-          `${app.appDir}/package.json`
+          `${Q.app.quadroDir}/package.json`,
+          `${Q.app.appDir}/package.json`
         ])
     })
 
     it('supports quadroLib', async function() {
-      expect(await app.glob('di/*.js', { dirs: ['quadroLib'] }))
+      expect(await Q.app.glob('di/*.js', { dirs: ['quadroLib'] }))
         .to.eql([
-          `${app.quadroDir}/lib/di/container.js`
+          `${Q.app.quadroDir}/lib/di/container.js`
         ])
     })
   })
 
   describe('glob with `verbose`', function() {
     it('returns detailed information about the files', async function() {
-      expect(await app.glob('*.json', { dirs: ['quadro', 'app'], verbose: true }))
+      expect(await Q.app.glob('*.json', { dirs: ['quadro', 'app'], verbose: true }))
         .to.eql([
           {
             relativePath: 'package.json',
-            absolutePath: `${app.quadroDir}/package.json`,
-            basePath: app.quadroDir
+            absolutePath: `${Q.app.quadroDir}/package.json`,
+            basePath: Q.app.quadroDir
           },
           {
             relativePath: 'package.json',
-            absolutePath: `${app.appDir}/package.json`,
-            basePath: app.appDir
+            absolutePath: `${Q.app.appDir}/package.json`,
+            basePath: Q.app.appDir
           }
         ])
     })

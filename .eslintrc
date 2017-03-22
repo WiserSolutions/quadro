@@ -15,16 +15,13 @@
     "node": true
   },
   "globals": {
+    "Q": false,
     "expect": false,
-    "app": false,
-    "config": false,
-    "log": false,
     "onMessage": false,
     "httpTest": false,
-    "pubsub": false,
     "nock": false,
     "requirep": false,
-    "container": false
+    "pubsub": false
   },
   "parserOptions": {
     "ecmaVersion": 2017
