@@ -23,7 +23,7 @@ describe('Hello', function() {
   // })
 
   it('supports sinon', function() {
-    this.sinon.stub(Date, 'now', _ => 123)
+    this.sinon.stub(Date, 'now').callsFake(_ => 123)
     expect(Date.now()).to.eql(123)
   })
 })
