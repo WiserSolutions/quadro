@@ -45,4 +45,25 @@ describe('config', function() {
       })
     })
   })
+
+  describe('providers', function() {
+    describe('registerConfigRoot', async function() {
+      it('adds config namespace', function() {
+        Q.config.registerConfigRoot('currencies', (key) => key.toUpperCase())
+        expect(Q.config.get('currencies.uk')).to.eql('UK')
+      })
+
+      it('supports async providers', async function() {
+        let provider = async (key) => Promise.delay(25).then(() => key.toLowerCase())
+        Q.config.registerConfigRoot('currencies', provider)
+        expect(await Q.config.get('currencies.UK')).to.eql('uk')
+      })
+
+      it('returns default if async provider fails', async function() {
+        let provider = async (key) => Promise.delay(25).then(function() { throw new Error() })
+        Q.config.registerConfigRoot('currencies', provider)
+        expect(await Q.config.get('currencies.UK', '$')).to.eql('$')
+      })
+    })
+  })
 })
