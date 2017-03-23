@@ -1,5 +1,6 @@
-// This test assumes there's a default profile
 describe('AWS SDK', function() {
+  if (process.env.CIRCLECI) return
+
   beforeEach(function() {
     QT.stubConfig('quadro.aws.region', 'us-west-2')
   })
@@ -23,6 +24,8 @@ describe('AWS SDK', function() {
     })
 
     it('configures SDK', async function() {
+      this.timeout(5000)
+
       let aws = Q.container.get('aws')
       expect(await getStacks(aws)).to.not.eql(null)
     })
