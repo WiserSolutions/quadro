@@ -22,9 +22,11 @@
     "url": "https://github.com/WisePricer/quadro.git"
   },
   "dependencies": {
+    "aws-sdk": "^2.31.0",
     "bluebird": "^3.4.7",
     "bunyan": "^1.8.5",
     "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
     "co": "^4.6.0",
     "co-mocha": "^1.2.0",
     "dot-object": "^1.5.4",
