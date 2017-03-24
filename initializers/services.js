@@ -7,6 +7,10 @@ module.exports = async function(app, container, log) {
     let svcName = fileDetails.relativePath.replace(/^services\/|\.js/g, '')
     let registeredName = `services:${svcName}`
     log.debug({ registeredName }, 'Loading')
-    container.registerSingleton(registeredName, require(fileDetails.absolutePath), { type: 'class' })
+    container.registerSingleton(
+      registeredName,
+      require(fileDetails.absolutePath),
+      { type: 'class', aliases: [ svcName ] }
+    )
   })
 }

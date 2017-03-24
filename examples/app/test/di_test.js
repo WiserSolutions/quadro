@@ -8,6 +8,25 @@ describe('di', function() {
     expect(container.get('svc')).to.eql('123')
   })
 
+  describe('aliases', function() {
+    it('supports aliases', function() {
+      class Test {}
+      container.register('svc', Test, { aliases: ['the_svc'] })
+      let svc = container.get('svc')
+      let theSvc = container.get('the_svc')
+      expect(svc).to.not.eql(null)
+      expect(theSvc).to.not.eql(null)
+    })
+
+    it('singleton aliases resolve to the same object', function() {
+      class Test {}
+      container.registerSingleton('svc', Test, { aliases: ['the_svc'] })
+      let svc = container.get('svc')
+      let theSvc = container.get('the_svc')
+      expect(svc).to.equal(theSvc)
+    })
+  })
+
   it('registers class', function() {
     class Test {}
     container.register('svc', Test)
