@@ -14,15 +14,23 @@ describe('di', function() {
     expect(container.get('svc')).to.be.instanceOf(Test)
   })
 
-  it('registers functions', function() {
-    function Test() { return 'hello' }
-    container.register('svc', Test)
-    expect(container.get('svc')).to.eql('hello')
-  })
+  describe('functions', function() {
+    it('registers pascal-case named functions as class', function() {
+      function Test() { this.hello = function() {} }
+      container.register('svc', Test)
+      expect(container.get('svc').hello).to.not.eql(null)
+    })
 
-  it('registers anonymous functions', function() {
-    container.register('svc', function() { return 123 })
-    expect(container.get('svc')).to.eql(123)
+    it('registers functions as factory', function() {
+      function test() { return 'hello' }
+      container.register('svc', test)
+      expect(container.get('svc')).to.eql('hello')
+    })
+
+    it('registers anonymous functions as factory', function() {
+      container.register('svc', function() { return 123 })
+      expect(container.get('svc')).to.eql(123)
+    })
   })
 
   it('registers arrow functions', function() {
@@ -100,8 +108,8 @@ describe('di', function() {
 
   describe('dependencies resolution', function() {
     it('supports functions', function() {
-      function Test(a, b) { return a + b }
-      container.register('svc', Test)
+      function test(a, b) { return a + b }
+      container.register('svc', test)
       container.register('a', 1)
       container.register('b', 2)
       expect(container.get('svc')).to.eql(3)
