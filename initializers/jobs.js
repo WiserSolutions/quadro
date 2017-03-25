@@ -4,12 +4,13 @@ module.exports = class {
     this.log = log
     this.container = container
     this.config = config
-
-    container.registerSingleton('jobs', require('../lib/jobs/jobs'))
   }
 
   async initialize() {
-    Q.jobs = await this.container.getAsync('jobs')
+    let jobs = await this.container.create(require('../lib/jobs/jobs'))
+    this.container.registerSingleton('jobs', jobs)
+
+    Q.jobs = jobs
     await Promise.map(
       await this.app.glob('jobs/*.js', { verbose: true }),
       async (job) => this.runJob(job)

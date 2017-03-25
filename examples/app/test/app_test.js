@@ -1,4 +1,21 @@
 describe('app', function() {
+  describe('Q.container', function() {
+    it('has container registered', function() {
+      let c = Q.container.get('container')
+      expect(c).to.not.eql(null)
+    })
+
+    it('registers self as container', function() {
+      expect(Q.container.get('container')).to.equal(Q.container)
+    })
+  })
+
+  describe('on load', function() {
+    it('execute', function() {
+      expect(Q.app.appLoadEventInitializerSuccess).to.eql(true)
+    })
+  })
+
   describe('glob', function() {
     it('returns files', async function() {
       expect(await Q.app.glob('*.js'))

@@ -1,7 +1,7 @@
 describe('Services', function() {
   describe('Loading', function() {
     it('is resolved by service name', function() {
-      expect(Q.container.get('test_svc')).to.not.eql(null)
+      expect(Q.container.get('testSvc')).to.not.eql(null)
     })
 
     it('is being load on startup', function() {
@@ -10,17 +10,17 @@ describe('Services', function() {
     })
 
     it('registers services by name', function() {
-      expect(Q.container.find('services:')).to.include('services:test_svc')
+      expect(Q.container.find('services:')).to.include('services:testSvc')
     })
 
     it('registers services as classes', function() {
-      let svc = Q.container.get('services:test_svc')
+      let svc = Q.container.get('services:testSvc')
       expect(typeof svc.increment).to.eql('function')
     })
 
     it('registers services as singletons', function() {
-      Q.container.get('services:test_svc').increment()
-      expect(Q.container.get('services:test_svc').counter).to.eql(1)
+      Q.container.get('services:testSvc').increment()
+      expect(Q.container.get('services:testSvc').counter).to.eql(1)
     })
   })
 })
