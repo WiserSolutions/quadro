@@ -35,7 +35,8 @@ describe('app', function() {
     it('supports quadroLib', async function() {
       expect(await Q.app.glob('di/*.js', { dirs: ['quadroLib'] }))
         .to.eql([
-          `${Q.app.quadroDir}/lib/di/container.js`
+          `${Q.app.quadroDir}/lib/di/container.js`,
+          `${Q.app.quadroDir}/lib/di/metadata.js`
         ])
     })
   })

@@ -40,6 +40,15 @@ describe('di', function() {
       expect(container.get('svc').hello).to.not.eql(null)
     })
 
+    it('resolves dependencies for constructor-functions', function() {
+      container.register('a', 1)
+
+      function Test(a) { this.foo = function() { return a } }
+      container.register('svc', Test)
+
+      expect(container.get('svc').foo()).to.equal(1)
+    })
+
     it('registers functions as factory', function() {
       function test() { return 'hello' }
       container.register('svc', test)
