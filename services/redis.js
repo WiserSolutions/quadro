@@ -7,11 +7,11 @@ module.exports = async function(config, log, container) {
   log.debug('Connecting to redis')
   let client = redis.createClient(redisConfig)
   client.on('error', (err) => log.error({ err }, 'REDIS ERROR'))
-  return new Promise(function(resolve, reject) {
+  await new Promise(function(resolve, reject) {
     client.on('ready', function() {
-      log.info('Connected to Redis')
-      container.registerSingleton('redis', client, { type: 'object' })
+      log.debug('Connected to Redis')
       resolve(client)
     })
   })
+  return client
 }
