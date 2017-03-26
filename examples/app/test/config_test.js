@@ -25,6 +25,11 @@ describe('config', function() {
 
   describe('tests', function() {
     describe('stubConfig', function() {
+      it('returns default if stubbed value is undefined', function() {
+        QT.stubConfig('quadro.logger.hello', undefined)
+        expect(Q.config.get('quadro.logger.hello', 123)).to.eql(123)
+      })
+
       it('stubs value', function() {
         QT.stubConfig('quadro.logger.hello', 123)
         expect(Q.config.get('quadro.logger.hello')).to.equal(123)
