@@ -21,12 +21,12 @@ module.exports = function(router) {
 
 Resource actions are mapped as follows to url paths:
 
-| action | method | path
-|--------|--------|-----
-| index | GET | /resource
-| show | GET | /resource/**:id**
-| create | POST | /resource
-| update | PUT | /resource/**:id**
+| action  | method | path
+|---------|--------|-----
+| index   | GET    | /resource
+| show    | GET    | /resource/**:id**
+| create  | POST   | /resource
+| update  | PUT    | /resource/**:id**
 | destroy | DELETE | /resource/**:id**
 
 #### Example

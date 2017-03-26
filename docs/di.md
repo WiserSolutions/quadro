@@ -38,4 +38,5 @@ module.exports = class SomeClass {
 - koa - koa app
 - httpServer - HttpServer instance which koa app is using
 - app - quadro app instance
+- aws
 - container - DI container for `ServiceLocator` pattern (manually locating registered dependencies)
