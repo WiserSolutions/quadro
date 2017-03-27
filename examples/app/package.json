@@ -5,6 +5,6 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "quadro": "^0.1.0"
+    "quadro": "^0.5.5"
   }
 }
