@@ -1,0 +1,8 @@
+{
+  "key": "testValue",
+  "nested": {
+    "nested1": {
+      "envSpecificKey": "testValue"
+    }
+  }
+}
