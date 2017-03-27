@@ -9,6 +9,11 @@ describe('OrderCompleted', function() {
       await QT.onMessage('orders.completed', { orderId: null })
         .expectFailure('No orderId')
     })
+
+    it('sets body to provided object if not error', async function() {
+      await QT.onMessage('orders.completed', { orderId: 'fail_with_object' })
+        .expectFailure({ msg: 'failed with object' })
+    })
   })
 
   describe('retries', function() {
