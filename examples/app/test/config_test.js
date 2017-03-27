@@ -1,11 +1,11 @@
 describe('config', function() {
   it('loads distinct configs', function() {
-    expect(Q.config.yaml.key).to.eql('devValue')
+    expect(Q.config.yaml.key).to.eql('testValue')
   })
 
   describe('config merge', function() {
     it('defaults to /config/*.js', function() {
-      expect(Q.config.get('yaml.nested.nested1.envSpecificKey')).to.eql('devValue')
+      expect(Q.config.get('yaml.nested.nested1.envSpecificKey')).to.eql('testValue')
     })
 
     it('deep merges configs', function() {
