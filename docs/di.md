@@ -8,9 +8,124 @@ function(config) {
 }
 ```
 
+## Lifetimes
+
+Quadro supports 2 dependency lifetimes:
+
+`singleton` - only one instance of the dependency will be created. All consumers of this dependency will receive the same instance.
+
+`transient` (default) - On each resolution a new instance will be created for `class` registrations, and a new invocation will be done for `factory` registrations.
+
+## Registration types <a name="registration_types"></a>
+
+Registration types affect object instantiation. Quadro DI supports 3 registration types:
+
+`class` instantiates the dependency on each resolution.
+
+`factory` on each resolution the dependency is being run and the result is return
+
+`value` on each resolution the object passed as the dependency will be returned.
+
+```js
+function foo() { return 12 }
+
+// When registered as `class` - an instance of foo will be returned
+Q.container.register('foo', foo, { type: 'class' })
+Q.container.get('foo') instanceof foo // true
+Q.container.get('foo') === 12 // false
+
+
+// When registered as `factory` - the number 12 will be returned
+Q.container.register('foo', foo, { type: 'factory' })
+Q.container.get('foo') instanceof foo // false
+Q.container.get('foo') === 12 // true
+
+
+// When registered as `value` - the foo function itself will be returned
+Q.container.register('foo', foo, { type: 'value' })
+Q.container.get('foo') === foo  // true
+Q.container.get('foo') instanceof foo // false
+Q.container.get('foo') === 12 // false
+```
+
+## API
+
+### container.register(name, dependency, options)
+
+Registers a dependency in the container.
+
+`name` - the name to use when resolving the dependency.
+
+`dependency` - the dependency to register. Can be a `class`, `function`, `object`, or a scalar value.
+
+`options.type` - [type of registration](#registration_types)
+
+#### container.get[Async] (name)
+
+Returns a dependency registered as `name`.
+
+**Note** If the dependency is asynchronous (has an async `initialize` method), or is dependent on asynchronous dependency - you should use `.getAsync`.
+
+**Note** Using `.get` on asynchronous dependencies will throw an error
+
+Example:
+
+```js
+// Get synchronous dependency
+let log = Q.container.get('log')
+
+// Get async dependency
+let redis = await Q.container.getAsync('redis')
+```
+
+#### container.create (aliased as container.run(obj))
+
+Runs a function or creates a class, while resolving its dependencies.
+Use it when you need to run a function, instantiate a class instance that is not registered.
+
+Example:
+
+```js
+// Using class
+class StatsReporter {
+  // Assuming `stats` is registered
+  constructor(stats) { }
+
+  async generateReport() { }
+}
+
+let reporter = await Q.container.create(StatsReporter)
+await reporter.generateReport()
+```
+
+```js
+// Using method
+
+// Assuming `stats` is registered
+async function generateReport(stats) {
+  // ...  
+}
+
+// Will run generateReport and pass the `stats` dependency to it
+await Q.container.run(generateReport)
+```
+
+#### container.find(pattern)
+
+Lists all dependencies matching `pattern`.
+
+Example:
+
+```js
+// Get list of all dependencies within the `services` namespace
+let services = Q.container.find(/^services\:/)
+```
+
 ## Services
 
-Services everything under `services/` is automatically registered as singleton, for example:
+Everything under `services/` is automatically registered as singleton.
+
+Example:
 
 ```js
 // services/db.js
@@ -28,6 +143,10 @@ module.exports = class SomeClass {
   }
 }
 ```
+
+### 'services'  namespace
+
+All service registrations are also aliased under the `services:` namespace. So for `services/db.js` we'll have 2 entries in the container - `db` and `services:db`
 
 ## Available framework registrations
 

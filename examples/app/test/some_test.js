@@ -1,5 +1,3 @@
-const bluebird = require('bluebird')
-
 describe('Hello', function() {
   it('works with async', async function() {
     expect(2).to.equal(2)
@@ -7,13 +5,13 @@ describe('Hello', function() {
 
   it('works with promises', async function() {
     let start = Date.now()
-    await bluebird.delay(100)
+    await Promise.delay(100)
     expect(Date.now() - start).to.be.gte(99)
   })
 
   it('works with generators', function*() {
     let start = Date.now()
-    yield bluebird.delay(100)
+    yield Promise.delay(100)
     expect(Date.now() - start).to.be.gte(99)
   })
 

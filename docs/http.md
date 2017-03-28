@@ -56,5 +56,7 @@ only `GET /orders/:id` registered
 
 ## Controllers
 
+**Important! DO NOT STORE REQUEST STATE IN CONTROLLER INSTANCE** Controllers are singletons. Only one instance of the controller is created and it's method is used in the route.
+
 Controllers should be placed in `/controllers` directory and have `_controller`
 suffix.
