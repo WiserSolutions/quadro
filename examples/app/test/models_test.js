@@ -6,7 +6,7 @@ describe('Models', function() {
   })
 
   it('registers models in Q.Models namespace', function() {
-    expect(Q.Models.userPermission).to.equal(require('../models/user_permission'))
+    expect(Q.Models.UserPermission).to.equal(require('../models/user_permission'))
   })
 
   it('registers Q.Models as `models` dependency', function() {
