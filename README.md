@@ -2,6 +2,7 @@
 
 [![Code Climate](https://codeclimate.com/github/WisePricer/quadro/badges/gpa.svg)](https://codeclimate.com/github/WisePricer/quadro)
 [![CircleCI](https://circleci.com/gh/WisePricer/quadro.svg?style=shield)](https://circleci.com/gh/WisePricer/quadro)
+[![bitHound Dependencies](https://www.bithound.io/github/WisePricer/quadro/badges/dependencies.svg)](https://www.bithound.io/github/WisePricer/quadro/master/dependencies/npm)
 
 TOC:
 

@@ -1,3 +1,5 @@
+/* eslint no-unused-expressions: 0 */
+
 describe('config', function() {
   it('loads distinct configs', function() {
     expect(Q.config.yaml.key).to.eql('testValue')
@@ -10,6 +12,10 @@ describe('config', function() {
 
     it('deep merges configs', function() {
       expect(Q.config.get('yaml.nested.globalKey')).to.eql('globalVal')
+    })
+
+    it('ignores local config in test mode', function() {
+      expect(Q.config.get('yaml.nested.localKey')).to.be.undefined
     })
   })
 

@@ -40,6 +40,9 @@ Quadro will merge the configuration in the following order (in priority order):
 
 Configuration from `config/local` will override (via deep merge) configuration from `config/NODE_ENV`, which in turn will override configuration from `config/`.
 
+**NOTE** Local configuration (from `config/local/`) is not evaluated in test mode!
+The reason for this is that tests should be consistent across all environments.
+
 ### Excluding `local` configuration from version control
 
 It is highly recommended that any config values that are tweaked during debugging/development
