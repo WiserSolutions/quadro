@@ -1,4 +1,4 @@
-const request = requirep('request-promise')
+const request = require('request-promise')
 module.exports = function() {
   return request
 }
