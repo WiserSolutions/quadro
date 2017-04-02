@@ -19,6 +19,32 @@ describe('config', function() {
     })
   })
 
+  it('declares UnknownConfigProviderError', function() {
+    expect(Q.Errors.UnknownConfigProviderError).to.be.ok
+  })
+
+  describe('set', function() {
+    it('fails for file source', async function() {
+      await expect(Q.config.set('some.key', 5)).to.be.eventually
+        .rejectedWith(Q.Errors.UnknownConfigProviderError, 'Unknown configuration provider')
+    })
+
+    it('fails for read only provider', async function() {
+      Q.config.registerConfigRoot('some', {
+        get() {}
+      })
+      await expect(Q.config.set('some.key', 5)).to.be.eventually
+        .rejectedWith(Q.Errors.ReadOnlyPropertyError, 'Unable to set')
+    })
+
+    it('calls config provider `set`', async function() {
+      let provider = { set: this.sinon.spy() }
+      Q.config.registerConfigRoot('some', provider)
+      await Q.config.set('some.key', 5)
+      expect(provider.set).to.be.calledWith('key', 5)
+    })
+  })
+
   describe('get', function() {
     it('returns default if config value does not exist', function() {
       expect(Q.config.get('missing.key', 5)).to.eql(5)
@@ -59,6 +85,13 @@ describe('config', function() {
 
   describe('providers', function() {
     describe('registerConfigRoot', async function() {
+      it('supports .get function', async function() {
+        let provider = { get: this.sinon.spy() }
+        Q.config.registerConfigRoot('currencies', provider)
+        Q.config.get('currencies.uk')
+        expect(provider.get).to.have.been.calledWith('uk')
+      })
+
       it('adds config namespace', function() {
         Q.config.registerConfigRoot('currencies', (key) => key.toUpperCase())
         expect(Q.config.get('currencies.uk')).to.eql('UK')
