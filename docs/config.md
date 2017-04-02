@@ -76,3 +76,21 @@ Q.config.registerConfigRoot('upcase', customProvider)
 
 Q.config.get('upcase.anyKey') // => ANYKEY
 ```
+
+Read/write configuration providers:
+
+```js
+let settings = {}
+let settingsProvider = {
+  get: function(key) { return settings[key] }
+  set: function(key, value) { settings[key] = value }
+}
+Q.config.registerConfigRoot('settings', settingsProvider)
+
+// Then you can set settings
+Q.config.set('settings.someThreshold', 5)
+```
+
+**NOTE** You can not set config values on the default config provider as they
+are stored in files and setting them might be misleading when there are multiple machines
+behind a load balancer.
