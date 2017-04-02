@@ -21,6 +21,7 @@
     "bunyan-logstash-tcp": "^0.3.5",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
+    "chai-subset": "^1.5.0",
     "co": "^4.6.0",
     "co-mocha": "^1.2.0",
     "dot-object": "^1.5.4",
