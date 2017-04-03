@@ -3,3 +3,6 @@ http:
   port: 3000
 aws:
   region: us-east-5
+  dynamodb:
+    local: true
+    port: 4567

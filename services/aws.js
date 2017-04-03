@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk')
+const container = Q.container
 
 function createSDK(config) {
   // http://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html
@@ -14,9 +15,24 @@ function createSDK(config) {
   return AWS
 }
 
+function registerDynamoDB() {
+  let options = {}
+  let { port, local } = Q.config.get('quadro.aws.dynamodb', {})
+  if (local) {
+    require('local-dynamo').launch(null, port)
+    options.endpoint = `http://localhost:${port}`
+  }
+
+  Q.container.registerSingleton('dynamodb', async function(aws) {
+    return new aws.DynamoDB(options)
+  })
+}
+
 // Expose an SDK factory for testing
-let app = Q.app
-let container = Q.container
-if (app.env === 'test') container.register('aws-factory', createSDK)
+if (Q.app.env === 'test') {
+  container.register('aws-factory', createSDK)
+}
+
+registerDynamoDB()
 
 module.exports = createSDK
