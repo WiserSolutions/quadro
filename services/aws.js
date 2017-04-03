@@ -16,14 +16,14 @@ function createSDK(config) {
 }
 
 function registerDynamoDB() {
-  let options = {}
-  let { port, local } = Q.config.get('quadro.aws.dynamodb', {})
-  if (local) {
-    require('local-dynamo').launch(null, port)
-    options.endpoint = `http://localhost:${port}`
-  }
-
   Q.container.registerSingleton('dynamodb', async function(aws) {
+    let options = {}
+    let { port, local } = Q.config.get('quadro.aws.dynamodb', {})
+    if (local) {
+      require('local-dynamo').launch(null, port)
+      options.endpoint = `http://localhost:${port}`
+    }
+
     return new aws.DynamoDB(options)
   })
 }
