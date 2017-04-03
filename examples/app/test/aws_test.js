@@ -1,4 +1,6 @@
 describe('AWS SDK', function() {
+  if (process.env.CIRCLECI) return
+
   describe('DynamoDB', function() {
     it('uses local dynamodb', async function() {
       let dynamodb = await Q.container.getAsync('dynamodb')
@@ -24,8 +26,6 @@ describe('AWS SDK', function() {
       }).promise()
     })
   })
-
-  if (process.env.CIRCLECI) return
 
   beforeEach(function() {
     QT.stubConfig('quadro.aws.region', 'us-west-2')
