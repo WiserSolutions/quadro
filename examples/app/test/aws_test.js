@@ -1,6 +1,32 @@
 describe('AWS SDK', function() {
   if (process.env.CIRCLECI) return
 
+  describe('DynamoDB', function() {
+    it('uses local dynamodb', async function() {
+      let dynamodb = await Q.container.getAsync('dynamodb')
+      expect(dynamodb.endpoint.hostname).to.eql('localhost')
+      expect(dynamodb.endpoint.port).to.eql(4567)
+    })
+
+    it('can perform dynamodb operations', async function() {
+      const TABLE_NAME = 'test-tbl'
+      let dynamodb = await Q.container.getAsync('dynamodb')
+      let tables = await dynamodb.listTables({}).promise()
+      if (tables.TableNames.includes(TABLE_NAME)) {
+        await dynamodb.deleteTable({ TableName: TABLE_NAME }).promise()
+      }
+      await dynamodb.createTable({
+        TableName: TABLE_NAME,
+        AttributeDefinitions: [{ AttributeName: 'key', AttributeType: 'S' }],
+        KeySchema: [{ AttributeName: 'key', KeyType: 'HASH' }],
+        ProvisionedThroughput: {
+          ReadCapacityUnits: 10,
+          WriteCapacityUnits: 10
+        }
+      }).promise()
+    })
+  })
+
   beforeEach(function() {
     QT.stubConfig('quadro.aws.region', 'us-west-2')
   })
