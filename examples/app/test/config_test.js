@@ -110,4 +110,16 @@ describe('config', function() {
       })
     })
   })
+
+  describe('DynamoDBConfigProvider', function() {
+    beforeEach(async function() {
+      let provider = await Q.container.getAsync('dynamodbConfigProvider')
+      Q.config.registerConfigRoot('currencies', await provider('dynamodb-config-provider-test'))
+    })
+
+    it('can write value', async function() {
+      await Q.config.set('currencies.usd', 123)
+      expect(await Q.config.get('currencies.usd')).to.equal('123')
+    })
+  })
 })
