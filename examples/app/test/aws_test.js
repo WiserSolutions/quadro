@@ -1,6 +1,4 @@
 describe('AWS SDK', function() {
-  if (process.env.CIRCLECI) return
-
   describe('DynamoDB', function() {
     it('uses local dynamodb', async function() {
       let dynamodb = await Q.container.getAsync('dynamodb')
@@ -33,15 +31,17 @@ describe('AWS SDK', function() {
 
   async function getStacks(aws) {
     let cfn = new aws.CloudFormation()
-    return await cfn.describeStacks().promise()
+    return await cfn.listStacks().promise()
   }
 
   describe('profile credentials', function() {
-    it('uses configured profile', async function() {
-      QT.stubConfig('quadro.aws.profile', 'quadro-test')
-      let aws = await Q.container.getAsync('aws-factory')
-      await expect(getStacks(aws)).to.be.rejectedWith('Missing credentials')
-    })
+    if (!process.env.CIRCLECI) {
+      it('uses configured profile', async function() {
+        QT.stubConfig('quadro.aws.profile', 'quadro-test')
+        let aws = await Q.container.getAsync('aws-factory')
+        await expect(getStacks(aws)).to.be.rejectedWith('Missing credentials')
+      })
+    }
 
     it('uses configured region', async function() {
       QT.stubConfig('quadro.aws.region', 'us-north-middle-128')

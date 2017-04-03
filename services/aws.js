@@ -3,8 +3,10 @@ const container = Q.container
 
 function createSDK(config) {
   // http://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html
-  let profile = process.env.AWS_PROFILE || config.get('quadro.aws.profile') || 'default'
-  AWS.config.credentials = new AWS.SharedIniFileCredentials({ profile })
+  if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+    let profile = process.env.AWS_PROFILE || config.get('quadro.aws.profile', 'default')
+    AWS.config.credentials = new AWS.SharedIniFileCredentials({ profile })
+  }
 
   // https://aws.amazon.com/blogs/developer/support-for-promises-in-the-sdk/
   AWS.config.setPromisesDependency(Promise)
