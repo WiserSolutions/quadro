@@ -7,6 +7,18 @@ You should place your controllers in `/controllers` and route definitions in
 
 ## Routes
 
+Quadro uses [koa-router](https://github.com/alexmingoia/koa-router). You can
+register any route as your normally do with koa-router:
+
+```js
+// routes/custom_routes.js
+module.exports = function(router) {
+  router.post('/hello', async function(ctx) {
+    ctx.body = 'yep!'
+  })
+}
+```
+
 ### Resources
 
 You register a resource with:
