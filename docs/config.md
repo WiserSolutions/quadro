@@ -94,3 +94,32 @@ Q.config.set('settings.someThreshold', 5)
 **NOTE** You can not set config values on the default config provider as they
 are stored in files and setting them might be misleading when there are multiple machines
 behind a load balancer.
+
+
+## Configuration REST API
+
+Quadro automatically exposes REST API to set and get configuration.
+
+### Get configuration
+Use the following to get a value for `some.key`:
+
+```http
+GET /config/some.key
+```
+
+Returns `200` with body:
+
+```json
+{ "value": 123 }
+```
+
+### Set configuration
+
+```http
+PUT /config/some.key
+Content-Type: application/json
+
+{ "value": 123 }
+```
+
+Returns `204` without content
