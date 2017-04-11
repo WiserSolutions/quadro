@@ -112,14 +112,33 @@ describe('config', function() {
   })
 
   describe('DynamoDBConfigProvider', function() {
+    let provider
     beforeEach(async function() {
-      let provider = await Q.container.getAsync('dynamodbConfigProvider')
+      provider = await Q.container.getAsync('dynamodbConfigProvider')
       Q.config.registerConfigRoot('currencies', await provider('dynamodb-config-provider-test'))
     })
 
     it('can write value', async function() {
       await Q.config.set('currencies.usd', 123)
       expect(await Q.config.get('currencies.usd')).to.equal('123')
+    })
+  })
+
+  describe('caching', function() {
+    const provider = { get(s) { return s.toUpperCase() } }
+    beforeEach(async function() {
+      let cache = await Q.container.getAsync('cache')
+      await cache.clear()
+      await Q.config.registerConfigRoot('currencies', provider, {
+        cache: { ttl: 30 }
+      })
+    })
+
+    it('caches config value', async function() {
+      this.sinon.spy(provider, 'get')
+      await Q.config.get('currencies.cache_test')
+      await Q.config.get('currencies.cache_test')
+      expect(provider.get).to.have.been.calledOnce
     })
   })
 })
