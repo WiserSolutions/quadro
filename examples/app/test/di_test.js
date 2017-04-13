@@ -101,7 +101,7 @@ describe('di', function() {
     it('supports async initialize', async function() {
       container.register('a', class {
         async initialize() {
-          return await Promise.delay(50).then(() => this.foo = 'bar')
+          return Promise.delay(50).then(() => this.foo = 'bar')
         }
       })
       let svc = await container.getAsync('a')
