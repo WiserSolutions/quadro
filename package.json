@@ -1,11 +1,12 @@
 {
   "name": "quadro",
-  "version": "0.5.12",
+  "version": "0.5.13",
   "keywords": [
     "framework",
     "quadro",
     "node"
   ],
+  "license": "MIT",
   "engines": {
     "node": ">= 7.6.0"
   },
