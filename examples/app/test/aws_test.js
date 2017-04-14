@@ -31,7 +31,7 @@ describe('AWS SDK', function() {
 
   async function getStacks(aws) {
     let cfn = new aws.CloudFormation()
-    return await cfn.listStacks().promise()
+    return cfn.listStacks().promise()
   }
 
   describe('profile credentials', function() {

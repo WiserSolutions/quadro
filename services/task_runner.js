@@ -23,8 +23,7 @@ module.exports = class {
     let file = this.tasks[name]
     if (!file) {
       this.log.error({ taskName: name }, 'Unknown task')
-      process.exit(127)
-      return
+      return process.exit(127)
     }
 
     let taskModule = require(file)
