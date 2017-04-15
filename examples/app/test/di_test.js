@@ -1,3 +1,4 @@
+/* eslint no-unused-expressions: 0 */
 const Container = require('../../../lib/di/container')
 
 describe('di', function() {
@@ -131,6 +132,27 @@ describe('di', function() {
   describe('get', function() {
     it('throws error if `name` can not be found', function() {
       expect(() => container.get('a')).to.throw(Error, "'a' can not be resolved")
+    })
+
+    it('does not throw if service not registered, but doNotThrow is true', function() {
+      expect(container.get('missing_dep', { doNotThrow: true })).to.be.null
+    })
+  })
+
+  describe('try', function() {
+    it('returns dependency', function() {
+      container.register('a', { a: 1 })
+      expect(container.try('a')).to.eql({ a: 1 })
+    })
+
+    it('returns null if dependency not registered', function() {
+      expect(container.try('missing_dep')).to.be.null
+    })
+
+    describe('async', function() {
+      it('returns null if dependency not registered', async function() {
+        expect(await container.tryAsync('missing_dep')).to.be.null
+      })
     })
   })
 
