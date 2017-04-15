@@ -78,6 +78,11 @@ let log = Q.container.get('log')
 let redis = await Q.container.getAsync('redis')
 ```
 
+#### container.try[Async] (name)
+
+Works like `container.get[Async]`, but returns null if the dependency is not
+registered (in contrast with `.get[Async]` which will throw an exception)
+
 #### container.create (aliased as container.run(obj))
 
 Runs a function or creates a class, while resolving its dependencies.
