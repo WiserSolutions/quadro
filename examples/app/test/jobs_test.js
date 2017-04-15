@@ -13,17 +13,6 @@ describe('Jobs', function() {
     })
     afterEach(function() { this.clock.restore() })
 
-    it('something', async function() {
-      let counter = 0
-      function run() {
-        Promise.delay(100).then(() => counter++).then(() => run())
-      }
-      run()
-      this.clock.tick(8000)
-      Q.log.info(counter)
-      expect(counter).to.eql(80)
-    })
-
     it('runs every @interval', async function() {
       let spy = this.sinon.spy()
       let j = class { run() { spy() } }
