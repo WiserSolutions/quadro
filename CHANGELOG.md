@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.17
+
+- Implemented NotImplementedError
+- Error name is now shown in logs `#110`
+- Application bootstrap stops on initializer failure `#109`
+
 ## 0.5.16
 
 - Added container.try[Async] methods
