@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.5.18
+## 0.6.0
 
 - Implemented ad-hoc dependencies in DI container
 
