@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.18
+
+- Implemented ad-hoc dependencies in DI container
+
 ## 0.5.17
 
 - Implemented NotImplementedError

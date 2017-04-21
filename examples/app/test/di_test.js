@@ -201,6 +201,20 @@ describe('di', function() {
       container.create(function() { called = true })
       expect(called).to.eql(true)
     })
+
+    describe('ad-hoc dependencies', function() {
+      it('injects ad-hoc dependencies', function() {
+        function Foo(value) { this.calc = function() { return value * value } }
+        let foo = container.create(Foo, { args: { value: 3 } })
+        expect(foo.calc()).to.eql(9)
+      })
+
+      it('overrides registered services with ad-hocs', function() {
+        container.register('a', 1)
+        function f(a) { return a * a }
+        expect(container.run(f, { args: { a: 3 } })).to.eql(9)
+      })
+    })
   })
 
   describe('run', function() {
