@@ -83,7 +83,9 @@ let redis = await Q.container.getAsync('redis')
 Works like `container.get[Async]`, but returns null if the dependency is not
 registered (in contrast with `.get[Async]` which will throw an exception)
 
-#### container.create (aliased as container.run(obj))
+#### container.create(obj, opts)
+
+**Alias:** container.run
 
 Runs a function or creates a class, while resolving its dependencies.
 Use it when you need to run a function, instantiate a class instance that is not registered.
@@ -114,6 +116,18 @@ async function generateReport(stats) {
 // Will run generateReport and pass the `stats` dependency to it
 await Q.container.run(generateReport)
 ```
+
+```js
+// Using `opts.args` for ad-hoc dependencies
+
+function square(value) { value * value }
+Q.container.run(square)
+// Throws `value` can not be resolved
+
+Q.container.run(square, { args: { value: 3 } })
+// Returns 9
+```
+
 
 #### container.find(pattern)
 
