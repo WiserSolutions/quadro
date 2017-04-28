@@ -1,12 +1,20 @@
 describe('healthcheck', function() {
   let httpTest
   beforeEach(function() {
-    httpTest = QT.httpTest.get('/healthcheck')
+    httpTest = QT.httpTest.get('/alive')
   })
 
-  it('responds to /healthcheck', async function() {
+  it('has /healthcheck as the default endpoint', async function() {
+    QT.stubConfig('quadro.http.healthcheck.endpoint', undefined)
+    Q.container.run(require('../../../routes/healthcheck'))
     await QT.httpTest
       .get('/healthcheck')
+      .expect(200)
+  })
+
+  it('responds to /alive', async function() {
+    await QT.httpTest
+      .get('/alive')
       .expect(200)
   })
 
