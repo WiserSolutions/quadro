@@ -1,5 +1,7 @@
 ---
 http:
   port: 3000
+  healthcheck:
+    endpoint: '/alive'
 aws:
   region: us-east-5
