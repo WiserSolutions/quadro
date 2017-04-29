@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.1
+
+- Services: Implemented nested services
+- DI: Implemented healthcheck endpoint customization
+- DI: Implemented namespaced dependencies resolving
+
 ## 0.6.0
 
 - Implemented ad-hoc dependencies in DI container
