@@ -276,5 +276,11 @@ describe('di', function() {
       expect(nested.find(/some/)).to.eql(['something:b', 'something:a'], 'find should support regex')
       expect(nested.find('some')).to.eql(['something:b', 'something:a'], 'find should support strings')
     })
+
+    it('being resolved by default value', function() {
+      container.register('something:a', 1)
+      let result = container.run((a = 'something:a') => a + 2)
+      expect(result).to.eql(3)
+    })
   })
 })

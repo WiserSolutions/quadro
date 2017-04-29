@@ -22,5 +22,12 @@ describe('Services', function() {
       Q.container.get('services:testSvc').increment()
       expect(Q.container.get('services:testSvc').counter).to.eql(1)
     })
+
+    describe('Nested', function() {
+      it('registers nested:svc', function() {
+        let svc = Q.container.get('nested:svc')
+        expect(svc.foo).to.eql('bar')
+      })
+    })
   })
 })
