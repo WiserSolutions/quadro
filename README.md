@@ -12,9 +12,9 @@ TOC:
 	- [Requirements](#requirements)
 	- [Installation](#installation)
 	- [Configuration manager](#configuration-manager)
+		- [Environment-specific configuration](#environment-specific-configuration)
+			- [Local configuration:](#local-configuration)
 	- [Tests runner](#tests-runner)
-	- [HTTP Server](#http-server)
-		- [HTTP port](#http-port)
 
 <!-- /TOC -->
 
@@ -121,34 +121,3 @@ To make tests re-run on file changes use:
 ```sh
 node app.js test --watch
 ```
-
-## HTTP Server
-
-### HTTP port
-
-Use config value: `quadro.http.port`
-Default: `3000`
-
-
-## Logger
-
-Use app.log.trace|debug|info|warn|error
-
-Set logging level through config `quadro.logger.level`. Default is `info`.
-
-# Application instance
-
-## Key attributes
-
-- `.log` - Logger
-- `.env` - Runtime environment (dev|test|production), comes from NODE_ENV
-- `.name` - Application name. Taken from `package.json`
-- `.config` - Application configuration manager
-
-## Additional attributes
-
-- `.cliParams` - Parsed CLI parameters
-- `.appDir` - Application
-- `.quadroDir` - Location of quadro package
-- `.http` - HTTP Server reference
-- `.koaApp` - KOA Application
