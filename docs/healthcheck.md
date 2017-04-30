@@ -27,3 +27,15 @@ module.exports = class {
   }
 }
 ```
+
+## Custom endpoint
+
+You can override healthcheck endpoint with `quadro.http.healthcheck.endpoint`:
+
+```yaml
+# quadro.yml
+quadro:
+  http:
+    healthcheck:
+      endpoint: '/alive'
+```

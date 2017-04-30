@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.2
+
+- Development log (shorter, prettier)
+- Profiler (Q.profiler)
+- Updated docs for namespace dependencies and healthcheck customization
+
 ## 0.6.1
 
 - Services: Implemented nested services

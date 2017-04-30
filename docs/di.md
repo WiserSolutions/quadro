@@ -48,6 +48,21 @@ Q.container.get('foo') instanceof foo // false
 Q.container.get('foo') === 12 // false
 ```
 
+## Namespaces
+
+You can register dependencies under custom namespaces.
+
+Example:
+
+```js
+Q.container.register('myNamespace:svc', function() {})
+
+// You can request namespaced dependencies with `default parameter` notation:
+Q.container.run(function(svc = 'myNamespace:svc') {
+  let result = svc()  // Use the dependency
+})
+```
+
 ## API
 
 ### container.register(name, dependency, options)
