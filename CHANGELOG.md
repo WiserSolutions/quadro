@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.3
+
+- bunyan QuadroStream (dev log) bugfixes
+
 ## 0.6.2
 
 - Development log (shorter, prettier)
