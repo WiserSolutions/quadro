@@ -22,3 +22,10 @@ add following in {environment}/quadro.yaml
 initializers:
   runtime: false
 ```
+
+Another example can be to skip all the jobs during test phase. To do that add
+following in test/quadro.yaml
+```
+initializers:
+  jobs: false
+```
