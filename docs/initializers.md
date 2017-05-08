@@ -15,3 +15,10 @@ module.exports = class {
   // ...
 }
 ```
+
+To skip a initializer to be initialized in a specific environment then
+add following in {environment}/quadro.yaml
+```
+initializers:
+  runtime: false
+```
