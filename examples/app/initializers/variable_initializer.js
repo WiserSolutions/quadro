@@ -1,3 +1,3 @@
-module.exports = function(log, app, container) {
-  container.register('testVariable', 'test')
+module.exports = function() {
+  global.enabledInitializerVar = true
 }

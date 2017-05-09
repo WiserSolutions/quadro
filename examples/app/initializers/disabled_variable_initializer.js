@@ -1,3 +1,3 @@
-module.exports = function(log, app, container) {
-  container.register('disabledTestVariable', 'testDisabled')
+module.exports = function() {
+  global.disabledInitializerVar = true
 }
