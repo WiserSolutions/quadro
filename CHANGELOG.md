@@ -1,8 +1,7 @@
 # Changelog
-## 0.6.5
-- removed co-mocha dependency
 
 ## 0.6.4
+- removed co-mocha dependency
 - initializers Ability to skip initializers during test phase
 
 ## 0.6.3
