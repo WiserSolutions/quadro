@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.7
+
+- Added support for `await` in REPL
+
 ## 0.6.6
 
 - Implemented REPL (#129)

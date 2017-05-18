@@ -1,6 +1,6 @@
 {
   "name": "quadro",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "keywords": [
     "framework",
     "quadro",
@@ -16,6 +16,7 @@
     "url": "https://github.com/WisePricer/quadro.git"
   },
   "dependencies": {
+    "await-outside": "^2.1.2",
     "aws-sdk": "^2.41.0",
     "bluebird": "^3.5.0",
     "bunyan": "^1.8.10",
