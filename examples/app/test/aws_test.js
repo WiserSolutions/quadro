@@ -7,6 +7,8 @@ describe('AWS SDK', function() {
     })
 
     it('can perform dynamodb operations', async function() {
+      this.timeout(5000)
+
       const TABLE_NAME = 'test-tbl'
       let dynamodb = await Q.container.getAsync('dynamodb')
       let tables = await dynamodb.listTables({}).promise()

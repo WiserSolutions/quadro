@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.6
+
+- Implemented REPL (#129)
+- Make sure initializers finished running before continuing application execution
+- Write EventEmitter doc (#133)
+- When a profiler-wrapped function throws an error - the error should bubble up
+
 ## 0.6.5
 
 - Implemented async EventEmitter
