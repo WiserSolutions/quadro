@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.5
+
+- Implemented async EventEmitter
+- Unhandled rejections and general application errors will use `Q.log` if available
+
 ## 0.6.4
 
 - removed co-mocha dependency
