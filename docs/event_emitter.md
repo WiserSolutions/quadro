@@ -25,8 +25,8 @@ console.log('hello')
 Or you can wait until all handlers (including async) finished:
 
 ```js
-test.emit('ev', 123)
-console.log('hello')
+await test.emit('ev', 123)          // (in an async function)
+console.log('hello')  
 // Will output:
 // sync handler finished 123
 // async handler finished 123
