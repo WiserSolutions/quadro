@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.8
+
+- Moved tests to respective directories
+- Added `inflector` service
+- Upgraded chai to v4.0
+- Upgraded bunyan-logstash-tcp to v1.0
+
 ## 0.6.7
 
 - Added support for `await` in REPL

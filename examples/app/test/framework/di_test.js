@@ -1,5 +1,5 @@
 /* eslint no-unused-expressions: 0 */
-const Container = require('../../../lib/di/container')
+const Container = require('../../../../lib/di/container')
 
 describe('di', function() {
   let container
