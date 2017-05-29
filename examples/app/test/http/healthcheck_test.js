@@ -6,7 +6,7 @@ describe('healthcheck', function() {
 
   it('has /healthcheck as the default endpoint', async function() {
     QT.stubConfig('quadro.http.healthcheck.endpoint', undefined)
-    Q.container.run(require('../../../routes/healthcheck'))
+    Q.container.run(require('../../../../routes/healthcheck'))
     await QT.httpTest
       .get('/healthcheck')
       .expect(200)
