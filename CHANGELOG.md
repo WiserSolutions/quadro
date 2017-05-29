@@ -2,7 +2,7 @@
 
 ## 0.6.8
 
-- Moved tests to respective directories
+- Moved http, framework and services tests to respective directories
 - Added `inflector` service
 - Upgraded chai to v4.0
 - Upgraded bunyan-logstash-tcp to v1.0
