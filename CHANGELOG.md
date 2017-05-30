@@ -6,6 +6,7 @@
 - Added `inflector` service
 - Upgraded chai to v4.0
 - Upgraded bunyan-logstash-tcp to v1.0
+- Implementation of Model base class with `Q.Model` helper
 
 ## 0.6.7
 
