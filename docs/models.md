@@ -19,3 +19,28 @@ model.exports = function(models) {
   models.UserPermission.find //...
 }
 ```
+
+## Model API
+
+### model.build(attrs)
+
+Instantiates a model and populates the attributes from the provided `attrs` object.
+
+*Note:* The model is considered *dirty* after the `build` method invocation
+
+### model.create(attrs)
+
+Like `model.build`, but also persists the record.
+
+*Note:* In contrast with `.build` method, `.create` returns a non-dirty model.
+
+### model.save()
+
+Persists the changed fields of the model. The model is upserted into the db -
+if the record has no id - it is inserted, otherwise - updated.
+
+### model.destroy()
+
+Removes the model from the DB
+
+## Repositories

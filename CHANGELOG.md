@@ -7,6 +7,7 @@
 - Upgraded chai to v4.0
 - Upgraded bunyan-logstash-tcp to v1.0
 - Implementation of Model base class with `Q.Model` helper
+- Implementation of Repository class
 
 ## 0.6.7
 
