@@ -112,6 +112,8 @@ describe('config', function() {
   })
 
   describe('DynamoDBConfigProvider', function() {
+    this.timeout(5000)
+
     let provider
     beforeEach(async function() {
       provider = await Q.container.getAsync('dynamodbConfigProvider')
