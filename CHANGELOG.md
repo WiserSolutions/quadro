@@ -8,6 +8,7 @@
 - Upgraded bunyan-logstash-tcp to v1.0
 - Implementation of Model base class with `Q.Model` helper
 - Implementation of Repository class
+- Increase timeout for DynamoDBConfigProvider test
 
 ## 0.6.7
 
