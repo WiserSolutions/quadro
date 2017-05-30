@@ -30,4 +30,27 @@ describe('Model Repository', function() {
       })
     })
   })
+
+  describe('find', function() {
+    beforeEach(function() {
+      testAdapter.find = this.sinon.stub().callsFake(async () => [
+        { id: 1, first_name: 'John' },
+        { id: 2, first_name: 'Jonny' }
+      ])
+    })
+
+    it('calls adapter `.find` method', async function() {
+      repo.find({ firstName: 'o*n' })
+      expect(testAdapter.find).to.be.calledWith('users', { first_name: 'o*n' })
+    })
+
+    it('returns records returned by adapter `.find`', async function() {
+      let result = await repo.find({ firstName: 'o*n' })
+      expect(result.length).to.equal(2)
+      expect(result).to.eql([
+        new User({ id: 1, firstName: 'John' }),
+        new User({ id: 2, firstName: 'Jonny' })
+      ])
+    })
+  })
 })
