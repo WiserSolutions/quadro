@@ -20,6 +20,64 @@ model.exports = function(models) {
 }
 ```
 
+## ActiveRecord
+
+### Basics
+
+To define an AR model you use:
+
+```js
+// models/user.js
+module.exports = Q.Model('user', {
+  attributes: {
+    name: 'string',
+    type: 'admin'
+  }
+})
+```
+
+### Identity
+
+Each model is assumed to have an identity attribute called `id`. The backing
+field in the actual storage might vary (e.g. `_id` for mongo).
+
+
+### Adapters
+
+Support for different storage backends is implemented through adapters.
+
+### ActiveRecord API
+
+```js
+const User = Q.Model('user', {
+  attributes: {
+    firstName: 'string',          // Shortcut for { type: 'string' }
+    lastName: { type: 'string' }
+  }
+})
+
+let user = new User({ firstName: 'John' })
+
+// Save the model
+await user.save()
+// After `.save` the model will have it's id populated
+expect(user.id).to.be.ok
+
+// Access the attributes via:
+user.firstName = 'Johnny'
+user.lastName = 'Depp'
+user.save()
+```
+
+#### Raw attribute accessors:
+
+You can get/set attributes not specified within the `attributes` section:
+
+```js
+user._setAttr('hiddenAttribute', '123123123')
+user._getAttr('hiddenAttribute') // => '123123123'
+```
+
 ## Model API
 
 ### model.build(attrs)
@@ -36,11 +94,24 @@ Like `model.build`, but also persists the record.
 
 ### model.save()
 
-Persists the changed fields of the model. The model is upserted into the db -
-if the record has no id - it is inserted, otherwise - updated.
+Persists the changed fields of the model.
+
+The model is upserted into the db - if the record has no id - it is inserted,
+otherwise - updated.
+In both cases the id is set on the model after this call.
+
 
 ### model.destroy()
 
 Removes the model from the DB
 
-## Repositories
+### model.changes()
+
+Returns an object containing the changed attributes. Format:
+
+```js
+{
+  firstName: { current: 'Johnny', old: 'John' },
+  lastName: { current: 'Depp', old: 'Kennedy' },
+}
+```

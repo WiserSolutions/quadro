@@ -1,7 +1,12 @@
 /* eslint no-unused-expressions: 0 */
 
 describe('ActiveRecord', function() {
-  const User = Q.Model('user')
+  const User = Q.Model('user', {
+    attributes: {
+      firstName: 'string',
+      lastName: { type: 'string' }
+    }
+  })
   let collection
 
   beforeEach(async function() {
@@ -10,10 +15,28 @@ describe('ActiveRecord', function() {
     await User.deleteAll()
   })
 
+  describe('attribute accessors', function() {
+    it('supports attribute getters', function() {
+      let user = new User({ firstName: 'John' })
+      expect(user.firstName).to.equal('John')
+    })
+
+    it('supports attribute setters', function() {
+      let user = new User()
+      user.firstName = 'John'
+      expect(user._attrs.firstName, 'User should include the firstName attr').to.be.ok
+    })
+
+    it('generates an id attribute', async function() {
+      let user = await User.create()
+      expect(user.id, 'User should have an id').to.be.ok
+    })
+  })
+
   describe('create', function() {
     it('persists the record', async function() {
       let user = await User.create({ firstName: 'John' })
-      let record = await collection.findOne({ id: user.id })
+      let record = await collection.findOne({ _id: user.id })
       expect(record.first_name).to.eql('John')
     })
   })
