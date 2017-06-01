@@ -57,7 +57,7 @@
     "request-promise": "^4.2.0",
     "sinon": "^2.1.0",
     "sinon-chai": "^2.9.0",
-    "statsd-client": "^0.2.4",
+    "statsd-client": "^0.3.0",
     "supertest": "^3.0.0"
   },
   "scripts": {

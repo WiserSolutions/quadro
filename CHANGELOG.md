@@ -6,9 +6,13 @@
 - Added `inflector` service
 - Upgraded chai to v4.0
 - Upgraded bunyan-logstash-tcp to v1.0
+- Upgraded statsd-client to v0.3.0
 - Implementation of Model base class with `Q.Model` helper
 - Implementation of Repository class
 - Increase timeout for DynamoDBConfigProvider test
+- Implemented ActiveRecord API for models
+- Fixed circleci config to include mongo
+- Added mongo client service
 
 ## 0.6.7
 
