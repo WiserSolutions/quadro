@@ -25,7 +25,7 @@ describe('app', function() {
     })
 
     it('returns files from quadro package if `opts.dir` has `quadro`', async function() {
-      expect(await Q.app.glob('*.json', { dirs: ['quadro', 'app'] }))
+      expect(await Q.app.glob('*e.json', { dirs: ['quadro', 'app'] }))
         .to.eql([
           `${Q.app.quadroDir}/package.json`,
           `${Q.app.appDir}/package.json`
@@ -43,7 +43,7 @@ describe('app', function() {
 
   describe('glob with `verbose`', function() {
     it('returns detailed information about the files', async function() {
-      expect(await Q.app.glob('*.json', { dirs: ['quadro', 'app'], verbose: true }))
+      expect(await Q.app.glob('*e.json', { dirs: ['quadro', 'app'], verbose: true }))
         .to.eql([
           {
             relativePath: 'package.json',
