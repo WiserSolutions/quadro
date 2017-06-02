@@ -51,6 +51,21 @@ describe('ActiveRecord', function() {
     })
   })
 
+  describe('update', function() {
+    it('updates the record', async function() {
+      let document = { last_name: 'one' }
+      await collection.insertOne(document)
+      expect(document._id, 'inserted document id should be set').to.be.ok
+
+      let user = await User.get(document._id)
+      user.lastName = 'two'
+      await user.update()
+
+      let record = await collection.findOne({ _id: document._id })
+      expect(record.last_name).to.equal('two')
+    })
+  })
+
   describe('find', function() {
     it('returns records', async function() {
       let id1 = await createAndGetId({ last_name: 'Jefferson', type: 'student' })
