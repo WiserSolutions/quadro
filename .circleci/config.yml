@@ -11,7 +11,7 @@ jobs:
       - restore_cache:
           key: quadro-{{ checksum "package.json" }}
       - run: apt-get update && apt-get install -y openjdk-7-jre
-      - run: npm install && npm link .
+      - run: npm install -g nyc && npm install && npm link .
       - run: cd examples/app && npm install && npm link quadro
       - run: npm test
       - save_cache:

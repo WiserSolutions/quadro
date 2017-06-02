@@ -282,5 +282,11 @@ describe('di', function() {
       let result = container.run((a = 'something:a') => a + 2)
       expect(result).to.eql(3)
     })
+
+    it('throws if unable to figure out dependency name', function() {
+      expect(function() {
+        container.run(({ a } = { b }) => a + b)
+      }).to.throw('Unable to figure out dependency name')
+    })
   })
 })
