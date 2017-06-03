@@ -13,6 +13,8 @@
 - Implemented ActiveRecord API for models
 - Fixed circleci config to include mongo
 - Added mongo client service
+- Fixed DI issue when running `nyc` for coverage
+- Faster CircleCI tests - thanks to custom built base docker image
 
 ## 0.6.7
 
