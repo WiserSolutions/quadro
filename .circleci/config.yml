@@ -3,18 +3,18 @@ jobs:
   build:
     working_directory: /tmp/quadro
     docker:
-      - image: node:7.7.4
+      - image: shapigor/quadro
       - image: redis@sha256:54057dd7e125ca41afe526a877e8bd35ec2cdd33b9217e022ed37bdcf7d09673
       - image: mongo:3
     steps:
       - checkout
       - restore_cache:
-          key: quadro-{{ checksum "package.json" }}
-      - run: apt-get update && apt-get install -y openjdk-7-jre
-      - run: npm install -g nyc && npm install && npm link .
+          key: quadro-{{ checksum "package.json" }}-{{ checksum "examples/app/package.json" }}
+      - run: npm install && npm link .
       - run: cd examples/app && npm install && npm link quadro
       - run: npm test
       - save_cache:
-          key: quadro-{{ checksum "package.json" }}
+          key: quadro-{{ checksum "package.json" }}-{{ checksum "examples/app/package.json" }}
           paths:
-            - /tmp/quadro/node_modules
+            - node_modules
+            - examples/app/node_modules
