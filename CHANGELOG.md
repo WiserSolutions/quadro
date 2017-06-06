@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.9
+
+- Workaround the chai-as-promised w/chai-4.0 issue
+- Fix job crash on error
+
 ## 0.6.8
 
 - Moved http, framework and services tests to respective directories

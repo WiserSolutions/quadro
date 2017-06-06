@@ -3,6 +3,15 @@ describe('Hello', function() {
     expect(2).to.equal(2)
   })
 
+  describe('chai-as-promised', function() {
+    it('detects rejection', async function() {
+      let start = Date.now()
+      let promise = Promise.delay(100).throw('Error')
+      await expect(promise).to.be.rejectedWith('Error')
+      expect(Date.now() - start).to.be.gte(99)
+    })
+  })
+
   it('works with promises', async function() {
     let start = Date.now()
     await Promise.delay(100)
