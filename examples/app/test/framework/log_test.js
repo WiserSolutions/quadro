@@ -15,4 +15,22 @@ describe('Logger', function() {
       expect(spy).to.have.been.calledWith({ port: 2000, host: 'localhost' })
     })
   })
+
+  describe('logger', function() {
+    it('converts Maps to objects', function() {
+      let spy = this.sinon.stub(Q.log.logger, 'info').callsFake(() => null)
+      Q.log.info({ hello: new Map([[1, 2], [3, 4]]) })
+      expect(spy).to.have.been.calledWith(this.sinon.match.containSubset({
+        hello: { '1': 2, '3': 4 }
+      }))
+    })
+
+    it('converts Sets to arrays', function() {
+      let spy = this.sinon.stub(Q.log.logger, 'info').callsFake(() => null)
+      Q.log.info({ hello: new Set([1, 2, 3]) })
+      expect(spy).to.have.been.calledWith(this.sinon.match.containSubset({
+        hello: [1, 2, 3]
+      }))
+    })
+  })
 })

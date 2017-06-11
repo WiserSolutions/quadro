@@ -28,9 +28,4 @@ describe('Hello', function() {
   //   log.info('In this test you should see a failure, but the process should not crash')
   //   expect(2).to.equal(1)
   // })
-
-  it('supports sinon', function() {
-    this.sinon.stub(Date, 'now').callsFake(_ => 123)
-    expect(Date.now()).to.eql(123)
-  })
 })
