@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.10
+
+- `QuadroStream`: add support for sets and maps
+- `sinon.match.containSubset()` sinon matcher
+- Moved *sinon* tests to `test_framework_test.js`
+
 ## 0.6.9
 
 - Workaround the chai-as-promised w/chai-4.0 issue
