@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.12
+
+- Revert chai-as-promised to upstream version
+- Fix docker image to work with node 8
+- Upgrade dependencies
+
 ## 0.6.11
 
 - Add forever agent to service hub calls
