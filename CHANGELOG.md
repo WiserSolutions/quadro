@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.11
+
+- Add forever agent to service hub calls
+
 ## 0.6.10
 
 - `QuadroStream`: add support for sets and maps
