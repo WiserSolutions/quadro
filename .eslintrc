@@ -3,7 +3,7 @@
   "rules": {
     "generator-star-spacing": 0,
     "yield-star-spacing": [ "error", "after" ],
-    "space-before-function-paren": [ 2, "never" ],
+    "space-before-function-paren": [ 0, "never" ],
     "no-return-assign": 0,
     "radix": 0,
     "space-in-parens": 0,
