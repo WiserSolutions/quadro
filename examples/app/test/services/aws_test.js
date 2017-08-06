@@ -37,14 +37,6 @@ describe('AWS SDK', function() {
   }
 
   describe('profile credentials', function() {
-    if (!process.env.CIRCLECI) {
-      it('uses configured profile', async function() {
-        QT.stubConfig('quadro.aws.profile', 'quadro-test')
-        let aws = await Q.container.getAsync('aws-factory')
-        await expect(getStacks(aws)).to.be.rejectedWith('Missing credentials')
-      })
-    }
-
     it('uses configured region', async function() {
       QT.stubConfig('quadro.aws.region', 'us-north-middle-128')
       let aws = await Q.container.getAsync('aws-factory')
