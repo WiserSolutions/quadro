@@ -3,6 +3,8 @@
 ## 0.6.13
 
 - Fixed AR instance methods generation
+- Dependencies update
+- Removed custom AWS `quadro.aws.profile` configuration. Rely on standard AWS SDK credentials resolving
 
 ## 0.6.12
 
