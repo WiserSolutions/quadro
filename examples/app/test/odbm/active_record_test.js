@@ -64,6 +64,13 @@ describe('ActiveRecord', function() {
     })
   })
 
+  describe('save', function() {
+    it('saves the record', async function() {
+      let user = new User({ firstName: 'John' })
+      await user.save()
+    })
+  })
+
   async function createAndGetId(attrs) {
     let model = await User.create(attrs)
     return model._getAttr('id')

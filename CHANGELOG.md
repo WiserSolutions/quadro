@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.13
+
+- Fixed AR instance methods generation
+
 ## 0.6.12
 
 - Revert chai-as-promised to upstream version
