@@ -37,6 +37,14 @@ describe('Model Repository', function() {
     })
   })
 
+  describe('deleteBy', function() {
+    it('calls adater deleteBy method', async function() {
+      testAdapter.deleteBy = this.sinon.spy()
+      await repo.deleteBy({ id: 123 })
+      expect(testAdapter.deleteBy).to.be.calledWith('users', { id: 123 })
+    })
+  })
+
   describe('get', function() {
     it('calls `adapter.get`', async function() {
       testAdapter.get = this.sinon.stub()

@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.6.14
+- Add deleteBy for delete by query
+
 ## 0.6.13
 
 - Fixed AR instance methods generation
