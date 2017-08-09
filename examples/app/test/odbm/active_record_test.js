@@ -41,13 +41,30 @@ describe('ActiveRecord', function() {
     })
   })
 
-  describe.only('delete', function() {
+  describe('delete', function() {
     it('delete by query', async function() {
       await User.create({ firstName: 'John' })
       await User.create({ firstName: 'Paul' })
 
       await User.deleteBy({ firstName: 'John' })
       let count = await collection.count()
+      expect(count).to.eql(1)
+    })
+  })
+
+  describe('count', function() {
+    beforeEach(async function() {
+      await User.create({ firstName: 'John' })
+      await User.create({ firstName: 'Paul' })
+    })
+
+    it('count entire collection', async function() {
+      let count = await User.count()
+      expect(count).to.eql(2)
+    })
+
+    it('count by query', async function() {
+      let count = await User.count({ firstName: 'John' })
       expect(count).to.eql(1)
     })
   })

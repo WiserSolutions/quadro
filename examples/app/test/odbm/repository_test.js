@@ -83,4 +83,12 @@ describe('Model Repository', function() {
       ])
     })
   })
+
+  describe('count', function() {
+    it('calls adapter `.count` method', async function() {
+      testAdapter.count = this.sinon.spy()
+      await repo.count({ id: 123 })
+      expect(testAdapter.count).to.be.calledWith('users', { id: 123 })
+    })
+  })
 })
