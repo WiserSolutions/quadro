@@ -105,6 +105,11 @@ In both cases the id is set on the model after this call.
 
 Removes the model from the DB
 
+
+### model.deleteBy(query)
+Removes entities from the DB by given query
+
+
 ### model.changes()
 
 Returns an object containing the changed attributes. Format:
