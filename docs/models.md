@@ -116,13 +116,14 @@ Get the matched entities from the DB
 Get count of all entities matched to given query
 
 
-### model.deleteBy(query)
-Removes entities from the DB by given query
-
-
 ### model.changes()
 
 Returns an object containing the changed attributes. Format:
+
+### model.deleteAll(query)
+
+Remove from the DB by given query. If query not provided, will remove all entities.
+
 
 ```js
 {

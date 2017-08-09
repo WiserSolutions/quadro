@@ -1,7 +1,7 @@
 # Changelog
 
 ## 0.6.14
-- Add `deleteBy` for delete by query
+- Support query in `deleteAll`
 - Add `count` for count with/without query
 
 ## 0.6.13
