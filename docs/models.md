@@ -106,6 +106,16 @@ In both cases the id is set on the model after this call.
 Removes the model from the DB
 
 
+### model.find(query)
+
+Get the matched entities from the DB
+
+
+### model.count()
+
+Get count of all entities matched to given query
+
+
 ### model.deleteBy(query)
 Removes entities from the DB by given query
 
