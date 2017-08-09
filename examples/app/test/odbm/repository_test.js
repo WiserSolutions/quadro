@@ -35,13 +35,11 @@ describe('Model Repository', function() {
       await repo.delete(new User({ id: 123 }))
       expect(testAdapter.delete).to.be.calledWith('users', 123)
     })
-  })
 
-  describe('deleteBy', function() {
-    it('calls adater deleteBy method', async function() {
-      testAdapter.deleteBy = this.sinon.spy()
-      await repo.deleteBy({ id: 123 })
-      expect(testAdapter.deleteBy).to.be.calledWith('users', { id: 123 })
+    it('calls adapter deleteAll method', async function() {
+      testAdapter.deleteAll = this.sinon.spy()
+      await repo.deleteAll({ firstName: 'John' })
+      expect(testAdapter.deleteAll).to.be.calledWith('users', { first_name: 'John' })
     })
   })
 
