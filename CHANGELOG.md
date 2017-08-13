@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.15
+
+- Fixed service registration logging
+
 ## 0.6.14
 - Support query in `deleteAll`
 - Add `count` for count with/without query
