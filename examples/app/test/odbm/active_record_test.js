@@ -87,6 +87,15 @@ describe('ActiveRecord', function() {
     })
   })
 
+  describe('findOne', function() {
+    it('returns first record if query is provided', async function() {
+      let attrs = { last_name: 'Stewart' }
+      await collection.insertOne(attrs)
+      let user = await User.findOne({ lastName: 'Stewart' })
+      expect(user).to.eql(new User({ id: attrs._id, lastName: 'Stewart' }))
+    })
+  })
+
   describe('find', function() {
     it('returns records', async function() {
       let id1 = await createAndGetId({ last_name: 'Jefferson', type: 'student' })
@@ -97,6 +106,23 @@ describe('ActiveRecord', function() {
         new User({ lastName: 'Jefferson', type: 'student', id: id1 }),
         new User({ lastName: 'Richardson', type: 'student', id: id2 })
       ])
+    })
+  })
+
+  describe('findOrBuild', function() {
+    it('returns the model if exist', async function() {
+      let attrs = { last_name: 'Stewart' }
+      await collection.insertOne(attrs)
+
+      let user = await User.findOrBuild({ lastName: 'Stewart' })
+      expect(user).to.eql(new User({ id: attrs._id, lastName: 'Stewart' }))
+    })
+
+    it('builds the model if does not exist', async function() {
+      let user = await User.findOrBuild({ lastName: 'Stewart' })
+      expect(user).to.be.ok
+      expect(user.lastName).to.eql('Stewart')
+      expect(user.id).to.not.be.ok
     })
   })
 

@@ -6,6 +6,7 @@
 - Upgraded dependencies
 - Support config overrides from environment variables
 - Pubsub-pull: retrySchedule: set retries frequency via config
+- ODBM: added `findOne` and `findOrBuild` functions
 
 ## 0.6.16
 
