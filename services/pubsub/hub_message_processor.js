@@ -48,12 +48,13 @@ module.exports = class HubMessageProcessor {
     let messageContext = new HubMessageContext(parsedMessage)
     // Get the message handler based on type
     let handler = this.handlers[parsedMessage.messageType]
-    // TODO what to do when there is no handler
     if (!handler) {
       throw new Q.Errors.HubMessageHandlerNotFoundError({messageType: parsedMessage.messageType})
     }
     try {
+      let timer = new Date()
       await handler.handle(messageContext)
+      this.hubStats.timing(parsedMessage.messageType, 'response_time', timer)
       // reschdule message if it failed
       if (messageContext.isFailed()) await this.rescheduleMessage(messageContext)
       else this.hubStats.increment(parsedMessage.messageType, 'succeeded')
@@ -71,7 +72,7 @@ module.exports = class HubMessageProcessor {
   async rescheduleMessage(messageContext) {
     // Get the message from context
     let message = messageContext.getMessage()
-    this.hubStats.increment(message.messageType, 'failed')
+    this.hubStats.increment(message.messageType, 'failed', messageContext.getStatusCode())
 
     // Set the error to message
     if (messageContext.getStatusCode()) {
@@ -85,30 +86,34 @@ module.exports = class HubMessageProcessor {
     // Set the attempt made
     message.attemptsMade = message.attemptsMade ? message.attemptsMade + 1 : 1
     // If attempt made are more than max attempts
-    if (message.attemptsMade >= message.maxAttempts) await this.sendToDeadLetter(message)
+    if (message.attemptsMade >= message.maxAttempts) await this.sendToDeadLetter(messageContext)
     // Else put in the schedule collection
-    else await this.scheduleMessage(message)
+    else await this.scheduleMessage(messageContext)
   }
 
   /**
    * This method put the message in dead letter collection
-   * @param  {Object}  message message object
+   * @param  {Object}  messageContext message context that wraps message to be
+   *                                  send to dead letter
    * @return {Promise}
    */
-  async sendToDeadLetter(message) {
+  async sendToDeadLetter(messageContext) {
+    let message = messageContext.getMessage()
     message.killedAt = Date.now()
     await this.deadLetterCollection.insertOne(message)
-    this.hubStats.increment(message.messageType, 'killed')
+    this.hubStats.increment(message.messageType, 'killed', messageContext.getStatusCode())
   }
 
   /**
    * This method updates the due time of message based on number of retries and
    * put in the scheduled collection of mongo. Central hub then take care of
    * putting it back in exchange at due time
-   * @param  {Object}  message message to be rescheduled
-   * @return {Promise}         [description]
+   * @param  {Object}  messageContext message context that wraps message to be
+   *                                  rescheduled
+   * @return {Promise}
    */
-  async scheduleMessage(message) {
+  async scheduleMessage(messageContext) {
+    let message = messageContext.getMessage()
     var dueTime = Date.now() + this.getDelay(message)
     var scheduledItem = {
       dueTime: dueTime,
@@ -116,7 +121,7 @@ module.exports = class HubMessageProcessor {
       scheduledMessageId: shortid.generate()
     }
     await this.scheduleCollection.insert(scheduledItem)
-    this.hubStats.increment(message.messageType, 'scheduled')
+    this.hubStats.increment(message.messageType, 'scheduled', messageContext.getStatusCode())
   }
 
   getDelay(msg) {

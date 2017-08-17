@@ -4,10 +4,15 @@ module.exports = class HubStatsReporter {
     this.serviceName = config.get('service.name', 'serviceName')
   }
 
-  increment(messageType, suffix) {
-    this.stats.increment(`hub.messages.${suffix}`, 1)
-    this.stats.increment(`hub.messages.${messageType}.${suffix}`, 1)
-    this.stats.increment(`hub.services.${this.serviceName}.messages.${suffix}`, 1)
-    this.stats.increment(`hub.services.${this.serviceName}.messages.${messageType}.${suffix}`, 1)
+  increment(messageType, suffix, failureCode) {
+    let tags = {messageType: messageType, subscriber: this.serviceName}
+    if (failureCode) {
+      tags.failureCode = failureCode
+    }
+    this.stats.increment(`hub.messages.${suffix}`, 1, tags)
+  }
+
+  timing(messageType, suffix, timer) {
+    this.stats.timing(`hub.messages.${suffix}`, timer, {messageType: messageType, subscriber: this.serviceName})
   }
 }
