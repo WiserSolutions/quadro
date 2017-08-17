@@ -1,6 +1,7 @@
 module.exports = class HubMessageContext {
   constructor(message) {
-    this.message = message
+    this.rawMessage = message
+    this.message = message.content
   }
 
   success(message, code) {
@@ -27,6 +28,10 @@ module.exports = class HubMessageContext {
 
   getMessage() {
     return this.message
+  }
+
+  getRawMessage() {
+    return this.rawMessage
   }
 
   getStatusCode() {
