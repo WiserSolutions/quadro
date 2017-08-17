@@ -11,7 +11,7 @@ describe('pubsub', function() {
           }
         })
         .reply(200, () => done())
-      pubsub.publish('done', { hello: 'world' })
+      pubsub.publish('done', { hello: 'world' }, 'http')
     })
   })
 })
