@@ -59,7 +59,9 @@
     "sinon": "^2.3.8",
     "sinon-chai": "^2.11.0",
     "statsd-client": "^0.4.0",
-    "supertest": "^3.0.0"
+    "supertest": "^3.0.0",
+    "amqplib": "^0.5.1",
+    "shortid": "^2.2.8"
   },
   "scripts": {
     "test": "nyc --reporter=text-summary --reporter=lcov node examples/app/app.js test"
