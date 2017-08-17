@@ -28,9 +28,8 @@ module.exports = class Pubsub {
       if (!published) {
         this.hubStats.increment(msg.messageType, 'rabbitmq_missed')
         throw new Q.Errors.MessagePublishingFailed()
-      } else {
-        this.hubStats.increment(msg.messageType, 'published')
       }
+      this.hubStats.increment(msg.messageType, 'published')
     } else {
       let endpoint = this.config.get('quadro.pubsub.endpoint', 'http://hub:8080')
       await this.request({
