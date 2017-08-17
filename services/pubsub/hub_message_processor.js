@@ -71,12 +71,12 @@ module.exports = class HubMessageProcessor {
    */
   async rescheduleMessage(messageContext) {
     // Get the message from context
-    let message = messageContext.getMessage()
+    let message = messageContext.getRawMessage()
     this.hubStats.increment(message.messageType, 'failed', messageContext.getStatusCode())
 
     // Set the error to message
     if (messageContext.getStatusCode()) {
-      messageContext.getMessage().lastError = {
+      messageContext.getRawMessage().lastError = {
         statusCode: messageContext.getStatusCode(),
         body: messageContext.getError()
       }
@@ -98,7 +98,7 @@ module.exports = class HubMessageProcessor {
    * @return {Promise}
    */
   async sendToDeadLetter(messageContext) {
-    let message = messageContext.getMessage()
+    let message = messageContext.getRawMessage()
     message.killedAt = Date.now()
     await this.deadLetterCollection.insertOne(message)
     this.hubStats.increment(message.messageType, 'killed', messageContext.getStatusCode())
@@ -113,14 +113,11 @@ module.exports = class HubMessageProcessor {
    * @return {Promise}
    */
   async scheduleMessage(messageContext) {
-    let message = messageContext.getMessage()
+    let message = messageContext.getRawMessage()
     var dueTime = Date.now() + this.getDelay(message)
-    var scheduledItem = {
-      dueTime: dueTime,
-      message,
-      scheduledMessageId: shortid.generate()
-    }
-    await this.scheduleCollection.insert(scheduledItem)
+    message.dueTime = dueTime
+    message.scheduledMessageId = shortid.generate()
+    await this.scheduleCollection.insert(message)
     this.hubStats.increment(message.messageType, 'scheduled', messageContext.getStatusCode())
   }
 

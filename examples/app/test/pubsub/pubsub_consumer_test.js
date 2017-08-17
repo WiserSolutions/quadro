@@ -48,7 +48,7 @@ describe('pubsub', function() {
       // Send a message through pub sub
       pubsub.publish('orders.test.consumer', { hello: 'world' })
       await Promise.delay(200)
-      expect(handler.handle).to.have.been.calledWith({message: {messageType: 'orders.test.consumer', content: {hello: 'world'}}})
+      expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset({message: {hello: 'world'}}))
       let scheduledEntries = await scheduleCollection.find({}).toArray()
       expect(scheduledEntries).to.be.empty
       let deadLetterEntries = await deadLetterCollection.find({}).toArray()
@@ -66,12 +66,12 @@ describe('pubsub', function() {
       // Send a message through pub sub
       pubsub.publish('orders.test.consumer', { hello: 'world' })
       await Promise.delay(200)
-      expect(handler.handle).to.have.been.calledWith({message: {attemptsMade: 1, maxAttempts: 5, messageType: 'orders.test.consumer', content: {hello: 'world'}}})
+      expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset({message: {hello: 'world'}}))
       let deadLetterEntries = await deadLetterCollection.find({}).toArray()
       expect(deadLetterEntries).to.be.empty
       let scheduledEntries = await scheduleCollection.find({}).toArray()
       expect(scheduledEntries).to.be.of.length(1)
-      expect(scheduledEntries[0]).to.containSubset({message: {attemptsMade: 1, maxAttempts: 5, messageType: 'orders.test.consumer', content: {hello: 'world'}}})
+      expect(scheduledEntries[0]).to.containSubset({attemptsMade: 1, maxAttempts: 5, messageType: 'orders.test.consumer', content: {hello: 'world'}})
       expect(scheduledEntries[0].dueTime).to.not.be.null
       expect(scheduledEntries[0].scheduledMessageId).to.not.be.null
     })
@@ -95,7 +95,7 @@ describe('pubsub', function() {
           maxAttempts: 5
         })))
       await Promise.delay(200)
-      expect(handler.handle).to.be.calledWith(this.sinon.match.containSubset({message: {attemptsMade: 6, maxAttempts: 5, messageType: 'orders.test.consumer', content: {hello: 'world'}}}))
+      expect(handler.handle).to.be.calledWith(this.sinon.match.containSubset({message: {hello: 'world'}}))
       let scheduledEntries = await scheduleCollection.find({}).toArray()
       expect(scheduledEntries).to.be.empty
       let deadLetterEntries = await deadLetterCollection.find({}).toArray()
