@@ -3,6 +3,7 @@
 ## 0.6.15
 
 - Fixed service registration logging
+- Added ability to pull messages from hub
 
 ## 0.6.14
 - Support query in `deleteAll`
