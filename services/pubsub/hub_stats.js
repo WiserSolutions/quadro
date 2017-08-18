@@ -13,6 +13,6 @@ module.exports = class HubStatsReporter {
   }
 
   timing(messageType, suffix, timer) {
-    this.stats.timing(`hub.messages.${suffix}`, timer, {messageType: messageType, subscriber: this.serviceName})
+    this.stats.timing(`hub.messages.${suffix}.response_time`, timer, {messageType: messageType, subscriber: this.serviceName})
   }
 }
