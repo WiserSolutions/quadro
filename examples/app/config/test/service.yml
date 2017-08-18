@@ -1,12 +1,5 @@
-name: 'service_name'
-hub:
-  host: 'http://hub:8080'
+name: 'service'
 messages:
   host: 'amqp://localhost'
-  input: 'service_in'
-  output: 'service_out'
-  concurrency: 10
 storage:
   host: 'mongodb://localhost:27017/hub'
-  schedule: 'service_schedule'
-  dead: 'service_dead_v2'

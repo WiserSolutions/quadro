@@ -12,9 +12,10 @@ describe('pubsub', function() {
   beforeEach(async function() {
     pubsub = await Q.container.getAsync('pubsub')
     hubMessageProcessor = await Q.container.getAsync('pubsub:hubMessageProcessor')
+    let serviceName = Q.config.get('service.name')
     let mongoClient = await MongoClient.connect(Q.config.get('service.storage.host'))
-    scheduleCollection = await mongoClient.collection(Q.config.get('service.storage.schedule'))
-    deadLetterCollection = await mongoClient.collection(Q.config.get('service.storage.dead'))
+    scheduleCollection = await mongoClient.collection(Q.config.get('service.storage.schedule', `${serviceName}_schedule` ))
+    deadLetterCollection = await mongoClient.collection(Q.config.get('service.storage.dead', `${serviceName}_dead_v2`))
   })
 
   describe('publish', function() {

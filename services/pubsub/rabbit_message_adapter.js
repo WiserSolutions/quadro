@@ -9,11 +9,12 @@ module.exports = class RabbitMqMessageAdapter {
 
   async initialize() {
     // If consumer configs are not present then don't initialize it
-    if (!this.config.get('service.name')) {
+    let serviceName = this.config.get('service.name')
+    if (!serviceName) {
       return
     }
     // Get the queue name
-    let queueName = this.config.get('service.messages.input')
+    let queueName = this.config.get('service.messages.input', `${serviceName}_in`)
     let amqpUrl = this.config.get('service.messages.host')
     // Get the connection. Should we reuse connection?
     let connection = await amqp.connect(amqpUrl)
