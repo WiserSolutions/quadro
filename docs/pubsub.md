@@ -8,17 +8,17 @@ Add following config to service to enable pull model of pubsub add a service.yml
 
 ```yaml
 name: 'service_name'
-hub:
-  host: 'http://hub:8080'
+hub: #Optional
+  host: 'http://hub:8080' #Optional
 messages:
   host: 'amqp://localhost'
-  input: 'service_in'
-  output: 'service_out'
-  concurrency: 10
+  input: 'service_in' #Optional default value is `${name}_in`
+  output: 'service_out' #Optional default value is `${name}_out`
+  concurrency: 10 #Optional default value is 10
 storage:
   host: 'mongodb://localhost:27017/hub'
-  schedule: 'service_schedule'
-  dead: 'service_dead_v2'
+  schedule: 'service_schedule' #Optional default value is `${name}_schedule`
+  dead: 'service_dead_v2' #Optional default value is `${name}_dead_v2`
 ```
 
 # API
