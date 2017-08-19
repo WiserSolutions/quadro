@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.16
+
+- Pubsub-pull: message format validation
+- Pubsub-pull: scheduled message format fix
+
 ## 0.6.15
 
 - Fixed service registration logging
