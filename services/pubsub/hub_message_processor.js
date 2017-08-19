@@ -6,7 +6,8 @@ const MINUTE = 60 * SECOND
 const HOUR = 60 * MINUTE
 
 module.exports = class HubMessageProcessor {
-  constructor(config, hubStats = 'pubsub:hubStats') {
+  constructor(log, config, hubStats = 'pubsub:hubStats') {
+    this.log = log
     this.config = config
     this.hubStats = hubStats
     this.handlers = {}
@@ -44,8 +45,15 @@ module.exports = class HubMessageProcessor {
     if (!this.initialized) {
       throw new Q.Errors.HubMessageConsumerNotInitializedError()
     }
-    // Parse the message
-    let parsedMessage = JSON.parse(message.content.toString())
+    // Parse the message. If it fails then log and return.
+    // Else this message will keep hanging in the system
+    let parsedMessage
+    try {
+      parsedMessage = JSON.parse(message.content.toString())
+    } catch (err) {
+      this.log.error({err}, `Error while parsing message: ${parsedMessage}`)
+      return
+    }
     let messageContext = new HubMessageContext(parsedMessage)
     // Get the message handler based on type
     let handler = this.handlers[parsedMessage.messageType]
@@ -116,9 +124,12 @@ module.exports = class HubMessageProcessor {
   async scheduleMessage(messageContext) {
     let message = messageContext.getRawMessage()
     var dueTime = Date.now() + this.getDelay(message)
-    message.dueTime = dueTime
-    message.scheduledMessageId = shortid.generate()
-    await this.scheduleCollection.insert(message)
+    let scheduledItem = {
+      dueTime: dueTime,
+      message,
+      scheduledMessageId: shortid.generate()
+    }
+    await this.scheduleCollection.insert(scheduledItem)
     this.hubStats.increment(message.messageType, 'scheduled', messageContext.getStatusCode())
   }
 
