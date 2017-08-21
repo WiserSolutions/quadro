@@ -2,6 +2,7 @@
 
 ## 0.6.16
 
+- Pubsub-pull: retrySchedule: set retries frequency via config 
 - Pubsub-pull: message format validation
 - Pubsub-pull: scheduled message format fix
 

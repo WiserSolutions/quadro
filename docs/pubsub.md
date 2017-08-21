@@ -19,6 +19,7 @@ storage:
   host: 'mongodb://localhost:27017/hub'
   schedule: 'service_schedule' #Optional default value is `${name}_schedule`
   dead: 'service_dead_v2' #Optional default value is `${name}_dead_v2`
+retrySchedule: [ 1000, 6000 , 60000 ] #Optional retries frequency   
 ```
 
 # API
