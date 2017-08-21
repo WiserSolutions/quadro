@@ -12,7 +12,7 @@ jobs:
       - restore_cache:
           key: quadro-{{ checksum "package.json" }}-{{ checksum "examples/app/package.json" }}
       - run: npm install && npm link .
-      - run: cd examples/app && npm install && npm link quadro
+      - run: cd examples/app && npm link quadro
       - run: npm test
       - save_cache:
           key: quadro-{{ checksum "package.json" }}-{{ checksum "examples/app/package.json" }}
