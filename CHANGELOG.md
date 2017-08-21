@@ -1,11 +1,14 @@
 # Changelog
+
 ## 0.6.17
+
 - Support for node v8.4.0
 - Upgraded dependencies
+- Support config overrides from environment variables
+- Pubsub-pull: retrySchedule: set retries frequency via config
 
 ## 0.6.16
 
-- Pubsub-pull: retrySchedule: set retries frequency via config 
 - Pubsub-pull: message format validation
 - Pubsub-pull: scheduled message format fix
 

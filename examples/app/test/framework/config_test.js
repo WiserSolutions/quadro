@@ -53,6 +53,11 @@ describe('config', function() {
     it('returns nested values', function() {
       expect(Q.config.get('yaml.nested.nested1.key')).to.eql('nestedValue')
     })
+
+    it('env variable overrides value', function() {
+      process.env.YAML_NESTED_NESTED_1_KEY = 'ValueFromEnv'
+      expect(Q.config.get('yaml.nested.nested1.key')).to.eql('ValueFromEnv')
+    })
   })
 
   describe('tests', function() {
