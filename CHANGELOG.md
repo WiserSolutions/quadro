@@ -1,6 +1,6 @@
 # Changelog
 ## 0.6.17
-- Support for node v8.3.0
+- Support for node v8.4.0
 - Upgraded dependencies
 
 ## 0.6.16
