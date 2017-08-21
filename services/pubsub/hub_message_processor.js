@@ -12,9 +12,9 @@ module.exports = class HubMessageProcessor {
     this.hubStats = hubStats
     this.handlers = {}
     this.defaultDelaySec = 5
-    this.schedule = [
+    this.schedule = config.get('service.retrySchedule',[
       5 * SECOND, 3 * MINUTE, 30 * MINUTE, 6 * HOUR
-    ]
+    ])
   }
 
   /**
