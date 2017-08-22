@@ -96,6 +96,26 @@ are stored in files and setting them might be misleading when there are multiple
 behind a load balancer.
 
 
+## Configuration from environment variables
+
+You can set config values from environment variables. Example:
+
+```yaml
+# cfg.yml
+key: from_file
+```
+
+If you have `CFG_KEY` environment variable set to `from_env` then:
+
+```js
+Q.config.get('cfg.key')
+```
+
+will return `from_env` instead of `from_file`.
+
+*Note:* `cfg.key1` should be defined as `CFG_KEY_1` environment variables (number
+is separated with underscore)
+
 ## Configuration REST API
 
 Quadro automatically exposes REST API to set and get configuration.
