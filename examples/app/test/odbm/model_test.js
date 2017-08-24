@@ -69,16 +69,28 @@ describe('Q.Model', function() {
     })
   })
 
-  describe('update', function() {
-    it('saving attributes after update', async function() {
-      let firstName = 'John'
-      let lastName = 'Lennon'
-      let user = await User.create({ firstName })
-      user._setAttr('lastName', lastName)
-      await user.save()
+  describe('save', function() {
+    describe('existing record', function() {
+      it('saving attributes after update', async function() {
+        let firstName = 'John'
+        let lastName = 'Lennon'
+        let user = await User.create({ firstName })
+        user._setAttr('lastName', lastName)
+        await user.save()
 
-      let [ newUser ] = await User.find({ lastName })
-      expect(newUser._getAttr('firstName')).to.eql(firstName)
+        let newUser = await User.findOne({ lastName })
+        expect(newUser._getAttr('firstName')).to.eql(firstName)
+      })
+    })
+
+    describe('new record', function() {
+      it('creates new record', async function() {
+        let user = new User({ firstName: 'John' })
+        await user.save()
+
+        user = await User.findOne({ firstName: 'John' })
+        expect(user._getAttr('firstName')).to.eql('John')
+      })
     })
   })
 })
