@@ -5,6 +5,6 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "quadro": ""
+    "quadro": "./../../../quadro"
   }
 }
