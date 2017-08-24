@@ -2,6 +2,9 @@
 
 describe('Q.Model', function() {
   const User = Q.Model('user')
+
+  beforeEach(async () => User.deleteAll() )
+
   it('creates a `Model` subclass', function() {
     let user = new User()
     expect(user).to.be.instanceof(Q.Model.Class)
@@ -63,6 +66,19 @@ describe('Q.Model', function() {
       let obj = user.serialize()
       obj.lastName = 'Smith'
       expect(user._attrs.lastName).to.be.undefined
+    })
+  })
+
+  describe('update', function() {
+    it('saving attributes after update', async function() {
+      let firstName = 'John'
+      let lastName = 'Lennon'
+      let user = await User.create({ firstName })
+      user._setAttr('lastName', lastName)
+      await user.save()
+
+      let [ newUser ] = await User.find({ lastName })
+      expect(newUser._getAttr('firstName')).to.eql(firstName)
     })
   })
 })
