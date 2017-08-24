@@ -2,15 +2,16 @@
 
 ## 0.6.18
 
-- Pubsub-pull: retrySchedule: set retries frequency via config
-- ODBM: added `findOne` and `findOrBuild` functions
 - ODBM Bug fix: `update` of existing model
+- Added test for saving a new record
 
 ## 0.6.17
 
 - Support for node v8.4.0
 - Upgraded dependencies
 - Support config overrides from environment variables
+- Pubsub-pull: retrySchedule: set retries frequency via config
+- ODBM: added `findOne` and `findOrBuild` functions
 
 ## 0.6.16
 
