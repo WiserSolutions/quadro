@@ -5,9 +5,12 @@ module.exports = class RabbitMqMessageAdapter {
     this.log = log
     this.config = config
     this.messageProcessor = messageProcessor
+    this.retryDelay = this.config.get('service.messages.retryDelay', 1000)
   }
 
-  async initialize() {
+  async initialize(retry = false) {
+    this.closeQuitely(this.channel)
+    this.closeQuitely(this.connection)
     // If consumer configs are not present then don't initialize it
     let serviceName = this.config.get('service.name')
     if (!serviceName) {
@@ -16,26 +19,68 @@ module.exports = class RabbitMqMessageAdapter {
     // Get the queue name
     let queueName = this.config.get('service.messages.input', `${serviceName}_in`)
     let amqpUrl = this.config.get('service.messages.host')
-    // Get the connection. Should we reuse connection?
-    let connection = await amqp.connect(amqpUrl)
-    // Get the channel
-    let channel = await connection.createChannel()
-    // Make sure queue exists
-    await channel.assertQueue(queueName)
-    // set the concurrency
-    await channel.prefetch(this.config.get('service.messages.concurrency', 10))
-    // start the consumer
-    await channel.consume(queueName, async (message) => {
-      try {
+
+    try {
+    // Get the connection
+      this.connection = await amqp.connect(amqpUrl)
+
+      // On connection close retry to initialize after few minutes
+      this.connection.on('close', async (err) => {
+        this.log.info({err}, `RabbitMQ connection closed. Retrying to connect after ${this.retryDelay}ms`)
+        await this.handleError()
+      })
+      // Get the channel
+      this.channel = await this.connection.createChannel()
+      // Make sure queue exists
+      await this.channel.assertQueue(queueName)
+      // set the concurrency
+      await this.channel.prefetch(this.config.get('service.messages.concurrency', 10))
+
+      // If channel gets closed adruptly then retry to connect again
+      this.channel.on('error', async (err) => {
+        this.log.error({err}, `RabbitMQ channel closed. Retrying to connect after ${this.retryDelay}ms`)
+        await this.handleError()
+      })
+
+      // start the consumer
+      await this.channel.consume(queueName, async (message) => {
+        // Message would be null if the connection is disconnected or channel is closed
+        if (!message) {
+          await this.handleError()
+          return
+        }
+        try {
         // Process message
-        await this.messageProcessor.handleProcessing(message)
-        // Acknowledge message. General error should be taken care by handler
-        // and use mongo to schedule event
-        await channel.ack(message)
-      } catch (err) {
+          await this.messageProcessor.handleProcessing(message)
+          // Acknowledge message. General error should be taken care by handler
+          // and use mongo to schedule event
+          await this.channel.ack(message)
+        } catch (err) {
         // Unacknowledge only in case there is unhandled message
-        await channel.nack(message)
+          await this.channel.nack(message)
+        }
+      })
+    } catch (err) {
+      if (retry) {
+        this.log.error({err}, `Error while connecting. Retrying to connect after ${this.retryDelay}ms`)
+        this.handleError()
+      } else throw err
+    }
+  }
+
+  async handleError() {
+    await this.closeQuitely(this.channel)
+    await this.closeQuitely(this.connection)
+    setTimeout(() => this.initialize(true), this.retryDelay)
+  }
+
+  async closeQuitely(closeable) {
+    if (closeable) {
+      try {
+        await closeable.close()
+      } catch (err) {
+        this.log.error({err}, 'Error while closing channel/connection')
       }
-    })
+    }
   }
 }
