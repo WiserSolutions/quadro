@@ -5,7 +5,7 @@ module.exports = class RabbitMqMessageAdapter {
     this.log = log
     this.config = config
     this.messageProcessor = messageProcessor
-    this.retryDelay = this.config.get('service.messages.retryDelay', 1000)
+    this.retryDelay = this.config.get('service.messages.retryDelay', 5000)
   }
 
   async initialize(retry = false) {

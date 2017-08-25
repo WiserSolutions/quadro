@@ -105,7 +105,7 @@ describe('pubsub', function() {
       expect(deadLetterEntries[0].killedAt).to.not.be.null
     })
 
-    it.only('test reconnect', async function() {
+    it('test reconnect', async function() {
       await channel.assertExchange('orders.test.consumer', 'fanout', {durable: false})
       await channel.bindQueue(QUEUE_NAME, 'orders.test.consumer', '')
       let handler = {
