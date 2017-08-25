@@ -58,7 +58,7 @@
     "request": "^2.81.0",
     "request-promise": "^4.2.1",
     "shortid": "^2.2.8",
-    "sinon": "^2.4.1",
+    "sinon": "^3.2.1",
     "sinon-chai": "^2.13.0",
     "statsd-client": "^0.4.0",
     "supertest": "^3.0.0"

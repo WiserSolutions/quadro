@@ -4,6 +4,7 @@
 
 - ODBM Bug fix: `update` of existing model
 - Added test for saving a new record
+- Upgraded sinon to 3.x
 
 ## 0.6.17
 
