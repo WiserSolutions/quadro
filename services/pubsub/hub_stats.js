@@ -5,7 +5,7 @@ module.exports = class HubStatsReporter {
   }
 
   increment(messageType, suffix, failureCode) {
-    let tags = {messageType: messageType, subscriber: this.serviceName}
+    let tags = { messageType: messageType, subscriber: this.serviceName }
     if (failureCode) {
       tags.failureCode = failureCode
     }
@@ -13,6 +13,7 @@ module.exports = class HubStatsReporter {
   }
 
   timing(messageType, suffix, timer) {
-    this.stats.timing(`hub.messages.${suffix}`, timer, {messageType: messageType, subscriber: this.serviceName})
+    let tags = { messageType: messageType, subscriber: this.serviceName }
+    this.stats.timing(`hub.messages.${suffix}`, timer, tags)
   }
 }
