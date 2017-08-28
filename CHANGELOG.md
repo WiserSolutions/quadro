@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.19
+
+- pubsub-pull: Implemented `ctx.retryAfterSec`
+
 ## 0.6.18
 
 - ODBM Bug fix: `update` of existing model

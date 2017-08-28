@@ -22,7 +22,7 @@ module.exports = class HubMessageContext {
   }
 
   retryAfterSec(seconds, message, code) {
-    this.retryAfterSec = seconds || 60
+    this._retryAfterSec = seconds || 60
     this.statusCode = code
   }
 
@@ -42,15 +42,19 @@ module.exports = class HubMessageContext {
     return this.err
   }
 
-  getRetrySec() {
-    return this.retryAfterSec || 60
+  getRetryAfterSec() {
+    return this._retryAfterSec || 60
   }
 
   isSuccess() {
-    return this.success | false
+    return this.success || false
+  }
+
+  shouldRedeliver() {
+    return !!this._retryAfterSec
   }
 
   isFailed() {
-    return this.failed | false
+    return this.failed || false
   }
 }

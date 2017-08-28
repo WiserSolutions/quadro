@@ -56,18 +56,32 @@ module.exports = class HubMessageProcessor {
     }
     let messageContext = new HubMessageContext(parsedMessage)
     // Get the message handler based on type
-    let handler = this.handlers[parsedMessage.messageType]
+    let messageType = parsedMessage.messageType
+    let handler = this.handlers[messageType]
     if (!handler) {
       throw new Q.Errors.HubMessageHandlerNotFoundError({messageType: parsedMessage.messageType})
     }
     try {
       let timer = new Date()
       await handler.handle(messageContext)
+      Q.log.debug({ messageType, parsedMessage }, 'Message received')
       this.hubStats.timing(parsedMessage.messageType, 'response_time', timer)
       // reschdule message if it failed
-      if (messageContext.isFailed()) await this.rescheduleMessage(messageContext)
-      else this.hubStats.increment(parsedMessage.messageType, 'succeeded')
+      if (messageContext.isFailed()) {
+        let data = { messageType, statusCode: messageContext.getStatusCode() }
+        Q.log.error(data, 'Message handling failed')
+
+        return this.rescheduleMessage(messageContext)
+      } else if (messageContext.shouldRedeliver()) {
+        let data = { messageType, retryAfterSec: messageContext.getRetryAfterSec() }
+        Q.log.debug(data, 'Handler asked for message re-delivery')
+
+        return this.rescheduleMessage(messageContext)
+      }
+      this.hubStats.increment(parsedMessage.messageType, 'succeeded')
     } catch (err) {
+      Q.log.error({ messageType, err }, 'Unhandled exception while handling message')
+      messageContext.failure(err)
       // In case of error set the retry and push it to mongo
       await this.rescheduleMessage(messageContext)
     }
@@ -123,7 +137,18 @@ module.exports = class HubMessageProcessor {
    */
   async scheduleMessage(messageContext) {
     let message = messageContext.getRawMessage()
-    var dueTime = Date.now() + this.getDelay(message)
+    let dueTime
+    if (messageContext.isFailed()) {
+      dueTime = Date.now() + this.getDelay(message)
+    } else if (messageContext.shouldRedeliver()) {
+      dueTime = Date.now() + messageContext.getRetryAfterSec() * 1000
+    } else {
+      Q.log.error(
+        { message: messageContext.getRawMessage() },
+        'Do not know how to schedule the message. It is not failed, nor requested to redeliver'
+      )
+      return
+    }
     let scheduledItem = {
       dueTime: dueTime,
       message,
