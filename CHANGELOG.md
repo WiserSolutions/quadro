@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.20
+
+- pubsub-pull: bugfix: don't count `retryAfterSec` as a failure 
+
 ## 0.6.19
 
 - pubsub-pull: Implemented `ctx.retryAfterSec`

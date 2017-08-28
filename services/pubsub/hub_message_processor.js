@@ -12,7 +12,7 @@ module.exports = class HubMessageProcessor {
     this.hubStats = hubStats
     this.handlers = {}
     this.defaultDelaySec = 5
-    this.schedule = config.get('service.retrySchedule',[
+    this.schedule = config.get('service.retrySchedule', [
       5 * SECOND, 3 * MINUTE, 30 * MINUTE, 6 * HOUR
     ])
   }
@@ -76,7 +76,7 @@ module.exports = class HubMessageProcessor {
         let data = { messageType, retryAfterSec: messageContext.getRetryAfterSec() }
         Q.log.debug(data, 'Handler asked for message re-delivery')
 
-        return this.rescheduleMessage(messageContext)
+        return this.scheduleMessage(messageContext)
       }
       this.hubStats.increment(parsedMessage.messageType, 'succeeded')
     } catch (err) {

@@ -71,7 +71,9 @@ describe('pubsub', function() {
 
       let scheduledEntries = await scheduleCollection.find({}).toArray()
       expect(scheduledEntries).to.be.of.length(1)
-      expect(scheduledEntries[0]).to.containSubset({message: {attemptsMade: 1, maxAttempts: 5, messageType: 'orders.test.consumer', content: MSG}})
+      expect(scheduledEntries[0]).to.not.have.nested.property('message.attemptsMade')
+      expect(scheduledEntries[0]).to.not.have.nested.property('message.maxAttempts')
+      expect(scheduledEntries[0]).to.containSubset({message: {messageType: 'orders.test.consumer', content: MSG}})
       expect(scheduledEntries[0].dueTime).to.not.be.null
       expect(scheduledEntries[0].scheduledMessageId).to.not.be.null
     })
