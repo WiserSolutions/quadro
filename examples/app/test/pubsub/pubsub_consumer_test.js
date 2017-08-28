@@ -25,17 +25,18 @@ describe('pubsub', function() {
     beforeEach(async function() {
       connection = await amqp.connect(Q.config.get('service.messages.host'))
       channel = await connection.createChannel()
-      await scheduleCollection.remove({})
-      await deadLetterCollection.remove({})
+      await scheduleCollection.deleteMany({})
+      await deadLetterCollection.deleteMany({})
       await channel.assertQueue(QUEUE_NAME)
       await channel.purgeQueue(QUEUE_NAME)
+
+      await channel.assertExchange('orders.test.consumer', 'fanout', {durable: false})
+      await channel.bindQueue(QUEUE_NAME, 'orders.test.consumer', '')
     })
 
     afterEach(async function() {
       await channel.close()
       await connection.close()
-      await scheduleCollection.remove({})
-      await deadLetterCollection.remove({})
     })
 
     it('recieves a message', async function() {
@@ -56,10 +57,27 @@ describe('pubsub', function() {
       expect(deadLetterEntries).to.be.empty
     })
 
+    it('pushes to schedule queue on retryAfterSec', async function() {
+      const MSG = { hello: 'world_retry_after' }
+
+      let handler = {
+        handle: this.sinon.stub().callsFake(ctx => ctx.retryAfterSec(100))
+      }
+
+      hubMessageProcessor.register('orders.test.consumer', handler)
+      pubsub.publish('orders.test.consumer', { hello: 'world_retry_after' })
+      await Promise.delay(200)
+      expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset({message: MSG}))
+
+      let scheduledEntries = await scheduleCollection.find({}).toArray()
+      expect(scheduledEntries).to.be.of.length(1)
+      expect(scheduledEntries[0]).to.containSubset({message: {attemptsMade: 1, maxAttempts: 5, messageType: 'orders.test.consumer', content: MSG}})
+      expect(scheduledEntries[0].dueTime).to.not.be.null
+      expect(scheduledEntries[0].scheduledMessageId).to.not.be.null
+    })
+
     it('push to schedule queue on failure', async function() {
       // Get the channel
-      await channel.assertExchange('orders.test.consumer', 'fanout', {durable: false})
-      await channel.bindQueue(QUEUE_NAME, 'orders.test.consumer', '')
       let handler = {
         handle: this.sinon.stub().throws(new Error('error while handling message'))
       }
@@ -79,8 +97,6 @@ describe('pubsub', function() {
 
     it('push to schedule queue in dead letter on max attempts', async function() {
       // Get the channel
-      await channel.assertExchange('orders.test.consumer', 'fanout', {durable: false})
-      await channel.bindQueue(QUEUE_NAME, 'orders.test.consumer', '')
       let handler = {
         handle: this.sinon.stub().throws(new Error('error while handling message'))
       }
@@ -106,8 +122,6 @@ describe('pubsub', function() {
     })
 
     it('test reconnect', async function() {
-      await channel.assertExchange('orders.test.consumer', 'fanout', {durable: false})
-      await channel.bindQueue(QUEUE_NAME, 'orders.test.consumer', '')
       let handler = {
         handle: this.sinon.spy()
       }
