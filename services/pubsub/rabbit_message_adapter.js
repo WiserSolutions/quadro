@@ -34,7 +34,8 @@ module.exports = class RabbitMqMessageAdapter {
       // Make sure queue exists
       await this.channel.assertQueue(queueName)
       // set the concurrency
-      await this.channel.prefetch(this.config.get('service.messages.concurrency', 10))
+      let concurrency = parseInt(this.config.get('service.messages.concurrency', 10))
+      await this.channel.prefetch(concurrency)
 
       // If channel gets closed adruptly then retry to connect again
       this.channel.on('error', async (err) => {

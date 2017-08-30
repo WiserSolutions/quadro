@@ -1,8 +1,12 @@
 # Changelog
 
+## 0.6.21
+
+- Allow service concurrency to be a string (will be parseInt'd)
+
 ## 0.6.20
 
-- pubsub-pull: bugfix: don't count `retryAfterSec` as a failure 
+- pubsub-pull: bugfix: don't count `retryAfterSec` as a failure
 
 ## 0.6.19
 
