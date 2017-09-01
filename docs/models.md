@@ -90,6 +90,8 @@ Instantiates a model and populates the attributes from the provided `attrs` obje
 
 Like `model.build`, but also persists the record.
 
+`attrs` may also be an array to create multiple models.
+
 *Note:* In contrast with `.build` method, `.create` returns a non-dirty model.
 
 ### model.save()

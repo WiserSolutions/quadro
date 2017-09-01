@@ -9,12 +9,12 @@ describe('Model Repository', function() {
   describe('save', function() {
     context('id not present', function() {
       it('creates a record', async function() {
-        testAdapter.create = this.sinon.stub().returns({ id: 'new_user_id' })
+        testAdapter.create = this.sinon.stub().returns([{ id: 'new_user_id' }])
         let model = new User({ firstName: 'John' })
         await repo.save(model)
-        expect(testAdapter.create).to.be.calledWith('users', {
+        expect(testAdapter.create).to.be.calledWith('users', [{
           first_name: 'John'
-        })
+        }])
         expect(model.isDirty()).to.be.false
         expect(model._getAttr('id')).to.equal('new_user_id')
       })
