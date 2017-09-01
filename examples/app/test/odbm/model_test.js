@@ -92,5 +92,24 @@ describe('Q.Model', function() {
         expect(user._getAttr('firstName')).to.eql('John')
       })
     })
+
+    describe('multiple inserts', function() {
+      it('creates multiple new records', async function() {
+        await User.create([{ firstName: 'John' }, { firstName: 'Paul' }])
+
+        let count = await User.count()
+        expect(count).to.eql(2)
+      })
+
+      it('returns array of models', async function() {
+        let result = await User.create([{ firstName: 'John' }, { firstName: 'Paul' }])
+        expect(result).to.be.an('array')
+      })
+
+      it('returns one model', async function() {
+        let result = await User.create({ firstName: 'John' })
+        expect(result).to.not.be.an('array')
+      })
+    })
   })
 })

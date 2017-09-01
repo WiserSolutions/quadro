@@ -3,6 +3,7 @@
 ## 0.6.21
 
 - Allow service concurrency to be a string (will be parseInt'd)
+- Support many inserts in `create`
 
 ## 0.6.20
 
