@@ -4,6 +4,11 @@ describe('OrderCompleted', function() {
       .expectSuccess()
   })
 
+  it('returns 200 on ignore', async function() {
+    await QT.onMessage('orders.completed', { orderId: 'ignore_me' })
+      .expectIgnore({ msg: 'nothing to do' })
+  })
+
   describe('failures', function() {
     it('returns 500 on server failure', async function() {
       await QT.onMessage('orders.completed', { orderId: null })

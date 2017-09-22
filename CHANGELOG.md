@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.22
+
+- Pubsub: ignore message functionality (`ctx.ignore(statusMsg)`)
+- Pubsub: message handling docs
+- Nested errors
+- tests: fix empty error names in `.to.be.instanceof(...)`
+
 ## 0.6.21
 
 - Allow service concurrency to be a string (will be parseInt'd)

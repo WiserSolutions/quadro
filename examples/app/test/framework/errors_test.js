@@ -20,6 +20,31 @@ describe('Errors', function() {
     })
   })
 
+  describe('nested errors', function() {
+    const NestedError = Q.Errors.declareError('NestedError')
+    const TopLevelError = Q.Errors.declareError('TopLevelError', 'Default message')
+
+    it('sets nestedError attribute', function() {
+      let err = new TopLevelError('something happened', new NestedError('because of this'))
+      expect(err.message).to.equal('something happened')
+      expect(err.nestedError).to.be.an.instanceof(Q.Errors.NestedError)
+    })
+
+    it('supports nested error as only argument', function() {
+      let err = new TopLevelError(new NestedError('because of this'))
+      expect(err.message).to.equal('Default message')
+      expect(err.nestedError).to.be.an.instanceof(Q.Errors.NestedError)
+      expect(err.extra).to.eql({})
+    })
+
+    it('supports message, extra and nested errors', function() {
+      let err = new TopLevelError('something happened', {a: 1}, new NestedError('because of this'))
+      expect(err.message).to.equal('something happened')
+      expect(err.nestedError).to.be.an.instanceof(Q.Errors.NestedError)
+      expect(err.extra).to.eql({a: 1})
+    })
+  })
+
   describe('created errors', function() {
     it('accepts message', function() {
       Q.Errors.declareError('SomeError')
