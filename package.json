@@ -65,5 +65,9 @@
   },
   "scripts": {
     "test": "nyc --reporter=text-summary --reporter=lcov node examples/app/app.js test"
+  },
+  "devDependencies": {
+    "strip-ansi": "^4.0.0",
+    "test-console": "^1.0.0"
   }
 }
