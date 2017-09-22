@@ -1,4 +1,4 @@
-const STDOUT = require("test-console").stdout
+const STDOUT = require('test-console').stdout
 const stripAnsi = require('strip-ansi')
 
 describe('Logging', function() {

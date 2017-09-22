@@ -13,7 +13,10 @@ jobs:
           key: quadro-{{ checksum "package.json" }}-{{ checksum "examples/app/package.json" }}
       - run: npm install && npm link .
       - run: cd examples/app && npm link quadro
-      - run: npm test
+      - type: shell
+        command: npm test
+        environment:
+          TERM: dumb
       - save_cache:
           key: quadro-{{ checksum "package.json" }}-{{ checksum "examples/app/package.json" }}
           paths:
