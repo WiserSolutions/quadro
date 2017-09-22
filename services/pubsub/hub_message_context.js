@@ -4,9 +4,13 @@ module.exports = class HubMessageContext {
     this.message = message.content
   }
 
+  ignore(message) {
+    return this.success(message)
+  }
+
   success(message, code) {
     this.success = true
-    this.statusCode = code
+    this.statusCode = code || 200
   }
 
   failure(err, code) {

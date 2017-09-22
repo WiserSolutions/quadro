@@ -6,6 +6,9 @@ module.exports = function Handler(log) {
     if (message.orderId === 'fail_with_object') {
       return ctx.failure({ msg: 'failed with object' })
     }
+    if (message.orderId === 'ignore_me') {
+      return ctx.ignore({ msg: 'nothing to do' })
+    }
     if (message.orderId === 'retry') return ctx.retryAfterSec(60)
     ctx.success()
   }

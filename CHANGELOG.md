@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.22
+
+- Pubsub: ignore message functionality (`ctx.ignore(statusMsg)`)
+- Pubsub: message handling docs
+
 ## 0.6.21
 
 - Allow service concurrency to be a string (will be parseInt'd)

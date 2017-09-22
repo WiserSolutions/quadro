@@ -32,3 +32,38 @@ publishes a message to rabbitmq
 To recieve messages add a handler class that implements handle method to the handler folder with the name `${messageType}.js`
 
 Quadro will automatically picks the handler on startup and registers it. It will receive all the messages from the input queue and routes the message to appropriate handler base don messageType
+
+Sample handler code:
+
+```js
+module.exports = function Handler(log) {
+  this.handle = async function(ctx) {
+    // Handle the message here
+  }
+}
+```
+
+Handlers are passed the message context
+
+### Message context
+
+#### .message
+
+Contains the message content
+
+#### .failure(msg, code)
+
+Fails message handling, triggering either message rescheduling, or moving it
+to the dead letter collection
+
+#### .ignore(msg)
+
+Ignores the message - acknowledges the message as if it was successfully handled.
+
+#### .success()
+
+Acknowledges the message handling, marking it handled
+
+#### .retryAfterSec(seconds)
+
+Reschedules the message to be delivered after `seconds` interval
