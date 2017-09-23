@@ -6,6 +6,7 @@
 - Pubsub: message handling docs
 - Nested errors
 - tests: fix empty error names in `.to.be.instanceof(...)`
+- Implemented plugins support
 
 ## 0.6.21
 

@@ -1,2 +1,4 @@
 const Quadro = require('quadro')
-Quadro()
+Quadro({
+  plugins: ['../plugin']
+})
