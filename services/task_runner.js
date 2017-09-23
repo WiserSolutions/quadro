@@ -8,15 +8,16 @@ module.exports = class {
 
   async initialize() {
     await Promise.map(
-      this.app.glob('tasks/*.js', { dirs: ['quadro', 'app'], verbose: true }),
+      this.app.glob('tasks/*.js', { dirs: ['quadro', 'app', 'plugins'], verbose: true }),
       _ => this.registerTask(_)
     )
   }
 
-  registerTask(file) {
+  registerTask({ relativePath, absolutePath, namespace }) {
     const _ = require('lodash')
-    let taskName = _.camelCase(file.relativePath.replace(/^tasks\/|\.js$/gi, ''))
-    this.tasks[taskName] = file.absolutePath
+    let taskName = _.camelCase(relativePath.replace(/^tasks\/|\.js$/gi, ''))
+    if (namespace) taskName = `${namespace}:${taskName}`
+    this.tasks[taskName] = absolutePath
   }
 
   async run(name) {
