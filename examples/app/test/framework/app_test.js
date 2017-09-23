@@ -48,12 +48,14 @@ describe('app', function() {
           {
             relativePath: 'package.json',
             absolutePath: `${Q.app.quadroDir}/package.json`,
-            basePath: Q.app.quadroDir
+            basePath: Q.app.quadroDir,
+            namespace: undefined
           },
           {
             relativePath: 'package.json',
             absolutePath: `${Q.app.appDir}/package.json`,
-            basePath: Q.app.appDir
+            basePath: Q.app.appDir,
+            namespace: undefined
           }
         ])
     })
