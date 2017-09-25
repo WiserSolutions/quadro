@@ -3,8 +3,31 @@
 describe('Model Repository', function() {
   class TestAdapter {}
   const testAdapter = new TestAdapter()
-  const User = Q.Model('user')
+  const User = Q.Model('user', {
+    attributes: {
+      myField: { physicalName: 'W_e_i_r_d___f_i_e_l_d' }
+    }
+  })
   const repo = new Q.Repository(User, testAdapter)
+
+  describe('fields mapping', function() {
+    it('uses mapping when writing to db', async function() {
+      testAdapter.create = this.sinon.spy()
+      let user = new User({ myField: 'weirdValue' })
+      await repo.save(user)
+      expect(testAdapter.create).to.be.calledWith('users', [{
+        W_e_i_r_d___f_i_e_l_d: 'weirdValue'
+      }])
+    })
+
+    it('uses mapping when reading from db', async function() {
+      testAdapter.get = this.sinon.stub().callsFake(() =>
+        ({ W_e_i_r_d___f_i_e_l_d: 'weirdDbValue' })
+      )
+      let user = await repo.get('123')
+      expect(user._getAttr('myField')).to.equal('weirdDbValue')
+    })
+  })
 
   describe('save', function() {
     context('id not present', function() {
