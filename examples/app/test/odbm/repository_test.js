@@ -22,7 +22,9 @@ describe('Model Repository', function() {
 
     it('updates a record', async function() {
       testAdapter.update = this.sinon.spy()
-      repo.save(new User({ id: 123, firstName: 'John' }))
+      let user = new User({ id: 123, firstName: 'John' })
+      this.sinon.stub(user, 'isNew').returns(false)
+      repo.save(user)
       expect(testAdapter.update).to.be.calledWith('users', 123, {
         first_name: 'John'
       })
