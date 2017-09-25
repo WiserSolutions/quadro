@@ -83,6 +83,30 @@ describe('Q.Model', function() {
       })
     })
 
+    describe('isNew', function() {
+      it('returns true for new model', function() {
+        let user = new User()
+        expect(user.isNew()).to.be.true
+      })
+
+      it('returns false for a saved model', async function() {
+        let user = new User({ firstName: 'John' })
+        await user.save()
+        expect(user.isNew()).to.be.false
+      })
+
+      it('returns false for a persisted and then modified model', async function() {
+        let user = await User.create({ firstName: 'John' })
+        user._setAttr('lastName', 'Lennon')
+        expect(user.isNew()).to.be.false
+      })
+
+      it('returns true for new model with custom id', function() {
+        let user = new User({ id: '123123123' })
+        expect(user.isNew()).to.be.true
+      })
+    })
+
     describe('new record', function() {
       it('creates new record', async function() {
         let user = new User({ firstName: 'John' })
@@ -90,6 +114,15 @@ describe('Q.Model', function() {
 
         user = await User.findOne({ firstName: 'John' })
         expect(user._getAttr('firstName')).to.eql('John')
+      })
+
+      it('creates new record with custom id', async function() {
+        let user = new User({ id: 'MyUser', firstName: 'Michael'})
+        await user.save()
+
+        user = await User.get('MyUser')
+        expect(user._getAttr('id')).to.eql('MyUser')
+        expect(user._getAttr('firstName')).to.eql('Michael')
       })
     })
 

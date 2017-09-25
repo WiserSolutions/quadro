@@ -6,6 +6,9 @@
 - Pubsub: message handling docs
 - Nested errors
 - tests: fix empty error names in `.to.be.instanceof(...)`
+- Implemented plugins support
+- odbm: Implemented isNew()
+- odbm: Support for custom ids
 
 ## 0.6.21
 
