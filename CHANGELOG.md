@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.6.22
+## 0.7.0
 
 - Pubsub: ignore message functionality (`ctx.ignore(statusMsg)`)
 - Pubsub: message handling docs
