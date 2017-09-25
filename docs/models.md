@@ -31,7 +31,9 @@ To define an AR model you use:
 module.exports = Q.Model('user', {
   attributes: {
     name: 'string',
-    type: 'admin'
+
+    // Specify `physicalName` to override default generated db field name
+    type: { physicalName: 'category' }
   }
 })
 ```

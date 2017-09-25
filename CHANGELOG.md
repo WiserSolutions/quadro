@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.1
+
+- Fix failure on empty options in `run(opts)` call
+- Allow specifying db fields mapping to bypass default inflection
+
 ## 0.7.0
 
 - Pubsub: ignore message functionality (`ctx.ignore(statusMsg)`)
