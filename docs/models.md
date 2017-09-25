@@ -58,6 +58,9 @@ const User = Q.Model('user', {
 
 let user = new User({ firstName: 'John' })
 
+// Custom ids are also supported
+let user2 = new User({ id: 'George' })
+
 // Save the model
 await user.save()
 // After `.save` the model will have it's id populated
