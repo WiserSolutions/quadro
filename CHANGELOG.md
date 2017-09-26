@@ -1,12 +1,13 @@
 # Changelog
 
-## 0.7.1
+## 0.7.2
 
 - Fix failure on empty options in `run(opts)` call
 - Allow specifying db fields mapping to bypass default inflection
 - Allow specifying custom collection/table name
 - Allow as_is field <-> attribute mapping
 - bugfix: models loaded from db should not be `dirty`
+- Add `destroyAll` resource method for HTTP `DELETE /resources`
 
 ## 0.7.0
 
