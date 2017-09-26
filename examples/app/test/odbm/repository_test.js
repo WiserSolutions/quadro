@@ -82,6 +82,13 @@ describe('Model Repository', function() {
         first_name: 'John'
       })
     })
+
+    it('does nothing if model is not dirty', async function() {
+      testAdapter.update = this.sinon.spy()
+      let user = await User.create({ firstName: 'John', lastName: 'Kennedy' })
+      await user.save()
+      expect(testAdapter.update).to.not.have.been.called
+    })
   })
 
   describe('delete', function() {
