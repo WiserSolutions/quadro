@@ -1,5 +1,7 @@
 /* eslint no-unused-expressions: 0 */
 
+const _ = require('lodash')
+
 describe('Model Repository', function() {
   class TestAdapter {}
   const testAdapter = new TestAdapter()
@@ -11,21 +13,49 @@ describe('Model Repository', function() {
   const repo = new Q.Repository(User, testAdapter)
 
   describe('fields mapping', function() {
-    it('uses mapping when writing to db', async function() {
-      testAdapter.create = this.sinon.spy()
-      let user = new User({ myField: 'weirdValue' })
-      await repo.save(user)
-      expect(testAdapter.create).to.be.calledWith('users', [{
-        W_e_i_r_d___f_i_e_l_d: 'weirdValue'
-      }])
-    })
+    [
+      {
+        name: 'as_is',
+        model: Q.Model('asIsUser', { naming: { field: 'as_is' } }),
+        collectionName: 'as_is_users',
+        attrs: { MYfield: 'myvalue' },
+        fields: { MYfield: 'myvalue' }
+      },
+      {
+        name: 'custom physical name',
+        model: Q.Model('customPhysName', { attributes: {
+          myField: { physicalName: 'W_e_i_r_d___f_i_e_l_d' }
+        }}),
+        collectionName: 'custom_phys_names',
+        attrs: { myField: 'weirdValue' },
+        fields: { W_e_i_r_d___f_i_e_l_d: 'weirdValue' }
+      },
+      {
+        name: 'custom collection name',
+        model: Q.Model('customCollName', { physicalName: 'my_col_2' }),
+        collectionName: 'my_col_2',
+        attrs: { myField: 'hello' },
+        fields: { my_field: 'hello' }
+      }
+    ].forEach(function(example) {
+      const repo = new Q.Repository(example.model, testAdapter)
 
-    it('uses mapping when reading from db', async function() {
-      testAdapter.get = this.sinon.stub().callsFake(() =>
-        ({ W_e_i_r_d___f_i_e_l_d: 'weirdDbValue' })
-      )
-      let user = await repo.get('123')
-      expect(user._getAttr('myField')).to.equal('weirdDbValue')
+      describe(example.name, function() {
+        it('model -> db', async function() {
+          testAdapter.create = this.sinon.spy()
+          let user = new example.model(example.attrs)
+          await repo.save(user)
+          expect(testAdapter.create).to.be.calledWith(example.collectionName, [example.fields])
+        })
+
+        it('db -> model', async function() {
+          testAdapter.get = this.sinon.stub().callsFake(() => example.fields)
+          let user = await repo.get('123')
+          _.forEach(example.attrs, function(value, key) {
+            expect(user._getAttr(key)).to.equal(value)
+          })
+        })
+      })
     })
   })
 
