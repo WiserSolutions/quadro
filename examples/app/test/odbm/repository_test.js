@@ -110,7 +110,7 @@ describe('Model Repository', function() {
         return { first_name: 'John', id: 1234 }
       })
       let model = await repo.get(1234)
-      expect(model).to.eql(new User({ id: 1234, firstName: 'John' }))
+      expect(model).to.eql(new User({ id: 1234, firstName: 'John' }).applyChanges())
     })
   })
 
@@ -131,8 +131,8 @@ describe('Model Repository', function() {
       let result = await repo.find({ firstName: 'o*n' })
       expect(result.length).to.equal(2)
       expect(result).to.eql([
-        new User({ id: 1, firstName: 'John' }),
-        new User({ id: 2, firstName: 'Jonny' })
+        new User({ id: 1, firstName: 'John' }).applyChanges(),
+        new User({ id: 2, firstName: 'Jonny' }).applyChanges()
       ])
     })
   })

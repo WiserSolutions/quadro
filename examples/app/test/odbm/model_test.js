@@ -105,6 +105,12 @@ describe('Q.Model', function() {
         let user = new User({ id: '123123123' })
         expect(user.isNew()).to.be.true
       })
+
+      it('returns false after .find()', async function() {
+        await User.create({ id: '123', firstName: 'John' })
+        let user = await User.get('123')
+        expect(user.isNew()).to.be.false
+      })
     })
 
     describe('new record', function() {

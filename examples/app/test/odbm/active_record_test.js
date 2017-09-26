@@ -83,7 +83,7 @@ describe('ActiveRecord', function() {
       await collection.insertOne(attrs)
       expect(attrs._id).to.be.ok
       let user = await User.get(attrs._id)
-      expect(user).to.eql(new User({ id: attrs._id, lastName: 'get' }))
+      expect(user).to.eql(new User({ id: attrs._id, lastName: 'get' }).applyChanges())
     })
   })
 
@@ -92,7 +92,7 @@ describe('ActiveRecord', function() {
       let attrs = { last_name: 'Stewart' }
       await collection.insertOne(attrs)
       let user = await User.findOne({ lastName: 'Stewart' })
-      expect(user).to.eql(new User({ id: attrs._id, lastName: 'Stewart' }))
+      expect(user).to.eql(new User({ id: attrs._id, lastName: 'Stewart' }).applyChanges())
     })
   })
 
@@ -103,8 +103,8 @@ describe('ActiveRecord', function() {
       await createAndGetId({ last_name: 'Bush', type: 'teacher' })
       let users = await User.find({ type: 'student' })
       expect(users).to.eql([
-        new User({ lastName: 'Jefferson', type: 'student', id: id1 }),
-        new User({ lastName: 'Richardson', type: 'student', id: id2 })
+        new User({ lastName: 'Jefferson', type: 'student', id: id1 }).applyChanges(),
+        new User({ lastName: 'Richardson', type: 'student', id: id2 }).applyChanges()
       ])
     })
   })
@@ -115,7 +115,7 @@ describe('ActiveRecord', function() {
       await collection.insertOne(attrs)
 
       let user = await User.findOrBuild({ lastName: 'Stewart' })
-      expect(user).to.eql(new User({ id: attrs._id, lastName: 'Stewart' }))
+      expect(user).to.eql(new User({ id: attrs._id, lastName: 'Stewart' }).applyChanges())
     })
 
     it('builds the model if does not exist', async function() {
