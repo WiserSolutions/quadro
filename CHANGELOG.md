@@ -4,6 +4,8 @@
 
 - Fix failure on empty options in `run(opts)` call
 - Allow specifying db fields mapping to bypass default inflection
+- Allow specifying custom collection/table name
+- Allow as_is field <-> attribute mapping
 
 ## 0.7.0
 

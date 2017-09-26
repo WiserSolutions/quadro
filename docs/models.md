@@ -85,6 +85,31 @@ user._getAttr('hiddenAttribute') // => '123123123'
 
 ## Model API
 
+## Creating a model
+
+```js
+// By default the model will be persisted to pluralized, underscore model name entity:
+// user -> users
+// myProduct -> my_products
+// etc.
+Q.Model('user', {
+  // But one can customize the collection/table name:
+  physicalName: 'customers',
+
+  // Field/attribute naming can be customized:
+  naming: {  
+    field: 'lower_case',
+    collection: 'lower_case_pluralize',
+    attribute: 'camel'
+  },
+
+  attributes: {
+    // Individual field names can be overridden:
+    category: { physicalName: 'type' }
+  }
+})
+```
+
 ### model.build(attrs)
 
 Instantiates a model and populates the attributes from the provided `attrs` object.
