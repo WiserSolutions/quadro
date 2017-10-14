@@ -1,6 +1,6 @@
 # Testing
 
-Place your tests into `./test` directory with `*_test.js` mask
+Mask for tests is `test/**/*_test.js`
 
 ## Execution
 
