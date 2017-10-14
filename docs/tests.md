@@ -6,6 +6,10 @@ To run quadro app in test mode use:
 node app.js test [--watch]
 ```
 
+```sh
+/node_modules/mocha/bin/_mocha /node_modules/quadro/lib/test/jest_config.js --ui tdd test/**/*_test.js
+```
+
 *NOTE:* You can use `--watch` flag to monitor the filesystem and restart tests
 on change.
 
