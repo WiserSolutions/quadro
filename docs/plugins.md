@@ -24,9 +24,7 @@ Quadro({
 })
 ```
 
-2.1.
-
-If your plugin starts with `.` it will be resolved to your project's root. 
+2.1. If your plugin starts with `.` it will be resolved to your project's root. 
 ```js
 const Quadro = require('quadro')
 Quadro({
