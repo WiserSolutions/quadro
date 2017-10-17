@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.7.3
+- Independent test loader (see Tests.md)
+
 ## 0.7.2
 
 - Fix failure on empty options in `run(opts)` call
