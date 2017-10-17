@@ -24,7 +24,17 @@ Quadro({
 })
 ```
 
-This will load all the configs, services, tasks and initializers from the plugin.
+2.1.
+
+If your plugin starts with `.` it will be resolved to your project's root. 
+```js
+const Quadro = require('quadro')
+Quadro({
+  plugins: ['./some-quadro-plugin']
+})
+```
+
+3. This will load all the configs, services, tasks and initializers from the plugin.
 
 ## Implementing a plugin
 
