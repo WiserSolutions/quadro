@@ -41,7 +41,7 @@ with the following entities supported:
 
 - Initializers
 - Configs
-- Tasks
+- Tasks (executed by `node app.js task some-quadro-plugin:demo`)
 - Services
 - Controllers (TBD)
 - Routes (TBD)
