@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.3
+
+- Document `repository` access through `model` (+ unit test)
+
 ## 0.7.2
 
 - Fix failure on empty options in `run(opts)` call
