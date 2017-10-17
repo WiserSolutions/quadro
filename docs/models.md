@@ -38,6 +38,24 @@ module.exports = Q.Model('user', {
 })
 ```
 
+### Repository
+
+Quadro model is implementing the ActiveRecord design pattern.
+Behind the scenes the active record is just a wrapper around the `repository`
+pattern.
+
+#### Accessing the repository
+
+You can access the repository of a model using the `.repository` property.
+
+```js
+// Accessing through the model:
+// NOTE: We're using `await`, as  `.repository` is a promise
+let repo = await User.repository
+Q.log.info({ collectionName: repo.dbEntityName })
+// Outputs: collectionName: users
+```
+
 ### Identity
 
 Each model is assumed to have an identity attribute called `id`. The backing
