@@ -1,5 +1,9 @@
 # Testing
 
+Mask for tests is `test/**/*_test.js`
+
+## Execution
+
 To run quadro app in test mode use:
 
 ```sh
