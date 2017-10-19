@@ -12,6 +12,11 @@ describe('Model Repository', function() {
   })
   const repo = new Q.Repository(User, testAdapter)
 
+  describe('.repository', async function() {
+    let repo = await User.repository
+    expect(repo.dbEntityName).to.equal('users')
+  })
+
   describe('fields mapping', function() {
     [
       {

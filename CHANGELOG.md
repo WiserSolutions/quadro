@@ -2,6 +2,7 @@
 
 ## 0.7.3
 - Independent test loader (see Tests.md)
+- Document `repository` access through `model` (+ unit test)
 
 ## 0.7.2
 
