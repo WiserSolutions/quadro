@@ -64,7 +64,7 @@
     "supertest": "^3.0.0"
   },
   "scripts": {
-    "test": "cd examples/app/ && npm install && nyc --reporter=text-summary --reporter=lcov node app.js test"
+    "test": "cd examples/app && npm link quadro && nyc --reporter=text-summary --reporter=lcov node app.js test"
   },
   "devDependencies": {
     "strip-ansi": "^4.0.0",
