@@ -8,7 +8,7 @@ describe('UsersController', function() {
   })
 
   describe('create', function() {
-    it.only('uploads a file', async function() {
+    it('uploads a file', async function() {
       await QT.httpTest
         .post('/users')
         .attach('file', `${Q.app.appDir}/test/fixtures/upload_test_file.txt`)
