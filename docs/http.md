@@ -82,6 +82,13 @@ async create(ctx) {
 ```
 
 
+### Route Events
+Before routes are added to the http server, the Quadro app fires the event "routes-will-load", with the payload { quadroHttpServer:(koa instance) }
+
+After routes have been added, the app fires "routes-did-load", with the same payload (now modified with routes).
+
+
+
 ## Controllers
 
 **Important! DO NOT STORE REQUEST STATE IN CONTROLLER INSTANCE** Controllers are singletons. Only one instance of the controller is created and it's method is used in the route.
