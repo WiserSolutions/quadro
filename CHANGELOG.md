@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.7.4
+- Support for `willRetry` method in pubsub
+
 ## 0.7.3
 - Independent test loader (see Tests.md)
 - Document `repository` access through `model` (+ unit test)
