@@ -1,3 +1,5 @@
+const DEFAULT_MAX_ATTEMPTS = 5
+const DEFAULT_ATTEMPTS_MADE = 0
 module.exports = class HubMessageContext {
   constructor(message) {
     this.rawMessage = message
@@ -60,5 +62,11 @@ module.exports = class HubMessageContext {
 
   isFailed() {
     return this.failed || false
+  }
+
+  willRetry() {
+    let maximumAttempts = parseInt(this.rawMessage.maxAttempts) || DEFAULT_MAX_ATTEMPTS
+    let attemptsMadeTillNow = parseInt(this.rawMessage.attemptsMade) || DEFAULT_ATTEMPTS_MADE
+    return maximumAttempts + 1 < attemptsMadeTillNow
   }
 }

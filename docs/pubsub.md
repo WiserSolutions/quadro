@@ -67,3 +67,8 @@ Acknowledges the message handling, marking it handled
 #### .retryAfterSec(seconds)
 
 Reschedules the message to be delivered after `seconds` interval
+
+### .willRetry()
+
+Return true if pubsub will retry this message at later state. Returns false if
+this is final retry.
