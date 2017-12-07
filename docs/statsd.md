@@ -23,7 +23,7 @@ statsd:
   host: statsd_host.com
   port: 8125 # Optional, default 8125
   protocol: tcp # Optional
-  prefix: some_prefix # Optional
+  prefix: some_prefix # Optional, default is the app name
   tags: # Optional
     some: global_tag
     another: tag
