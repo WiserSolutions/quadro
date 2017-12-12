@@ -42,9 +42,6 @@ module.exports = class HubMessageProcessor {
    * @return {Promise}
    */
   async handleProcessing(message) {
-    if (!this.initialized) {
-      throw new Q.Errors.HubMessageConsumerNotInitializedError()
-    }
     // Parse the message. If it fails then log and return.
     // Else this message will keep hanging in the system
     let parsedMessage
@@ -54,13 +51,15 @@ module.exports = class HubMessageProcessor {
       this.log.error({err}, `Error while parsing message: ${parsedMessage}`)
       return
     }
+
     let messageContext = new HubMessageContext(parsedMessage)
-    // Get the message handler based on type
     let messageType = parsedMessage.messageType
     let handler = this.handlers[messageType]
-    if (!handler) {
-      throw new Q.Errors.HubMessageHandlerNotFoundError({messageType: parsedMessage.messageType})
+    if (!this.initialized || !handler) {
+      messageContext.failure('Message handler not found.')
+      return this.sendToDeadLetter(messageContext)
     }
+
     try {
       let timer = new Date()
       await handler.handle(messageContext)
@@ -174,6 +173,3 @@ module.exports = class HubMessageProcessor {
     this.handlers[messageName] = messageHandler
   }
 }
-
-Q.Errors.declareError('HubMessageConsumerNotInitializedError', 'Consumer is not initialized yet')
-Q.Errors.declareError('HubMessageHandlerNotFoundError', 'Message handler not found')
