@@ -2,6 +2,7 @@
 
 ## 0.7.5
 - Support for `prefix` and `global tags` in StatsD configuration
+- Handle handler not fond gracefully in pubsub
 
 ## 0.7.4
 - Support for `willRetry` method in pubsub

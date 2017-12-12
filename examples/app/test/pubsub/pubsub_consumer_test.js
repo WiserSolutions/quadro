@@ -25,10 +25,12 @@ describe('pubsub', function() {
     beforeEach(async function() {
       connection = await amqp.connect(Q.config.get('service.messages.host'))
       channel = await connection.createChannel()
-      await scheduleCollection.deleteMany({})
-      await deadLetterCollection.deleteMany({})
+
       await channel.assertQueue(QUEUE_NAME)
       await channel.purgeQueue(QUEUE_NAME)
+
+      await scheduleCollection.deleteMany({})
+      await deadLetterCollection.deleteMany({})
 
       await channel.assertExchange('orders.test.consumer', 'fanout', {durable: false})
       await channel.bindQueue(QUEUE_NAME, 'orders.test.consumer', '')
@@ -223,6 +225,18 @@ describe('pubsub', function() {
         message: {hello: 'world'}}))
       let deadLetterEntries = await deadLetterCollection.find({}).toArray()
       expect(deadLetterEntries).to.be.empty
+    })
+
+    it('push to dead letter queue when message handler not found', async function() {
+      hubMessageProcessor.register('orders.test.consumer', null)
+      // Send a message through pub sub
+      pubsub.publish('orders.test.consumer', { hello: 'delete' })
+      await Promise.delay(200)
+      let scheduledEntries = await scheduleCollection.find({}).toArray()
+      expect(scheduledEntries).to.be.empty
+      let deadLetterEntries = await deadLetterCollection.find({}).toArray()
+      expect(deadLetterEntries).to.be.of.length(1)
+      expect(deadLetterEntries[0]).to.containSubset({messageType: 'orders.test.consumer', content: {hello: 'delete'}})
     })
   })
 })
