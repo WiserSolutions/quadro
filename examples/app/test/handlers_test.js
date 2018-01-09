@@ -26,5 +26,17 @@ describe('OrderCompleted', function() {
       await QT.onMessage('orders.completed', { orderId: 'retry' })
         .expectRetryAfterSec(60)
     })
+
+    it('will retry', async function() {
+      await QT.onMessage('orders.completed', { orderId: 'willRetry' },
+        {attemptsMade: 1, maxAttempts: 5})
+        .expectSuccess()
+    })
+
+    it('will not retry', async function() {
+      await QT.onMessage('orders.completed', { orderId: 'willNotRetry' },
+        {attemptsMade: 4, maxAttempts: 5})
+        .expectSuccess()
+    })
   })
 })

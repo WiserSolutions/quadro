@@ -25,10 +25,12 @@ describe('pubsub', function() {
     beforeEach(async function() {
       connection = await amqp.connect(Q.config.get('service.messages.host'))
       channel = await connection.createChannel()
-      await scheduleCollection.deleteMany({})
-      await deadLetterCollection.deleteMany({})
+
       await channel.assertQueue(QUEUE_NAME)
       await channel.purgeQueue(QUEUE_NAME)
+
+      await scheduleCollection.deleteMany({})
+      await deadLetterCollection.deleteMany({})
 
       await channel.assertExchange('orders.test.consumer', 'fanout', {durable: false})
       await channel.bindQueue(QUEUE_NAME, 'orders.test.consumer', '')
@@ -155,6 +157,86 @@ describe('pubsub', function() {
       pubsub.publish('orders.test.consumer', { hello: 'world' })
       await Promise.delay(200)
       expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset({message: {hello: 'world'}}))
+    })
+
+    it('test final retry on final attempt', async function() {
+      const message = {
+        messageType: 'orders.test.consumer',
+        content: { hello: 'world' },
+        attemptsMade: 4,
+        maxAttempts: 5
+      }
+      let handler = {
+        handle: this.sinon.stub().callsFake(ctx => {
+          expect(ctx.willRetry()).to.be.false
+          ctx.success()
+        })
+      }
+      hubMessageProcessor.register('orders.test.consumer', handler)
+      // Send a message through pub sub
+      await channel.publish('orders.test.consumer', '', Buffer.from(JSON.stringify(message)))
+      await Promise.delay(200)
+      expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset({
+        message: {hello: 'world'}}))
+      let deadLetterEntries = await deadLetterCollection.find({}).toArray()
+      expect(deadLetterEntries).to.be.empty
+    })
+
+    it('test final retry on final attempt when first attempt is final attempt', async function() {
+      const message = {
+        messageType: 'orders.test.consumer',
+        content: { hello: 'world' },
+        maxAttempts: 1
+      }
+      let handler = {
+        handle: this.sinon.stub().callsFake(ctx => {
+          expect(ctx.willRetry()).to.be.false
+          ctx.success()
+        })
+      }
+      hubMessageProcessor.register('orders.test.consumer', handler)
+      // Send a message through pub sub
+      await channel.publish('orders.test.consumer', '', Buffer.from(JSON.stringify(message)))
+      await Promise.delay(200)
+      expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset({
+        message: {hello: 'world'}}))
+      let deadLetterEntries = await deadLetterCollection.find({}).toArray()
+      expect(deadLetterEntries).to.be.empty
+    })
+
+    it('test not a final retry', async function() {
+      const message = {
+        messageType: 'orders.test.consumer',
+        content: { hello: 'world' },
+        attemptsMade: 1,
+        maxAttempts: 5
+      }
+      let handler = {
+        handle: this.sinon.stub().callsFake(ctx => {
+          expect(ctx.willRetry()).to.be.true
+          ctx.success()
+        })
+      }
+      hubMessageProcessor.register('orders.test.consumer', handler)
+      // Send a message through pub sub
+      await channel.publish('orders.test.consumer', '', Buffer.from(JSON.stringify(message)))
+      await Promise.delay(200)
+      expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset({
+        message: {hello: 'world'}}))
+      let deadLetterEntries = await deadLetterCollection.find({}).toArray()
+      expect(deadLetterEntries).to.be.empty
+    })
+
+    it('push to dead letter queue when message handler not found', async function() {
+      hubMessageProcessor.register('orders.test.consumer', null)
+      // Send a message through pub sub
+      pubsub.publish('orders.test.consumer', { hello: 'delete' })
+      await Promise.delay(200)
+      let scheduledEntries = await scheduleCollection.find({}).toArray()
+      expect(scheduledEntries).to.be.empty
+      let deadLetterEntries = await deadLetterCollection.find({}).toArray()
+      expect(deadLetterEntries).to.be.of.length(1)
+      expect(deadLetterEntries[0]).to.containSubset({messageType: 'orders.test.consumer', content: {hello: 'delete'}})
     })
   })
 })

@@ -31,7 +31,7 @@ publishes a message to rabbitmq
 
 To recieve messages add a handler class that implements handle method to the handler folder with the name `${messageType}.js`
 
-Quadro will automatically picks the handler on startup and registers it. It will receive all the messages from the input queue and routes the message to appropriate handler base don messageType
+Quadro will automatically picks the handler on startup and registers it. It will receive all the messages from the input queue and routes the message to appropriate handler based on messageType
 
 Sample handler code:
 
@@ -67,3 +67,8 @@ Acknowledges the message handling, marking it handled
 #### .retryAfterSec(seconds)
 
 Reschedules the message to be delivered after `seconds` interval
+
+### .willRetry()
+
+Return true if pubsub will retry this message at later state. Returns false if
+this is final retry.
