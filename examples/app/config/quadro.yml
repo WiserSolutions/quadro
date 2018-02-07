@@ -5,3 +5,6 @@ http:
     endpoint: '/alive'
 aws:
   region: us-east-5
+watcher:
+  ignore:
+    - version.js*

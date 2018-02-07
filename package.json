@@ -1,6 +1,6 @@
 {
   "name": "quadro",
-  "version": "0.7.5",
+  "version": "0.7.6",
   "keywords": [
     "framework",
     "quadro",
@@ -37,6 +37,7 @@
     "espree": "^3.5.0",
     "events-async": "^1.1.0",
     "forever-agent": "^0.6.1",
+    "gitlog": "^3.1.2",
     "glob": "^7.1.2",
     "inflected": "^2.0.2",
     "js-yaml": "^3.9.1",
