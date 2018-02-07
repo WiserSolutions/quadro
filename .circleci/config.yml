@@ -14,9 +14,15 @@ jobs:
       - run: npm install && npm link .
       - run: cd examples/app && npm link quadro
       - type: shell
-        command: npm test
+        command: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter \
+          && chmod +x ./cc-test-reporter \
+          && ./cc-test-reporter before-build \
+          && npm test \
+          && ./cc-test-reporter after-build --exit-code $?
         environment:
           TERM: dumb
+          CC_TEST_REPORTER_ID: 95f6f8f8d5f0b91ef00aee31e4525e1b46c0ee5e564cfdd61437bb3679d1f167
       - save_cache:
           key: quadro-{{ checksum "package.json" }}-{{ checksum "examples/app/package.json" }}
           paths:
