@@ -3,6 +3,7 @@
 ## 0.7.6
 - Add CodeClimate code coverage to CircleCI
 - Implement `versionRetreiver` service and `/_version` API
+- ESLint fixes
 - Upgraded dependencies
   - Upgraded MongoClient (+ introduced mongoConnectionFactory)
 

@@ -123,7 +123,7 @@ describe('Q.Model', function() {
       })
 
       it('creates new record with custom id', async function() {
-        let user = new User({ id: 'MyUser', firstName: 'Michael'})
+        let user = new User({ id: 'MyUser', firstName: 'Michael' })
         await user.save()
 
         user = await User.get('MyUser')

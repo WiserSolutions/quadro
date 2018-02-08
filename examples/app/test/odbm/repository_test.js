@@ -48,7 +48,8 @@ describe('Model Repository', function() {
       describe(example.name, function() {
         it('model -> db', async function() {
           testAdapter.create = this.sinon.spy()
-          let user = new example.model(example.attrs)
+          const Model = example.model
+          let user = new Model(example.attrs)
           await repo.save(user)
           expect(testAdapter.create).to.be.calledWith(example.collectionName, [example.fields])
         })

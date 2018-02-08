@@ -12,7 +12,7 @@ jobs:
       - restore_cache:
           key: quadro-{{ checksum "package.json" }}-{{ checksum "examples/app/package.json" }}
       - run: npm install && npm link .
-      - run: cd examples/app && npm link quadro
+      - run: cd examples/app && npm install && npm link quadro
       - type: shell
         command: |
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter \
