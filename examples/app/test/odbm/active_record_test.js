@@ -131,6 +131,13 @@ describe('ActiveRecord', function() {
       let user = new User({ firstName: 'John' })
       await user.save()
     })
+
+    it('can save a non-changed record', async function() {
+      let user = new User({ firstName: 'John' })
+      await user.save()
+      await user.save()
+      expect(await User.count()).to.eql(1)
+    })
   })
 
   async function createAndGetId(attrs) {
