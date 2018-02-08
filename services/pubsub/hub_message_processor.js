@@ -1,17 +1,17 @@
 const HubMessageContext = require('./hub_message_context')
 const shortid = require('shortid')
-const MongoClient = require('mongodb')
 const SECOND = 1000
 const MINUTE = 60 * SECOND
 const HOUR = 60 * MINUTE
 
 module.exports = class HubMessageProcessor {
-  constructor(log, config, hubStats = 'pubsub:hubStats') {
+  constructor(log, config, hubStats = 'pubsub:hubStats', mongoConnectionFactory) {
     this.log = log
     this.config = config
     this.hubStats = hubStats
     this.handlers = {}
     this.defaultDelaySec = 5
+    this.mongoConnectionFactory = mongoConnectionFactory
     this.schedule = config.get('service.retrySchedule', [
       5 * SECOND, 3 * MINUTE, 30 * MINUTE, 6 * HOUR
     ])
@@ -23,11 +23,13 @@ module.exports = class HubMessageProcessor {
   async initialize() {
     if (this.config.get('service.name')) {
       this.initialized = true
-      let mongoClient = await MongoClient.connect(this.config.get('service.storage.host'))
-      let serviceName = this.config.get('service.name')
-      this.scheduleCollection = await mongoClient.collection(this.config.get('service.storage.schedule', `${serviceName}_schedule`))
+
+      const mongoConnectionString = this.config.get('service.storage.host')
+      const mongoDB = await this.mongoConnectionFactory.connectToDB(mongoConnectionString)
+      const serviceName = this.config.get('service.name')
+      this.scheduleCollection = await mongoDB.collection(this.config.get('service.storage.schedule', `${serviceName}_schedule`))
       await this.scheduleCollection.createIndex({scheduledMessageId: 1}, {unique: true, name: 'scheduledMessageId'})
-      this.deadLetterCollection = await mongoClient.collection(this.config.get('service.storage.dead', `${serviceName}_dead_v2`))
+      this.deadLetterCollection = await mongoDB.collection(this.config.get('service.storage.dead', `${serviceName}_dead_v2`))
       await this.deadLetterCollection.createIndex({killedAt: 1}, {name: 'killedAt'})
       await this.deadLetterCollection.createIndex({messageId: 1}, {name: 'messageId'})
     }
