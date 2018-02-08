@@ -2,7 +2,7 @@ const URL = require('url')
 const MongoConnectionError = Q.Errors.declareError('MongoConnectionError')
 
 module.exports = class {
-  createClient(connectionString, ignoreDB = false) {
+  async createClient(connectionString, ignoreDB = false) {
     const { MongoClient } = require('mongodb')
 
     const url = URL.parse(connectionString)
@@ -20,7 +20,9 @@ module.exports = class {
 
   async connectToDB(connectionString) {
     const url = URL.parse(connectionString)
-    if (!url.path) {
+    const path = url.path || ''
+    const dbName = path.replace(/^\//, '')
+    if (!dbName) {
       throw new MongoConnectionError(
         `Calling 'connectToDB' without specifying a db name (e.g. mongodb://host).break
         You probably want to call 'createClient' instead.
@@ -30,6 +32,6 @@ module.exports = class {
     }
 
     const client = await this.createClient(connectionString, true)
-    return client.db(url.path.replace(/^\//, ''))
+    return client.db(dbName)
   }
 }
