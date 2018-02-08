@@ -6,6 +6,7 @@
 - ESLint fixes
 - Upgraded dependencies
   - Upgraded MongoClient (+ introduced mongoConnectionFactory)
+- Load message handlers from subfolders of `handlers`
 
 ## 0.7.5
 - Support for `prefix` and `global tags` in StatsD configuration
