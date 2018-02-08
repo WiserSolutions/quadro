@@ -1,6 +1,5 @@
 /* eslint no-unused-expressions: 0 */
 const amqp = require('amqplib')
-const MongoClient = require('mongodb')
 const QUEUE_NAME = 'service_in'
 
 describe('pubsub', function() {
@@ -13,9 +12,10 @@ describe('pubsub', function() {
     pubsub = await Q.container.getAsync('pubsub')
     hubMessageProcessor = await Q.container.getAsync('pubsub:hubMessageProcessor')
     let serviceName = Q.config.get('service.name')
-    let mongoClient = await MongoClient.connect(Q.config.get('service.storage.host'))
-    scheduleCollection = await mongoClient.collection(Q.config.get('service.storage.schedule', `${serviceName}_schedule` ))
-    deadLetterCollection = await mongoClient.collection(Q.config.get('service.storage.dead', `${serviceName}_dead_v2`))
+    const mongoConnectionFactory = await Q.container.getAsync('mongoConnectionFactory')
+    let mongoDB = await mongoConnectionFactory.connectToDB(Q.config.get('service.storage.host'))
+    scheduleCollection = await mongoDB.collection(Q.config.get('service.storage.schedule', `${serviceName}_schedule` ))
+    deadLetterCollection = await mongoDB.collection(Q.config.get('service.storage.dead', `${serviceName}_dead_v2`))
   })
 
   describe('publish', function() {

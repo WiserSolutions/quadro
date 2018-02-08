@@ -3,6 +3,8 @@
 ## 0.7.6
 - Add CodeClimate code coverage to CircleCI
 - Implement `versionRetreiver` service and `/_version` API
+- Upgraded dependencies
+  - Upgraded MongoClient (+ introduced mongoConnectionFactory)
 
 ## 0.7.5
 - Support for `prefix` and `global tags` in StatsD configuration
