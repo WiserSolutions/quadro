@@ -1,10 +1,9 @@
-const path = require('path')
-
 module.exports = class HubMessageConsumer {
-  constructor(app, container, hubMessageProcessor = 'pubsub:hubMessageProcessor') {
-    this.hubMessageProcessor = hubMessageProcessor
-    this.app = app
-    this.container = container
+  constructor(
+    processor = 'pubsub:hubMessageProcessor',
+    handlers = 'pubsub:handlersList') {
+    this.processor = processor
+    this.handlers = handlers
   }
 
   async initialize() {
@@ -13,16 +12,8 @@ module.exports = class HubMessageConsumer {
 
   async initailizeHandlers() {
     await Promise.map(
-      this.app.glob(`handlers/*.js`),
-      async (file) => {
-        let handler = await this.container.create(require(file))
-        let messageType = this.getMessageName(file)
-        await this.hubMessageProcessor.register(messageType, handler)
-      }
+      this.handlers,
+      ({ handler, type }) => this.processor.register(type, handler)
     )
-  }
-
-  getMessageName(file) {
-    return path.basename(file, '.js')
   }
 }
