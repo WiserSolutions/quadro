@@ -13,7 +13,7 @@ module.exports = class HubMessageConsumer {
   async initailizeHandlers() {
     await Promise.map(
       this.handlers,
-      ({ handler, type }) => this.processor.register(type, handler)
+      ({ handler, messageType }) => this.processor.register(messageType, handler)
     )
   }
 }
