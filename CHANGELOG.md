@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.7.7
+- critical bugfix: message handlers not registered in rabbitmq consumer pipeline
+
 ## 0.7.6
 - Add CodeClimate code coverage to CircleCI
 - Implement `versionRetreiver` service and `/_version` API
