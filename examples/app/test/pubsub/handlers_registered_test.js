@@ -1,3 +1,4 @@
+/* eslint no-unused-expressions: 0 */
 describe('messageProcessor', function() {
   let processor
 
@@ -6,6 +7,6 @@ describe('messageProcessor', function() {
   })
 
   it('registers messages in messageProcessor', async function() {
-    expect(processor.handlers['orders.completed']).to.be.ok
+    expect(processor.handlers['orders.completed']).to.exist
   })
 })
