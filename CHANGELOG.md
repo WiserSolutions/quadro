@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.7.8
+- Added synchronous API wrappers ([Q.externalAPI](./docs/external_apis))
+
 ## 0.7.7
 - critical bugfix: message handlers not registered in rabbitmq consumer pipeline
 
