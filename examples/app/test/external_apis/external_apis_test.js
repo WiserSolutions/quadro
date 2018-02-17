@@ -79,18 +79,57 @@ describe('External APIs', function() {
         })
         router.get('/delayed', (ctx) => Promise.delay(100).then(() => ctx.status = 200))
         await expect(api.get('/delayed')).to.be
-          .rejectedWith(Q.Errors.APIRequestError, /failure: ESOCKETTIMEDOUT/)
+          .rejectedWith(Q.Errors.APIRequestError, /failed: ESOCKETTIMEDOUT/)
       })
     })
 
     describe('retries', function() {
-      describe('fibonacci', function() {
+      let requestTimestamps
+
+      function assertRetriesSchedule(expectedSchedule) {
+        const timestamps = requestTimestamps
+        expect(timestamps.length).to.eql(expectedSchedule.length + 1,
+          `${expectedSchedule.length} retries expected`)
+        expectedSchedule.forEach(function(expectedInterval, i) {
+          const actualInterval = timestamps[i + 1] - timestamps[i]
+          const min = expectedInterval
+          const max = expectedInterval + 50
+          expect(actualInterval).to.be.within(
+            min, max,
+            `Expected to retry within [${min}, ${max}]ms`
+          )
+        })
+      }
+
+      beforeEach(function() {
+        requestTimestamps = []
+        nock('http://failing.com')
+          .post('/fail', () => requestTimestamps.push(Date.now()) && true)
+          .times(10)
+          .reply(500)
+      })
+
+      describe('fibonacci backoff', function() {
         it('retries according to fib schedule', async function() {
           const api = Q.externalAPI.register('myAPI', {
             host: 'failing.com',
-            retry: { times: 5, startInterval: 100, strategy: 'fibonacci' }
+            retry: { times: 5, startInterval: 10, strategy: 'fibonacci' }
           })
-          expect()
+          await expect(api.post('/fail')).to.be.rejectedWith(Q.Errors.APIRequestError)
+
+          assertRetriesSchedule([10, 10, 20, 30, 50])
+        })
+      })
+
+      describe('exponential backoff', function() {
+        it('retries according to exp schedule', async function() {
+          const api = Q.externalAPI.register('myAPI', {
+            host: 'failing.com',
+            retry: { times: 5, startInterval: 10 }
+          })
+
+          await expect(api.post('/fail')).to.be.rejectedWith(Q.Errors.APIRequestError)
+          assertRetriesSchedule([10, 20, 40, 80, 160])
         })
       })
     })
