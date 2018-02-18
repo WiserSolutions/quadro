@@ -161,13 +161,43 @@ describe('External APIs', function() {
           this.sinon.stub(stats, 'increment')
         })
 
-        it('reports successes', async function() {
+        it('reports response times', async function() {
+          nock.cleanAll()
+          nock('http://success.com')
+            .get('/hello').delay(10).reply(501, {})
+            .get('/hello').delay(20).reply(201, {})
+          const api = Q.externalAPI.register('api1', {
+            host: 'success.com', retry: { times: 1, startInterval: 50 }
+          })
+
+          await api.get('/hello').catch(() => {})
+          // First call
+          expect(stats.gauge)
+            .to.be.calledWithMatch('quadro.external_api.response_time', x => x > 10, {
+              source: Q.app.name,
+              target: 'api1',
+              outcome: 'failure'
+            })
+          // Retry
+          expect(stats.gauge)
+            .to.be.calledWithMatch('quadro.external_api.response_time', x => x > 20, {
+              source: Q.app.name,
+              target: 'api1',
+              outcome: 'success'
+            })
+          // Total time
+          expect(stats.gauge)
+            .to.be.calledWithMatch('quadro.external_api.total_time', x => x > 10 + 20 + 50)
+        })
+
+        it('reports calls', async function() {
           nock('http://success.com').get('/hello').reply(201, {})
           const api = Q.externalAPI.register('api1', { host: 'success.com' })
           await api.get('/hello')
-          expect(stats.increment).to.be.calledWith('quadro.external_api.success', {
+          expect(stats.increment).to.be.calledWith('quadro.external_api.calls', {
             target: 'api1',
-            source: Q.app.name
+            source: Q.app.name,
+            outcome: 'success'
           })
         })
 

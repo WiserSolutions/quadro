@@ -26,7 +26,11 @@ module.exports = class APIWrapper {
     if (this.timeout) defaultOptions.timeout = this.timeout
     const requestOptions = Object.assign(defaultOptions, options)
 
+    const start = Date.now()
+    let err
     return this._performHTTPRequestWithRetries(requestOptions)
+      .tapCatch(e => err = e)
+      .finally(() => this._reportMetric('gauge', 'total_time', Date.now() - start, { err }))
   }
 
   _performHTTPRequestWithRetries(options) {
@@ -41,11 +45,7 @@ module.exports = class APIWrapper {
 
       // https://github.com/MathieuTurcotte/node-backoff#functional
       const call = backoff.call(requestAsCallback, options, (err, res) => {
-        this.stats.gauge('quadro.external_api.retries', call.getNumRetries(), {
-          target: this.name,
-          source: Q.app.name,
-          outcome: err ? 'failure' : 'success'
-        })
+        this._reportMetric('gauge', 'retries', call.getNumRetries(), { err })
 
         if (err) return reject(err)
         resolve(res)
@@ -63,8 +63,14 @@ module.exports = class APIWrapper {
 
   _performHTTPRequest(options) {
     Q.log.trace({ options }, 'Request options')
+    const start = Date.now()
     return new Promise((resolve, reject) => {
       request(options, (err, response, body) => {
+        this._reportMetric('gauge', 'response_time',
+          Date.now() - start, { err, response }
+        )
+        this._reportMetric('increment', 'calls', { err, response })
+
         if (err) {
           return reject(this._buildRequestError(options, err, response))
         }
@@ -73,10 +79,6 @@ module.exports = class APIWrapper {
         if (statusCode / 100 > 3) {
           return reject(this._buildRequestError(options, null, response))
         }
-        this.stats.increment('quadro.external_api.success', {
-          target: this.name,
-          source: Q.app.name
-        })
         resolve(response.body)
       })
     })
@@ -111,5 +113,21 @@ module.exports = class APIWrapper {
         return this.request(path, options)
       }
     })
+  }
+
+  _reportMetric(type, name, value, options) {
+    const tags = { source: Q.app.name, target: this.name }
+
+    const { err, response } = options || {}
+    tags.outcome = err || (response && response.statusCode >= 400) ?
+      'failure' : 'success'
+
+    name = `quadro.external_api.${name}`
+
+    if (type === 'increment') {
+      this.stats.increment(name, tags)
+    } else if (type === 'gauge') {
+      this.stats.gauge(name, value, tags)
+    } else throw new Error('Unknown metric type')
   }
 }
