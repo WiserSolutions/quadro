@@ -1,0 +1,7 @@
+---
+orders:
+  host: orders.mycompany.com:1234
+  timeout: 1000
+  retry:
+    times: 10
+    strategy: fib

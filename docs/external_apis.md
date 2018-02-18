@@ -45,6 +45,26 @@ api.request('/some/custom/route', {
 })
 ```
 
+## Configuration
+
+External APIs can be registered from configuration.
+Config namespace is `external_api`.
+
+### Example:
+
+```yml
+# external_api.yml
+svc1:
+  host: my_service.mycompany.com:2222
+```
+
+Can later be used in code as follows:
+
+```js
+const response = await Q.externalAPI.svc1.get('/resource/123')
+...
+```
+
 ## Metrics
 
 ## quadro.external_api.retries
