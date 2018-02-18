@@ -15,7 +15,7 @@ describe('External APIs', function() {
     it('API successfully registered', async function() {
       nock('http://orders.mycompany.com:1234').get('/hi').reply(201, { a: 1 })
       await expect(Q.externalAPI.orders.get('/hi'))
-        .to.be.become({ a: 1 })
+        .to.become({ a: 1 })
     })
   })
 
