@@ -1,6 +1,23 @@
+/* eslint no-unused-expressions: 0 */
+
 describe('External APIs', function() {
   const JSON_CONTENT = { 'content-type': 'application/json' }
   const LOCAL_SERVER = 'localhost:3000'
+
+  describe('Initialization', function() {
+    it('loads apis', async function() {
+      const ordersAPI = Q.externalAPI.orders
+      expect(ordersAPI).to.be.ok
+      expect(ordersAPI.host).to.eql('orders.mycompany.com:1234')
+      expect(ordersAPI.retry.strategy).to.eql('fib')
+    })
+
+    it('API successfully registered', async function() {
+      nock('http://orders.mycompany.com:1234').get('/hi').reply(201, { a: 1 })
+      await expect(Q.externalAPI.orders.get('/hi'))
+        .to.be.become({ a: 1 })
+    })
+  })
 
   describe('Registry', function() {
     it('Registers APIs', async function() {
@@ -157,7 +174,7 @@ describe('External APIs', function() {
         it('reports number of retries', async function() {
           const api = Q.externalAPI.register('myAPI', {
             host: 'failing.com',
-            retry: { times: 11, startInterval: 1}
+            retry: { times: 11, startInterval: 1 }
           })
 
           await expect(api.post('/fail')).to.be.fulfilled
