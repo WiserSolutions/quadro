@@ -103,10 +103,13 @@ describe('External APIs', function() {
 
       beforeEach(function() {
         requestTimestamps = []
+        nock.cleanAll()
         nock('http://failing.com')
           .post('/fail', () => requestTimestamps.push(Date.now()) && true)
-          .times(10)
+          .times(6)
           .reply(500)
+          .post('/fail', () => true)
+          .reply(200, {})
       })
 
       describe('fibonacci backoff', function() {
@@ -130,6 +133,40 @@ describe('External APIs', function() {
 
           await expect(api.post('/fail')).to.be.rejectedWith(Q.Errors.APIRequestError)
           assertRetriesSchedule([10, 20, 40, 80, 160])
+        })
+      })
+
+      describe('metrics', function() {
+        let stats
+        beforeEach(async function() {
+          stats = await Q.container.getAsync('stats')
+          this.sinon.stub(stats, 'gauge')
+          this.sinon.stub(stats, 'increment')
+        })
+
+        it('reports successes', async function() {
+          nock('http://success.com').get('/hello').reply(201, {})
+          const api = Q.externalAPI.register('api1', { host: 'success.com' })
+          await api.get('/hello')
+          expect(stats.increment).to.be.calledWith('quadro.external_api.success', {
+            target: 'api1',
+            source: Q.app.name
+          })
+        })
+
+        it('reports number of retries', async function() {
+          const api = Q.externalAPI.register('myAPI', {
+            host: 'failing.com',
+            retry: { times: 11, startInterval: 1}
+          })
+
+          await expect(api.post('/fail')).to.be.fulfilled
+
+          expect(stats.gauge).to.be.calledWith('quadro.external_api.retries', 6, {
+            target: 'myAPI',
+            source: Q.app.name,
+            outcome: 'success'
+          })
         })
       })
     })

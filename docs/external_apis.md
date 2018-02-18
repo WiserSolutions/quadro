@@ -9,7 +9,20 @@ const api = Q.externalAPI.register('orders', {
   // The host name
   host: 'orders.mycompany.com',
   // API timeout in milliseconds
-  timeout: 1000
+  timeout: 1000,
+
+  // Default: no retry
+  retry: {
+    // How many times to retry
+    times: 5,
+    // Strategy to use:
+    // fib | fibonacci - to use fibonacci backoff
+    // Default: exponential backoff
+    strategy: 'fib|fibonacci|exp|exponential',
+    // Interval before first retry
+    // Further intervals will be computed based on the selected strategy
+    startInterval: 100
+  }
 })
 
 // Can be used either through the returned instance
@@ -31,6 +44,25 @@ api.request('/some/custom/route', {
   auth: { user: 'me', pass: 'p@$$w0rd' }
 })
 ```
+
+## Metrics
+
+## quadro.external_api.retries
+
+Specifies number of retries performed in a call.
+
+Tags:
+  outcome - success|failure
+  source - Q.app.name
+  target - name of the external api (as specified during registration)
+
+## quadro.external_api.success
+
+Number of succeeded calls
+
+Tags:
+  source - Q.app.name
+  target - name of the external api (as specified during registration)
 
 ## Notes
 

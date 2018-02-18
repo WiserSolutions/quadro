@@ -5,13 +5,15 @@ const APIRegistrationError = Q.Errors.declareError('APIRegistrationError')
 const APIRequestError = Q.Errors.declareError('APIRequestError')
 
 module.exports = class APIWrapper {
-  constructor(apiSpec) {
+  constructor(name, apiSpec, stats) {
     const { host, retry, timeout } = apiSpec
     if (!host) throw new APIRegistrationError('`host` not defined')
 
+    this.name = name
     this.host = host
     this.timeout = timeout
     this.retry = retry
+    this.stats = stats
 
     this._setupHTTPVerbWrappers()
   }
@@ -38,7 +40,13 @@ module.exports = class APIWrapper {
         .catch(e => cb(e))
 
       // https://github.com/MathieuTurcotte/node-backoff#functional
-      const call = backoff.call(requestAsCallback, options, function(err, res) {
+      const call = backoff.call(requestAsCallback, options, (err, res) => {
+        this.stats.gauge('quadro.external_api.retries', call.getNumRetries(), {
+          target: this.name,
+          source: Q.app.name,
+          outcome: err ? 'failure' : 'success'
+        })
+
         if (err) return reject(err)
         resolve(res)
       })
@@ -65,7 +73,10 @@ module.exports = class APIWrapper {
         if (statusCode / 100 > 3) {
           return reject(this._buildRequestError(options, null, response))
         }
-
+        this.stats.increment('quadro.external_api.success', {
+          target: this.name,
+          source: Q.app.name
+        })
         resolve(response.body)
       })
     })
