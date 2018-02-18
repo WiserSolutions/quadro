@@ -28,7 +28,7 @@ const api = Q.externalAPI.register('orders', {
 // Can be used either through the returned instance
 const order = await api.get('/orders/1')
 // or through the Q.externalAPI namespace
-const order = await Q.externalAPI.orders.api.get('/orders/1')
+const order = await Q.externalAPI.orders.get('/orders/1')
 
 // Supported REST methods:
 api.get('/orders/1', { invalidateCache: true })
@@ -108,7 +108,7 @@ Tags:
 
 - All API calls default to JSON
 - It is assumed that the second argument for `post` and `put` is a JSON serializable object
-- For `put` and `delete` methods second argument is expected to be an object and is transformed to query string
+- For `get` and `delete` methods second argument is expected to be an object and is transformed to query string
 
 ## Known issues
 
