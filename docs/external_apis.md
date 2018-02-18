@@ -76,13 +76,33 @@ Tags:
   source - Q.app.name
   target - name of the external api (as specified during registration)
 
-## quadro.external_api.success
+## quadro.external_api.calls
 
-Number of succeeded calls
+Number of calls
 
 Tags:
   source - Q.app.name
   target - name of the external api (as specified during registration)
+  outcome - success|failure
+
+## quadro.external_api.response_time
+
+Response time for a single API call
+
+Tags:
+  source - Q.app.name
+  target - name of the external api (as specified during registration)
+  outcome - success|failure
+
+## quadro.external_api.total_time
+
+Total time taken to receive response or to finally fail
+(including retries and backoffs)
+
+Tags:
+  source - Q.app.name
+  target - name of the external api (as specified during registration)
+  outcome - success|failure
 
 ## Notes
 
