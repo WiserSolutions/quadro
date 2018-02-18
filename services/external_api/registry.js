@@ -1,4 +1,4 @@
-const APIWrapper = require('./api_wrapper')
+const APIWrapper = require('../../lib/external_api/api_wrapper')
 
 module.exports = class ExternalAPIRegistry {
   constructor(stats) {
