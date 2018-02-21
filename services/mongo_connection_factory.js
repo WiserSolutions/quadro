@@ -1,5 +1,6 @@
-const MongoConnectionError = Q.Errors.declareError('MongoConnectionError')
+
 const mongoUri = require('mongodb-uri')
+const MongoConnectionError = Q.Errors.declare('MongoConnectionError')
 
 module.exports = class {
   _parseConnectionString(connectionString) {
