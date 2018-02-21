@@ -64,6 +64,12 @@
 
 
 
+## 1.0.0@beta1
+- Introduced `QuadroError` (with `Q.Errors.declare`). Breaking changes:
+  - No error initializer option
+- Removed `declareError`
+- Added long stack traces for dev/test environments (NODE_ENV=test|dev|development|<empty>)
+
 ## 0.7.11
 - Fix: Connection close while sending message through pubsub
 

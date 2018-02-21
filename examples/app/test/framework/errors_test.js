@@ -1,69 +1,82 @@
 /* eslint no-unused-expressions: 0 */
 
 describe('Errors', function() {
-  describe('declareError', function() {
-    it('creates new error', function() {
-      Q.Errors.declareError('SomeError')
-      expect(Q.Errors.SomeError).to.be.ok
+  describe('QuadroError', function() {
+    it('is an Error', function() {
+      expect(new Q.Errors.QuadroError()).to.be.instanceOf(Error)
+    })
+  })
+
+  describe('declare', function() {
+    it('registers an error', function() {
+      const Err = Q.Errors.declare('SomeUniqueError')
+      const err = new Err()
+      expect(err).to.be.instanceOf(Q.Errors.QuadroError)
+      expect(Err).to.equal(Q.Errors.SomeUniqueError)
     })
 
-    it('supports initializer', function() {
-      Q.Errors.declareError('SomeError', function() {
-        this.foo = 'bar'
+    describe('message', function() {
+      it('creates a default message', function() {
+        const Err = Q.Errors.declare('SomeError', 'default message')
+        return expect(Promise.reject(new Err()))
+          .to.be.rejectedWith(Err, 'default message')
       })
-      expect(new Q.Errors.SomeError().foo).to.equal('bar')
+
+      it('can override message', function() {
+        const Err = Q.Errors.declare('SomeError', 'default message')
+        return expect(Promise.reject(new Err('overridden message')))
+          .to.be.rejectedWith(Err, 'overridden message')
+      })
     })
 
-    it('allows default message', function() {
-      Q.Errors.declareError('SomeError', 'hello')
-      expect(new Q.Errors.SomeError().message).to.eql('hello')
-    })
-  })
-
-  describe('nested errors', function() {
-    const NestedError = Q.Errors.declareError('NestedError')
-    const TopLevelError = Q.Errors.declareError('TopLevelError', 'Default message')
-
-    it('sets nestedError attribute', function() {
-      let err = new TopLevelError('something happened', new NestedError('because of this'))
-      expect(err.message).to.equal('something happened')
-      expect(err.nestedError).to.be.an.instanceof(Q.Errors.NestedError)
+    describe('nestedError', function() {
+      it('allows to specify a nested exception', function() {
+        const Err = Q.Errors.declare('SomeError')
+        const nested = new Error('nested error')
+        const err = new Err().withNested(nested)
+        expect(err.nestedError).to.equal(nested)
+      })
     })
 
-    it('supports nested error as only argument', function() {
-      let err = new TopLevelError(new NestedError('because of this'))
-      expect(err.message).to.equal('Default message')
-      expect(err.nestedError).to.be.an.instanceof(Q.Errors.NestedError)
-      expect(err.extra).to.eql({})
+    describe('extraData', function() {
+      it('allows to specify default extra data', function() {
+        const Err = Q.Errors.declare('SomeError', { a: 1 })
+        const err = new Err()
+        expect(err.extra).to.eql({ a: 1 })
+      })
+
+      it('allows to append/override extra data', function() {
+        const Err = Q.Errors.declare('SomeError', { a: 1, b: 2 })
+        const err = new Err().withExtra({ b: 3, d: 4})
+        expect(err.extra).to.eql({ a: 1, b: 3, d: 4 })
+      })
+
+      it('allows specify extra data in error instance', function() {
+        const Err = Q.Errors.declare('SomeError')
+        const err = new Err('hello', { a: 1 })
+        expect(err.extra).to.eql({ a: 1 })
+      })
     })
 
-    it('supports message, extra and nested errors', function() {
-      let err = new TopLevelError('something happened', {a: 1}, new NestedError('because of this'))
-      expect(err.message).to.equal('something happened')
-      expect(err.nestedError).to.be.an.instanceof(Q.Errors.NestedError)
-      expect(err.extra).to.eql({a: 1})
-    })
-  })
-
-  describe('created errors', function() {
-    it('accepts message', function() {
-      Q.Errors.declareError('SomeError')
-      expect(new Q.Errors.SomeError('hello').message).to.equal('hello')
+    describe('base class', function() {
+      it('allows to specify a base class', function() {
+        const Err = Q.Errors.declare('SomeError', { a: 1 }, Q.Errors.ValidationError)
+        return expect(Promise.reject(new Err()))
+          .to.be.rejectedWith(Q.Errors.ValidationError)
+      })
     })
 
-    it('accepts extra data', function() {
-      Q.Errors.declareError('SomeError')
-      expect(new Q.Errors.SomeError('hello', {a: 123}).extra).to.eql({a: 123})
-    })
-
-    it('can accept extra as single argument', function() {
-      Q.Errors.declareError('SomeError')
-      expect(new Q.Errors.SomeError({ a: 123 }).extra).to.eql({ a: 123 })
-    })
-
-    it('is instanceof Error', function() {
-      Q.Errors.declareError('SomeError')
-      expect(new Q.Errors.SomeError()).to.be.instanceof(Error)
+    describe('usage', function() {
+      it('throws with chain', function() {
+        const Err = Q.Errors.declare('SomeError', 'hello')
+        try {
+          throw new Err('hi').withExtra({ z: -1 })
+        } catch (err) {
+          expect(err.extra).to.eql({ z: -1 })
+          return
+        }
+        expect.fail(null, null, 'Should not get here')
+      })
     })
   })
 })
