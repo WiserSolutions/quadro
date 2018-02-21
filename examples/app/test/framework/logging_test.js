@@ -3,8 +3,8 @@ const stripAnsi = require('strip-ansi')
 
 describe('Logging', function() {
   it('outputs nested errors', function() {
-    const NestedError = Q.Errors.declareError('NestedError')
-    const TopLevelError = Q.Errors.declareError('TopLevelError', 'Default message')
+    const NestedError = Q.Errors.declare('NestedError')
+    const TopLevelError = Q.Errors.declare('TopLevelError', 'Default message')
 
     let err = new TopLevelError('something happened', {a: 1}, new NestedError('because of this'))
     let output = STDOUT.inspectSync(function() {
