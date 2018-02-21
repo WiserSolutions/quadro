@@ -41,4 +41,4 @@ module.exports = class Pubsub {
   }
 }
 
-Q.Errors.declareError('MessagePublishingFailed', 'Failed to publish message')
+Q.Errors.declare('MessagePublishingFailed', 'Failed to publish message')

@@ -1,4 +1,4 @@
-const MongoConnectionError = Q.Errors.declareError('MongoConnectionError')
+const MongoConnectionError = Q.Errors.declare('MongoConnectionError')
 
 module.exports = class {
   async createClient(connectionString) {
