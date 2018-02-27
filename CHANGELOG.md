@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.7.9
+- Hotfix: make published messages persistent
+
 ## 0.7.8
 - Added synchronous API wrappers ([Q.externalAPI](./docs/external_apis))
 
