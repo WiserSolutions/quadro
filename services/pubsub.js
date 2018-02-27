@@ -24,7 +24,7 @@ module.exports = class Pubsub {
     }
     if (this.channel && sendMethod !== 'http') {
       let published = await this.channel.publish(msg.messageType, '',
-        Buffer.from(JSON.stringify(msg)))
+        Buffer.from(JSON.stringify(msg)), { persistent: true })
       if (!published) {
         this.hubStats.increment(msg.messageType, 'rabbitmq_missed')
         throw new Q.Errors.MessagePublishingFailed()
