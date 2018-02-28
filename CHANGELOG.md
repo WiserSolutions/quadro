@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.10
+- Fix: Replaced espree with babel-eslint to support latest ecmaScript syntax
+[Example](https://github.com/eslint/espree/issues/116)
+- Fixed multi-host mongo connection string parsing
+- Other dependencies upgraded (minor versions)
+
 ## 0.7.9
 - Hotfix: make published messages persistent
 
