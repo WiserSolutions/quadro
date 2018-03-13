@@ -14,6 +14,13 @@ describe('Logger', function() {
 
       expect(spy).to.have.been.calledWith({ port: 2000, host: 'localhost' })
     })
+
+    it('validates url starts with tcp', async function() {
+      QT.stubConfig('quadro.logger.logstash', 'udp://localhost:2000')
+      this.sinon.stub(Q.log.LogStashStream, 'createStream')
+
+      await expect(Q.log.reload()).to.be.rejectedWith(Q.Errors.ConfigurationError)
+    })
   })
 
   describe('logger', function() {
