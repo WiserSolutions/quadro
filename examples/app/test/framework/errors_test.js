@@ -47,7 +47,7 @@ describe('Errors', function() {
 
       it('allows to append/override extra data', function() {
         const Err = Q.Errors.declare('SomeError', { a: 1, b: 2 })
-        const err = new Err().withExtra({ b: 3, d: 4})
+        const err = new Err().withExtra({ b: 3, d: 4 })
         expect(err.extra).to.eql({ a: 1, b: 3, d: 4 })
       })
 
@@ -73,9 +73,7 @@ describe('Errors', function() {
           throw new Err('hi').withExtra({ z: -1 })
         } catch (err) {
           expect(err.extra).to.eql({ z: -1 })
-          return
         }
-        expect.fail(null, null, 'Should not get here')
       })
     })
   })
