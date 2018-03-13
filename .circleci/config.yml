@@ -10,7 +10,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: quadro-{{ checksum "package.json" }}-{{ checksum "examples/app/package.json" }}
+          key: quadro-{{ checksum "package.json" }}-{{ checksum "examples/app/package.json" }}-1
       - run: npm install && npm link .
       - run: cd examples/app && npm install && npm link quadro
       - type: shell
@@ -24,7 +24,7 @@ jobs:
           TERM: dumb
           CC_TEST_REPORTER_ID: 95f6f8f8d5f0b91ef00aee31e4525e1b46c0ee5e564cfdd61437bb3679d1f167
       - save_cache:
-          key: quadro-{{ checksum "package.json" }}-{{ checksum "examples/app/package.json" }}
+          key: quadro-{{ checksum "package.json" }}-{{ checksum "examples/app/package.json" }}-1
           paths:
             - node_modules
             - examples/app/node_modules

@@ -117,7 +117,7 @@ describe('config', function() {
   })
 
   describe('DynamoDBConfigProvider', function() {
-    this.timeout(5000)
+    this.timeout(10000)
 
     let provider
     beforeEach(async function() {
