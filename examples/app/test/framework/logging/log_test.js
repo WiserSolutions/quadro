@@ -40,4 +40,21 @@ describe('Logger', function() {
       }))
     })
   })
+
+  describe('registerStream', function() {
+    const { Writable } = require('stream')
+
+    it('adds the stream for logging', function() {
+      const write = this.sinon.spy()
+      class Stream extends Writable {
+        constructor() { super() }
+        _write() { write(...arguments) }
+      }
+      const stream = new Stream()
+      Q.log.registerStream({ stream })
+      Q.log.info('Hello')
+
+      expect(write).to.have.been.calledWith(this.sinon.match.instanceOf(Buffer))
+    })
+  })
 })
