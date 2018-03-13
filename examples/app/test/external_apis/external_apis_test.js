@@ -113,7 +113,7 @@ describe('External APIs', function() {
           const max = expectedInterval + 50
           expect(actualInterval).to.be.within(
             min, max,
-            `Expected to retry within [${min}, ${max}]ms`
+            `Expected to retry within [${min}, ${max}]ms (i=${i})`
           )
         })
       }

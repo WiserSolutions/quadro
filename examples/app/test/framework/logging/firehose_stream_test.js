@@ -1,3 +1,5 @@
+/* eslint no-unused-expressions: 0 */
+
 const { Writable } = require('stream')
 
 const FirehoseInit = require('quadro/lib/logger/firehose/initializer')
