@@ -47,7 +47,6 @@ describe('Logger', function() {
     it('adds the stream for logging', function() {
       const write = this.sinon.spy()
       class Stream extends Writable {
-        constructor() { super() }
         _write() { write(...arguments) }
       }
       const stream = new Stream()
