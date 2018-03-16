@@ -36,7 +36,10 @@ jobs:
       - image: shapigor/quadro
     steps:
       - checkout
-      - run: echo $PWD && ./release
+      - run: |
+          git config --global user.email "circleci@wiser.com" && \
+          git config --global user.name "CircleCI Publish" && \
+          ./release
 workflows:
   version: 2
   ci:
