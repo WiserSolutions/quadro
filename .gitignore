@@ -3,3 +3,5 @@
 *.log
 .nyc_output/
 coverage/
+*release*
+
