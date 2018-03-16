@@ -31,3 +31,17 @@ jobs:
       - store_artifacts:
           path: /tmp/quadro/coverage/lcov-report
           destination: coverage
+  publish:
+    docker:
+      - image: shapigor/quadro
+    steps:
+      - checkout
+      - run: echo $PWD && ./release
+workflows:
+  version: 2
+  ci:
+    jobs:
+      - build
+      - publish:
+          requires:
+            - build
