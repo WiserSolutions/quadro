@@ -1,0 +1,25 @@
+#!env sh
+
+PRERELEASE_BRANCHES='v1'
+
+BRANCH=${CIRCLE_BRANCH:-$(git symbolic-ref --short -q HEAD)}
+
+IS_PRERELEASE_BRANCH=$(echo $PRERELEASE_BRANCHES | xargs -n1 echo | grep $BRANCH)
+OPTS_PRERELEASE=''
+OPTS_INCREMENT=''
+
+if [ $BRANCH = 'master' ]; then
+  echo "Release branch"
+  OPTS_INCREMENT='patch'
+elif [ $IS_PRERELEASE_BRANCH ]; then
+  echo "Pre-release branch $BRANCH"
+  OPTS_PRERELEASE='--preRelease=beta'
+else
+  echo "Feature branch. Doing nothing"
+  exit 0
+fi
+
+release-it --npm.tag=beta --no-npm.publish --no-src.commit --no-src.push \
+  -n --dry-run \
+  $OPTS_PRERELEASE \
+  $OPTS_INCREMENT
