@@ -47,7 +47,7 @@ workflows:
       - build:
           filters:
             tags:
-              ignore: /^\d+\.\d+\.\d+/
+              ignore: /^\\d+\\.\\d+\\.\\d+/
       - publish:
           context: org-global
           requires:
