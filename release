@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# https://github.com/webpro/release-it
+
 PRERELEASE_BRANCHES='v1'
 
 BRANCH=${CIRCLE_BRANCH:-$(git symbolic-ref --short -q HEAD)}
