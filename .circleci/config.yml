@@ -51,5 +51,8 @@ workflows:
               ignore: /^version-.*/
       - publish:
           context: org-global
+          filters:
+            tags:
+              ignore: /^version-.*/
           requires:
             - build
