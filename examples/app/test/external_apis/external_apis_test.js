@@ -113,7 +113,7 @@ describe('External APIs', function() {
           const max = expectedInterval + 50
           expect(actualInterval).to.be.within(
             min, max,
-            `Expected to retry within [${min}, ${max}]ms`
+            `Expected to retry within [${min}, ${max}]ms (i=${i})`
           )
         })
       }
@@ -173,21 +173,21 @@ describe('External APIs', function() {
           await api.get('/hello').catch(() => {})
           // First call
           expect(stats.gauge)
-            .to.be.calledWithMatch('quadro.external_api.response_time', x => x > 10, {
+            .to.be.calledWithMatch('quadro.external_api.response_time', x => x >= 10, {
               source: Q.app.name,
               target: 'api1',
               outcome: 'failure'
             })
           // Retry
           expect(stats.gauge)
-            .to.be.calledWithMatch('quadro.external_api.response_time', x => x > 20, {
+            .to.be.calledWithMatch('quadro.external_api.response_time', x => x >= 20, {
               source: Q.app.name,
               target: 'api1',
               outcome: 'success'
             })
           // Total time
           expect(stats.gauge)
-            .to.be.calledWithMatch('quadro.external_api.total_time', x => x > 10 + 20 + 50)
+            .to.be.calledWithMatch('quadro.external_api.total_time', x => x >= 10 + 20 + 50)
         })
 
         it('reports calls', async function() {

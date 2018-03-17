@@ -1,6 +1,6 @@
 {
   "name": "quadro",
-  "version": "0.7.10",
+  "version": "1.0.0-beta.14",
   "keywords": [
     "framework",
     "quadro",
@@ -8,7 +8,7 @@
   ],
   "license": "MIT",
   "engines": {
-    "node": ">= 7.6.0"
+    "node": ">= 8.6.0"
   },
   "main": "lib/index.js",
   "repository": {
@@ -22,6 +22,7 @@
     "babel-eslint": "^8.2.2",
     "backoff": "^2.5.0",
     "bluebird": "^3.5.1",
+    "buffered-queue": "^0.1.4",
     "bunyan": "^1.8.12",
     "bunyan-logstash-tcp": "^1.0.0",
     "chai": "^4.1.1",
@@ -36,8 +37,8 @@
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
-    "espree": "^3.5.3",
     "events-async": "^1.1.0",
+    "firehose-writer": "^0.1.11-0",
     "forever-agent": "^0.6.1",
     "gitlog": "^3.1.2",
     "glob": "^7.1.2",

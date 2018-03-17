@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# https://github.com/webpro/release-it
+
+PRERELEASE_BRANCHES='v1'
+
+BRANCH=${CIRCLE_BRANCH:-$(git symbolic-ref --short -q HEAD)}
+
+IS_PRERELEASE_BRANCH=$(echo $PRERELEASE_BRANCHES | xargs -n1 echo | grep $BRANCH)
+OPTS_PRERELEASE=''
+OPTS_INCREMENT=''
+
+if [ $NPM_TOKEN ]; then
+  echo "\$NPM_TOKEN token found. Adding to ~/.npmrc"
+  echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+fi
+
+if [ $BRANCH = 'master' ]; then
+  echo "Release branch"
+  OPTS_INCREMENT='patch'
+elif [ $IS_PRERELEASE_BRANCH ]; then
+  echo "Pre-release branch $BRANCH"
+  OPTS_PRERELEASE='--preRelease=beta --npm.tag=beta'
+else
+  echo "Feature branch. Doing nothing"
+  exit 0
+fi
+
+release-it $1 $2 $3 $4 $5 --force \
+  -n --no-require-upstream \
+  --src.tagName='version-%s' \
+  $OPTS_PRERELEASE \
+  $OPTS_INCREMENT

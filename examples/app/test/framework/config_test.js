@@ -34,7 +34,7 @@ describe('config', function() {
         get() {}
       })
       await expect(Q.config.set('some.key', 5)).to.be.eventually
-        .rejectedWith(Q.Errors.ReadOnlyPropertyError, 'Unable to set')
+        .rejectedWith(Q.Errors.ReadOnlyPropertyError)
     })
 
     it('calls config provider `set`', async function() {
@@ -117,7 +117,7 @@ describe('config', function() {
   })
 
   describe('DynamoDBConfigProvider', function() {
-    this.timeout(5000)
+    this.timeout(10000)
 
     let provider
     beforeEach(async function() {

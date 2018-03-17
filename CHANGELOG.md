@@ -1,5 +1,16 @@
 # Changelog
 
+
+## 1.0.0@beta2
+- Rebased onto 0.7.10
+- Add support for AWS Firehose logs streaming
+
+## 1.0.0@beta1
+- Introduced `QuadroError` (with `Q.Errors.declare`). Breaking changes:
+  - No error initializer option
+- Removed `declareError`
+- Added long stack traces for dev/test environments (NODE_ENV=test|dev|development|<empty>)
+
 ## 0.7.10
 - Fix: Replaced espree with babel-eslint to support latest ecmaScript syntax
 [Example](https://github.com/eslint/espree/issues/116)
