@@ -1,33 +1,51 @@
 #!/bin/bash
 
-# https://github.com/webpro/release-it
+branch=${CIRCLE_BRANCH:-$(git symbolic-ref --short -q HEAD)}
+last_commit_msg=$(git log -1 --pretty=%B)
 
-PRERELEASE_BRANCHES='v1'
+echo "Last commit: $last_commit_msg"
 
-BRANCH=${CIRCLE_BRANCH:-$(git symbolic-ref --short -q HEAD)}
-
-IS_PRERELEASE_BRANCH=$(echo $PRERELEASE_BRANCHES | xargs -n1 echo | grep $BRANCH)
-OPTS_PRERELEASE=''
-OPTS_INCREMENT=''
+if [[ $last_commit_msg =~ ^Release\ [0-9]+\.[0-9]+\.[0-9]+ ]]; then
+  echo "Release commit -> nothing to do (we don't publish recursively, right?). Exiting"
+  exit 0
+fi
 
 if [ $NPM_TOKEN ]; then
   echo "\$NPM_TOKEN token found. Adding to ~/.npmrc"
   echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
 fi
 
-if [ $BRANCH = 'master' ]; then
-  echo "Release branch"
-  OPTS_INCREMENT='patch'
-elif [ $IS_PRERELEASE_BRANCH ]; then
-  echo "Pre-release branch $BRANCH"
-  OPTS_PRERELEASE='--preRelease=beta --npm.tag=beta'
-else
-  echo "Feature branch. Doing nothing"
-  exit 0
+if [ $CI ]; then
+  echo 'Setting git CI User'
+  git config --global user.email "circleci@wiser.com"
+  git config --global user.name "CircleCI Publish"
 fi
 
+type=''
+opts_preprelease=''
+
+case $branch in
+  master)
+    type="release"
+    ;;
+  *beta)
+    type="beta"
+    opts_preprelease='--preRelease=beta --npm.tag=beta'
+    ;;
+  *)
+    type="feature"
+    ;;
+esac
+
+echo "Building *$type* branch: $branch"
+
+# Directory must be clean before running `release-it`
+git checkout .
+
+# https://github.com/webpro/release-it
+
 release-it $1 $2 $3 $4 $5 --force \
+  --dist.beforeStageCommand="npm install" \
   -n --no-require-upstream \
   --src.tagName='version-%s' \
-  $OPTS_PRERELEASE \
-  $OPTS_INCREMENT
+  $opts_preprelease

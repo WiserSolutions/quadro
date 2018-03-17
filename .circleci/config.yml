@@ -28,4 +28,4 @@ jobs:
           paths:
             - node_modules
             - examples/app/node_modules
-      - run: ./test_and_deploy
+      - run: ./release
