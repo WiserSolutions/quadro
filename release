@@ -28,6 +28,6 @@ fi
 
 release-it $1 $2 $3 $4 $5 --force \
   -n --no-require-upstream \
-  --src.tagName='version %s' \
+  --src.tagName='version-%s' \
   $OPTS_PRERELEASE \
   $OPTS_INCREMENT

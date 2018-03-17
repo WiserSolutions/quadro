@@ -48,7 +48,7 @@ workflows:
       - build:
           filters:
             tags:
-              ignore: /^version .*/
+              ignore: /^version-.*/
       - publish:
           context: org-global
           requires:
