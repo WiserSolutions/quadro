@@ -6,7 +6,7 @@ last_commit_msg=$(git log -1 --pretty=%B)
 echo "Last commit: $last_commit_msg"
 
 if [[ $last_commit_msg =~ ^Release\ [0-9]+\.[0-9]+\.[0-9]+ ]]; then
-  echo "Release commit. Exiting"
+  echo "Release commit -> nothing to do (we don't publish recursively, right?). Exiting"
   exit 0
 fi
 
@@ -39,7 +39,10 @@ esac
 
 echo "Building *$type* branch: $branch"
 
+git checkout .
+
 release-it $1 $2 $3 $4 $5 --force \
+  --dist.beforeStageCommand="npm install" \
   -n --no-require-upstream \
   --src.tagName='version-%s' \
   $opts_preprelease
