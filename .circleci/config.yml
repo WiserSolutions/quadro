@@ -48,7 +48,7 @@ workflows:
       - build:
           filters:
             tags:
-              ignore: /^\\d+\\.\\d+\\.\\d+/
+              ignore: /^version .*/
       - publish:
           context: org-global
           requires:
