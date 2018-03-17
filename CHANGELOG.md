@@ -1,5 +1,6 @@
 # Changelog
 
+
 ## 1.0.0@beta2
 - Rebased onto 0.7.10
 - Add support for AWS Firehose logs streaming
