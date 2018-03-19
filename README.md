@@ -121,3 +121,19 @@ To make tests re-run on file changes use:
 ```sh
 node app.js test --watch
 ```
+
+# Contributing
+
+Commit messages should be according to https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular
+
+In short:
+
+```
+feat(ci): implemented a feature in CI
+fix(pubsub): retries on rabbitmq disconnect
+perf(http): HTTP performance improvements
+docs(...): ...
+refactor(...): ...
+test(...): ...
+chore(...): ...
+```
