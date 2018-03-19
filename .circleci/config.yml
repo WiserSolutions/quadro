@@ -28,7 +28,4 @@ jobs:
           paths:
             - node_modules
             - examples/app/node_modules
-      - store_artifacts:
-          path: /tmp/quadro/coverage/lcov-report
-          destination: coverage
       - run: ./release
