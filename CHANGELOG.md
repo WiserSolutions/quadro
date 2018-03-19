@@ -1,4 +1,3 @@
-# Changelog
 
 ## 0.7.11
 - Fix: Connection close while sending message through pubsub
