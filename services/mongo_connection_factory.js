@@ -22,7 +22,9 @@ module.exports = class {
       )
     }
 
-    return MongoClient.connect(connectionString)
+    const options = { promiseLibrary: require('bluebird') }
+
+    return MongoClient.connect(connectionString, options)
   }
 
   async connectToDB(connectionString) {
