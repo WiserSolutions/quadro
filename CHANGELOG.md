@@ -1,3 +1,21 @@
+<a name="0.9.0"></a>
+# 0.9.0 (2018-03-19)
+
+
+### Bug Fixes
+
+* **ci:** do not release feature branches ([faafe32](https://github.com/WisePricer/quadro/commit/faafe32))
+
+
+### Features
+
+* **CI:** migrate CI publishing from V1 beta ([308a748](https://github.com/WisePricer/quadro/commit/308a748))
+* **docker:** add release-it to base image ([ee0baf5](https://github.com/WisePricer/quadro/commit/ee0baf5))
+* **docker:** added conventional-changelog-cli to base image ([2464429](https://github.com/WisePricer/quadro/commit/2464429))
+* **docker:** upgrade base image to node latest ([57c4192](https://github.com/WisePricer/quadro/commit/57c4192))
+
+
+
 <a name="0.8.0"></a>
 # 0.8.0 (2018-03-19)
 
