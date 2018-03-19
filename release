@@ -33,7 +33,8 @@ case $branch in
     opts_preprelease='--preRelease=beta --npm.tag=beta'
     ;;
   *)
-    type="feature"
+    echo "Feature branch. Not releasing."
+    exit 0
     ;;
 esac
 
