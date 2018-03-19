@@ -1,3 +1,16 @@
+<a name="0.8.0"></a>
+# 0.8.0 (2018-03-19)
+
+
+### Features
+
+* **CI:** migrate CI publishing from V1 beta ([a0bf522](https://github.com/WisePricer/quadro/commit/a0bf522))
+* **docker:** add release-it to base image ([32653b5](https://github.com/WisePricer/quadro/commit/32653b5))
+* **docker:** added conventional-changelog-cli to base image ([55121e4](https://github.com/WisePricer/quadro/commit/55121e4))
+* **docker:** upgrade base image to node latest ([fe53744](https://github.com/WisePricer/quadro/commit/fe53744))
+
+
+
 
 ## 0.7.11
 - Fix: Connection close while sending message through pubsub
