@@ -67,6 +67,6 @@ module.exports = class HubMessageContext {
   willRetry() {
     let maximumAttempts = parseInt(this.rawMessage.maxAttempts) || DEFAULT_MAX_ATTEMPTS
     let attemptsMadeTillNow = parseInt(this.rawMessage.attemptsMade) || DEFAULT_ATTEMPTS_MADE
-    return maximumAttempts + 1 < attemptsMadeTillNow
+    return attemptsMadeTillNow + 1 < maximumAttempts
   }
 }

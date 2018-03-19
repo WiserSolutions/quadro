@@ -37,8 +37,12 @@ describe('pubsub', function() {
     })
 
     afterEach(async function() {
-      await channel.close()
-      await connection.close()
+      try {
+        await channel.close()
+      } catch (err) {}
+      try {
+        await connection.close()
+      } catch (err) {}
     })
 
     it('recieves a message', async function() {
