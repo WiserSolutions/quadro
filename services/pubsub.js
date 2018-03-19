@@ -1,4 +1,4 @@
-const amqp = require('amqplib')
+const RabbitMqChannel = require('./pubsub/rabbitmq_channel')
 
 module.exports = class Pubsub {
   constructor(log, request, config, hubStats = 'pubsub:hubStats') {
@@ -11,31 +11,8 @@ module.exports = class Pubsub {
 
   async initialize(retry = false) {
     if (this.config.get('service.messages.host')) {
-      try {
-      // Get the connection
-        this.connection = await amqp.connect(this.config.get('service.messages.host'))
-
-        // On connection close retry to initialize after few minutes
-        this.connection.on('close', async (err) => {
-          this.log.info({err}, `RabbitMQ connection closed. Retrying to connect after ${this.retryDelay}ms`)
-          await this.handleError()
-        })
-
-        // Get the channel
-        this.channel = await this.connection.createChannel()
-        // If channel gets closed adruptly then retry to connect again
-        this.channel.on('error', async (err) => {
-          this.log.error({err}, `RabbitMQ channel closed. Retrying to connect after ${this.retryDelay}ms`)
-          await this.handleError()
-        })
-      } catch (err) {
-        if (retry) {
-          this.log.error({err}, `Error while connecting to rabbit mq. Retrying to connect after ${this.retryDelay}ms`)
-          this.handleError()
-        } else {
-          throw err
-        }
-      }
+      this.rabbitmqChannel = new RabbitMqChannel(this.config.get('service.messages.host'), this.config.get('service.messages.retryDelay', 5000))
+      return this.rabbitmqChannel.initialize()
     }
   }
 
@@ -44,9 +21,8 @@ module.exports = class Pubsub {
       messageType: type,
       content
     }
-    if (this.channel && sendMethod !== 'http') {
-      let published = await this.channel.publish(msg.messageType, '',
-        Buffer.from(JSON.stringify(msg)), { persistent: true })
+    if (this.rabbitmqChannel && sendMethod !== 'http') {
+      let published = await this.rabbitmqChannel.publish(msg.messageType, msg)
       if (!published) {
         this.hubStats.increment(msg.messageType, 'rabbitmq_missed')
         throw new Q.Errors.MessagePublishingFailed()
@@ -61,22 +37,6 @@ module.exports = class Pubsub {
         body: msg,
         json: true
       })
-    }
-  }
-
-  async handleError() {
-    await this.closeQuitely(this.channel)
-    await this.closeQuitely(this.connection)
-    setTimeout(() => this.initialize(true), this.retryDelay)
-  }
-
-  async closeQuitely(closeable) {
-    if (closeable) {
-      try {
-        await closeable.close()
-      } catch (err) {
-        this.log.error({err}, 'Error while closing channel/connection')
-      }
     }
   }
 }
