@@ -116,6 +116,37 @@ describe('config', function() {
     })
   })
 
+  describe('Mongo config provider', function() {
+    const COLLECTION = 'locations_config'
+    let provider, collection
+    beforeEach(async function() {
+      provider = await Q.container.getAsync('config:mongoConfigProvider')
+      Q.config.registerConfigRoot('locations', await provider(COLLECTION))
+
+      collection = await Q.container.getAsync('mongo').then(mongo => mongo.collection(COLLECTION))
+
+      await collection.drop()
+    })
+
+    it('can write only objects', async function() {
+      await expect(Q.config.set('locations.ru', 123.4))
+        .to.be.rejectedWith(
+          Q.Errors.InvalidOperationError,
+          /Mongo config provider does not support atomic values at root level/
+        )
+    })
+
+    it('can read a sub-document', async function() {
+      await collection.insertOne({ id: 'hello', foo: { a: 1 } })
+      expect(await Q.config.get('locations.hello.foo')).to.eql({ a: 1 })
+    })
+
+    it('can read the whole document', async function() {
+      await collection.insertOne({ id: 'hello', foo: { a: 1 }})
+      expect(await Q.config.get('locations.hello')).to.eql({ foo: { a: 1 } })
+    })
+  })
+
   describe('DynamoDBConfigProvider', function() {
     this.timeout(5000)
 
