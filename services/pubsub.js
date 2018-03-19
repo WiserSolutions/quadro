@@ -6,14 +6,36 @@ module.exports = class Pubsub {
     this.request = request
     this.config = config
     this.hubStats = hubStats
+    this.retryDelay = this.config.get('service.messages.retryDelay', 5000)
   }
 
-  async initialize() {
+  async initialize(retry = false) {
     if (this.config.get('service.messages.host')) {
+      try {
       // Get the connection
-      let connection = await amqp.connect(this.config.get('service.messages.host'))
-      // Get the channel
-      this.channel = await connection.createChannel()
+        this.connection = await amqp.connect(this.config.get('service.messages.host'))
+
+        // On connection close retry to initialize after few minutes
+        this.connection.on('close', async (err) => {
+          this.log.info({err}, `RabbitMQ connection closed. Retrying to connect after ${this.retryDelay}ms`)
+          await this.handleError()
+        })
+
+        // Get the channel
+        this.channel = await this.connection.createChannel()
+        // If channel gets closed adruptly then retry to connect again
+        this.channel.on('error', async (err) => {
+          this.log.error({err}, `RabbitMQ channel closed. Retrying to connect after ${this.retryDelay}ms`)
+          await this.handleError()
+        })
+      } catch (err) {
+        if (retry) {
+          this.log.error({err}, `Error while connecting to rabbit mq. Retrying to connect after ${this.retryDelay}ms`)
+          this.handleError()
+        } else {
+          throw err
+        }
+      }
     }
   }
 
@@ -39,6 +61,22 @@ module.exports = class Pubsub {
         body: msg,
         json: true
       })
+    }
+  }
+
+  async handleError() {
+    await this.closeQuitely(this.channel)
+    await this.closeQuitely(this.connection)
+    setTimeout(() => this.initialize(true), this.retryDelay)
+  }
+
+  async closeQuitely(closeable) {
+    if (closeable) {
+      try {
+        await closeable.close()
+      } catch (err) {
+        this.log.error({err}, 'Error while closing channel/connection')
+      }
     }
   }
 }

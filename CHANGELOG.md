@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.7.11
+- Fix: Connection close while sending message through pubsub
+
 ## 0.7.10
 - Fix: Replaced espree with babel-eslint to support latest ecmaScript syntax
 [Example](https://github.com/eslint/espree/issues/116)
