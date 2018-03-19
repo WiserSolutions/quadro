@@ -121,7 +121,7 @@ describe('config', function() {
 
     let provider
     beforeEach(async function() {
-      provider = await Q.container.getAsync('dynamodbConfigProvider')
+      provider = await Q.container.getAsync('config:dynamodbConfigProvider')
       Q.config.registerConfigRoot('currencies', await provider('dynamodb-config-provider-test'))
     })
 
