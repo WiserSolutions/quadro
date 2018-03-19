@@ -1,6 +1,11 @@
 engines:
   eslint:
     enabled: true
+  duplication:
+    enabled: true
+    checks:
+      Similar code:
+        enabled: false
 ratings:
   paths:
   - "**.**"
