@@ -1,3 +1,21 @@
+<a name="0.10.0"></a>
+# 0.10.0 (2018-03-20)
+
+
+### Bug Fixes
+
+* **config:** fix and document config caching ([43e1874](https://github.com/WisePricer/quadro/commit/43e1874))
+* **config:** if provider returns `undefined` return `defaultValue` ([2965684](https://github.com/WisePricer/quadro/commit/2965684))
+
+
+### Features
+
+* **config:** implement MongoDB configuration provider ([cf2e60c](https://github.com/WisePricer/quadro/commit/cf2e60c))
+* **errors:** Introduced `InvalidOperationError` (`InvalidOperation` does not conform to the convention and usage is discouraged) ([e9d403a](https://github.com/WisePricer/quadro/commit/e9d403a))
+* **mongo:** set bluebird as the promise library ([46e0b6a](https://github.com/WisePricer/quadro/commit/46e0b6a))
+
+
+
 <a name="0.9.0"></a>
 # 0.9.0 (2018-03-19)
 
@@ -5,14 +23,6 @@
 ### Bug Fixes
 
 * **ci:** do not release feature branches ([faafe32](https://github.com/WisePricer/quadro/commit/faafe32))
-
-
-### Features
-
-* **CI:** migrate CI publishing from V1 beta ([308a748](https://github.com/WisePricer/quadro/commit/308a748))
-* **docker:** add release-it to base image ([ee0baf5](https://github.com/WisePricer/quadro/commit/ee0baf5))
-* **docker:** added conventional-changelog-cli to base image ([2464429](https://github.com/WisePricer/quadro/commit/2464429))
-* **docker:** upgrade base image to node latest ([57c4192](https://github.com/WisePricer/quadro/commit/57c4192))
 
 
 
