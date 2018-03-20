@@ -1,3 +1,24 @@
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [Configuration](#configuration)
+	- [Directory layout](#directory-layout)
+		- [Excluding `local` configuration from version control](#excluding-local-configuration-from-version-control)
+	- [API](#api)
+		- [.get(path[, defaultValue])](#getpath-defaultvalue)
+		- [.registerConfigRoot(namespace, provider)](#registerconfigrootnamespace-provider)
+	- [Configuration from environment variables](#configuration-from-environment-variables)
+- [cfg.yml](#cfgyml)
+	- [Configuration REST API](#configuration-rest-api)
+		- [Get configuration](#get-configuration)
+		- [Set configuration](#set-configuration)
+- [Configuration providers](#configuration-providers)
+	- [Caching](#caching)
+	- [Built in configuration providers](#built-in-configuration-providers)
+		- [DynamoDB](#dynamodb)
+		- [MongoDB](#mongodb)
+
+<!-- /TOC -->
+
 # Configuration
 
 Quadro supports flexible configuration mechanism, which includes:
@@ -143,6 +164,26 @@ Content-Type: application/json
 ```
 
 Returns `204` without content
+
+# Configuration providers
+
+Quadro config supports adding custom configuration providers using the
+`.registerConfigRoot` API.
+
+## Caching
+
+For configuration providers accessing external resources caching is
+very desirable. To enable caching specify that in the `.registerConfigRoot` options:
+
+```js
+module.exports = function(config) {
+  config.registerConfigRoot(
+    'namespace',
+    provider,
+    { cache: { ttl: 30 } }      // Use cache with 30 seconds TTL
+  )
+}
+```
 
 ## Built in configuration providers
 
