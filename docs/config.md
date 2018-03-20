@@ -143,3 +143,59 @@ Content-Type: application/json
 ```
 
 Returns `204` without content
+
+## Built in configuration providers
+
+The recommended place to register a configuration provider is in a service. This will allow other services to use the providers.
+
+Example:
+
+```js
+// services/config_setup.js
+
+module.exports = function(config) {
+  config.registerConfigRoot('namespace', provider)
+}
+```
+
+And then use the provider:
+
+```js
+// services/my_useful_service
+module.exports = async function(configSetup, config) {
+  const myConfigValue = await config.get('namespace.some.key')
+}
+```
+
+**NOTE** When using configuration providers it's *HIGHLY RECOMMENDED* to call `config.get` with `await`, as you can not be sure the underlying implementation is synchronous
+
+### DynamoDB
+
+```js
+module.exports = function(provider = 'config:dynamodbConfigProvider', config) {
+  return config.registerConfigRoot(
+    'currencies',                       // Namespace
+    provider('currencies_table_name')   // Provider for table `currencies_table_name`
+  )
+}
+```
+
+### MongoDB
+
+Provider registration:
+
+```js
+module.exports = function(provider = 'config:mongoConfigProvider', config) {
+  return config.registerConfigRoot(
+    'locations',                          // Namespace
+    provider('locations_collection_name') // Provider for collection `locations_collection_name`
+  )
+}
+```
+
+Please note that you can not store atomic values as documents in mongodb, thus the following will throw an error:
+
+```js
+// Root level must be an object. Will throw `InvalidOperationError`
+await config.get('namespace.key', 123)
+```
