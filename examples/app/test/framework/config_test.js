@@ -136,6 +136,21 @@ describe('config', function() {
         )
     })
 
+    it('sets config value', async function() {
+      await Q.config.set('locations.ru.lat', 0.5)
+      const doc = await collection.findOne({ id: 'ru' })
+      expect(doc).to.be.ok
+      expect(doc.lat).to.equal(0.5)
+    })
+
+    it('returns undefined if config document does not exist', function() {
+      return expect(Q.config.get('locations.uk')).to.become(undefined)
+    })
+
+    it('returns default value if document does not exist', function() {
+      return expect(Q.config.get('locations.uk', 'hello')).to.become('hello')
+    })
+
     it('can read a sub-document', async function() {
       await collection.insertOne({ id: 'hello', foo: { a: 1 } })
       expect(await Q.config.get('locations.hello.foo')).to.eql({ a: 1 })
