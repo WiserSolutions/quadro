@@ -10,12 +10,13 @@ module.exports = class {
     return value
   }
 
-  async set(key, value) {
+  async set(key, value, ttl) {
     this.validateKey(key)
     if (value === undefined) {
       Q.log.warn(`Attempt to cache 'undefined' as the value of key ${key}. Will be stored as null`)
     }
-    await this.redis.setAsync(`cache:${key}`, value || null)
+    const options = ttl ? ['PX', ttl] : []
+    await this.redis.setAsync(`cache:${key}`, value || null, ...options)
   }
 
   async invalidate(key) {

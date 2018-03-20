@@ -178,12 +178,14 @@ describe('config', function() {
   })
 
   describe('caching', function() {
-    const provider = { get(s) { return s.toUpperCase() } }
+    let counter
+    const provider = { get(s) { return ++counter && `${s}${counter}`.toUpperCase() } }
     beforeEach(async function() {
-      let cache = await Q.container.getAsync('cache')
+      counter = 0
+      const cache = await Q.container.getAsync('cache')
       await cache.clear()
       await Q.config.registerConfigRoot('currencies', provider, {
-        cache: { ttl: 30 }
+        cache: { ttl: 0.1 }     // 100ms TTL
       })
     })
 
@@ -192,6 +194,13 @@ describe('config', function() {
       await Q.config.get('currencies.cache_test')
       await Q.config.get('currencies.cache_test')
       expect(provider.get).to.have.been.calledOnce
+    })
+
+    it('invalidates the cache after TTL', async function() {
+      this.sinon.spy(provider, 'get')
+      await expect(Q.config.get('currencies.cache_test')).to.become('CACHE_TEST1')
+      await Promise.delay(200)
+      await expect(Q.config.get('currencies.cache_test')).to.become('CACHE_TEST2')
     })
   })
 })
