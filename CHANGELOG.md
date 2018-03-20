@@ -1,5 +1,41 @@
+<a name="1.0.0-beta.18"></a>
+# 1.0.0-beta.18 (2018-03-20)
+
+
+
+## 1.0.0@beta2
+- Rebased onto 0.7.10
+- Add support for AWS Firehose logs streaming
+
+
+
+## 1.0.0@beta1
+- Introduced `QuadroError` (with `Q.Errors.declare`). Breaking changes:
+  - No error initializer option
+- Removed `declareError`
+- Added long stack traces for dev/test environments (NODE_ENV=test|dev|development|<empty>)
+
+
+
 <a name="0.10.0"></a>
 # 0.10.0 (2018-03-20)
+
+### Bug Fixes
+
+* **ci:** do not release feature branches ([faafe32](https://github.com/WisePricer/quadro/commit/faafe32))
+
+
+### Features
+
+* **CI:** migrate CI publishing from V1 beta ([308a748](https://github.com/WisePricer/quadro/commit/308a748))
+* **docker:** add release-it to base image ([ee0baf5](https://github.com/WisePricer/quadro/commit/ee0baf5))
+* **docker:** added conventional-changelog-cli to base image ([2464429](https://github.com/WisePricer/quadro/commit/2464429))
+* **docker:** upgrade base image to node latest ([57c4192](https://github.com/WisePricer/quadro/commit/57c4192))
+
+
+
+<a name="0.9.0"></a>
+# 0.9.0 (2018-03-19)
 
 
 ### Bug Fixes
@@ -38,18 +74,6 @@
 * **docker:** upgrade base image to node latest ([fe53744](https://github.com/WisePricer/quadro/commit/fe53744))
 
 
-
-
-
-## 1.0.0@beta2
-- Rebased onto 0.7.10
-- Add support for AWS Firehose logs streaming
-
-## 1.0.0@beta1
-- Introduced `QuadroError` (with `Q.Errors.declare`). Breaking changes:
-  - No error initializer option
-- Removed `declareError`
-- Added long stack traces for dev/test environments (NODE_ENV=test|dev|development|<empty>)
 
 ## 0.7.11
 - Fix: Connection close while sending message through pubsub
