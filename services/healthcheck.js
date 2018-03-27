@@ -4,6 +4,10 @@ module.exports = class {
   }
 
   run() {
-    return this.mongo.topology.isConnected()
+    const connectionString = Q.config.get('db.endpoint')
+    if (connectionString) {
+      return this.mongo.topology.isConnected()
+    }
+    return true
   }
 }
