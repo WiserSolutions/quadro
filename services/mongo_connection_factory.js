@@ -4,7 +4,14 @@ const mongoUri = require('mongodb-uri')
 module.exports = class {
   _parseConnectionString(connectionString) {
     let { database, ...rest } = mongoUri.parse(connectionString)
-    const result = { connectionString: mongoUri.format(rest) }
+
+    let conString = mongoUri.format(rest)
+    if (rest.options) {
+      conString = conString.replace('?', '/?')
+    }
+
+    const result = { connectionString: conString }
+
     if (database) result.dbName = database
     return result
   }
