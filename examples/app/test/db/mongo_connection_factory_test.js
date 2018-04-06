@@ -35,17 +35,24 @@ describe('MongoConnectionFactory', function() {
         })
     })
 
+    it('adds a `/` before options', function() {
+      expect(mcf._parseConnectionString('mongodb://host1.com:23/?replicaSet=123'))
+        .to.eql({
+          connectionString: 'mongodb://host1.com:23/?replicaSet=123'
+        })
+    })
+
     it('supports multiple hosts + options, no db', function() {
       expect(mcf._parseConnectionString('mongodb://host1.com,host2.com/?replicaSet=123'))
         .to.eql({
-          connectionString: 'mongodb://host1.com,host2.com?replicaSet=123'
+          connectionString: 'mongodb://host1.com,host2.com/?replicaSet=123'
         })
     })
 
     it('supports multiple hosts + db + options', function() {
       expect(mcf._parseConnectionString('mongodb://host1.com,host2.com/hello?replicaSet=123'))
         .to.eql({
-          connectionString: 'mongodb://host1.com,host2.com?replicaSet=123',
+          connectionString: 'mongodb://host1.com,host2.com/?replicaSet=123',
           dbName: 'hello'
         })
     })
