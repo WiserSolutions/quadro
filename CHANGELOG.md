@@ -4,7 +4,6 @@
 
 ### Bug Fixes
 
-* **ci:** do not release feature branches ([faafe32](https://github.com/WisePricer/quadro/commit/faafe32))
 * **config:** fix and document config caching ([43e1874](https://github.com/WisePricer/quadro/commit/43e1874))
 * **config:** if provider returns `undefined` return `defaultValue` ([2965684](https://github.com/WisePricer/quadro/commit/2965684))
 * **errors:** Rename InvalidOperation to InvalidOperationError and remove ([696267f](https://github.com/WisePricer/quadro/commit/696267f))
