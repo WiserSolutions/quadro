@@ -2,28 +2,6 @@
 # 1.0.0-beta.21 (2018-04-07)
 
 
-### Bug Fixes
-
-* **ci:** do not release feature branches ([faafe32](https://github.com/WisePricer/quadro/commit/faafe32))
-* **config:** fix and document config caching ([43e1874](https://github.com/WisePricer/quadro/commit/43e1874))
-* **config:** if provider returns `undefined` return `defaultValue` ([2965684](https://github.com/WisePricer/quadro/commit/2965684))
-* **errors:** Rename InvalidOperation to InvalidOperationError and remove ([8411411](https://github.com/WisePricer/quadro/commit/8411411))
-* **logging:** Change flush timeout from 60ms to 10sec ([264a8f7](https://github.com/WisePricer/quadro/commit/264a8f7))
-* **mongo:** add `/` delimiter for connection strings with options ([c765626](https://github.com/WisePricer/quadro/commit/c765626))
-* **mongo:** update mongodb driver to a fixed version, remove all the workarounds ([d6b032a](https://github.com/WisePricer/quadro/commit/d6b032a))
-
-
-### Features
-
-* **CI:** migrate CI publishing from V1 beta ([308a748](https://github.com/WisePricer/quadro/commit/308a748))
-* **config:** implement MongoDB configuration provider ([cf2e60c](https://github.com/WisePricer/quadro/commit/cf2e60c))
-* **docker:** add release-it to base image ([ee0baf5](https://github.com/WisePricer/quadro/commit/ee0baf5))
-* **docker:** added conventional-changelog-cli to base image ([2464429](https://github.com/WisePricer/quadro/commit/2464429))
-* **docker:** upgrade base image to node latest ([57c4192](https://github.com/WisePricer/quadro/commit/57c4192))
-* **errors:** Introduced `InvalidOperationError` (`InvalidOperation` does not conform to the convention and usage is discouraged) ([e9d403a](https://github.com/WisePricer/quadro/commit/e9d403a))
-* **mongo:** set bluebird as the promise library ([46e0b6a](https://github.com/WisePricer/quadro/commit/46e0b6a))
-
-
 ### rebase
 
 * **master:** Rebased on master ([c4eacb9](https://github.com/WisePricer/quadro/commit/c4eacb9))
