@@ -79,6 +79,11 @@ describe('config', function() {
         expect(Q.config.get('quadro.logger.level')).to.equal(level)
       })
 
+      it('does not override default value funtionality', function() {
+        QT.stubConfig('quadro.logger.hello', 123)
+        expect(Q.config.get('foo.bar', 'def')).to.equal('def')
+      })
+
       it('allows to stub more than 1 value', function() {
         QT.stubConfig('quadro.hello1', 123)
         QT.stubConfig('quadro.hello2', 246)

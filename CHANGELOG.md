@@ -1,3 +1,7 @@
+# 1.0.2 (2018-04-09)
+
+- bugfix: stubbing a config breaks the default-value functionality for other config keys
+
 # 1.0.1 (2018-04-07)
 
 - Bump version
