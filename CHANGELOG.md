@@ -1,3 +1,7 @@
+# 1.0.3 (2018-04-20)
+
+- feature: support to disable message consumer through config
+
 # 1.0.2 (2018-04-09)
 
 - bugfix: stubbing a config breaks the default-value functionality for other config keys
