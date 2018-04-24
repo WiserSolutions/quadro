@@ -1,3 +1,7 @@
+# 1.0.4 (2018-04-20)
+
+- feature: add `metric()`, `audit()` and `event()` to `Q.log`
+
 # 1.0.3 (2018-04-20)
 
 - feature: support to disable message consumer through config
