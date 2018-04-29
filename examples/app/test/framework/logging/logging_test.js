@@ -19,7 +19,7 @@ describe('Logging', function() {
   describe('diagnostics streams', function() {
     const { Writable } = require('stream')
     class TestWriteStream extends Writable {
-      constructor() { super({ objectMode: true })}
+      constructor() { super({ objectMode: true }) }
       _write(chunk, encoding, done) {
         lastWrittenObject = chunk
         done()
