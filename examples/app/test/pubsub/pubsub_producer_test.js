@@ -18,8 +18,8 @@ describe('pubsub', function() {
     })
 
     afterEach(async function() {
-      try { await channel.close() } catch(err) {}
-      try { await connection.close() } catch(err) {}
+      try { await channel.close() } catch (err) {}
+      try { await connection.close() } catch (err) {}
     })
 
     it('publishes a message', async function() {

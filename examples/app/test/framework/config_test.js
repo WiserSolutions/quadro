@@ -162,7 +162,7 @@ describe('config', function() {
     })
 
     it('can read the whole document', async function() {
-      await collection.insertOne({ id: 'hello', foo: { a: 1 }})
+      await collection.insertOne({ id: 'hello', foo: { a: 1 } })
       expect(await Q.config.get('locations.hello')).to.eql({ foo: { a: 1 } })
     })
   })

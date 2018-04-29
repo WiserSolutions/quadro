@@ -1,3 +1,5 @@
+/* eslint no-unused-expressions: 0 */
+
 describe('MongoConnectionFactory', function() {
   let mcf
 
