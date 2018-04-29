@@ -1,3 +1,7 @@
+# 1.0.5 (2018-04-28)
+
+- feature: write metrics aggregated and in batches
+
 # 1.0.4 (2018-04-20)
 
 - feature: add `metric()`, `audit()` and `event()` to `Q.log`

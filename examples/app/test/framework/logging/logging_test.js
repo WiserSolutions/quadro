@@ -46,19 +46,32 @@ describe('Logging', function() {
     })
 
     describe('metric()', function() {
-      it('writes audit entry', function() {
-        Q.log._metricLogger.addStream({ type: 'raw', stream: new TestWriteStream() })
+      beforeEach(async function() {
+        QT.stubConfig('quadro.logger.metrics_flush_interval', 60)
 
-        Q.log.metric('orders', { department: 'footwear' }, { count: 1, sum: 5 })
+        this.clock = this.sinon.useFakeTimers(0)
+        await Q.log.initialize()
+      })
+      afterEach(function() { this.clock.restore() })
+
+      it('aggregates and writes metrics', function () {
+        const types = ['standard']
+        Q.log._metricLogger.logger.addStream({ type: 'raw', stream: new TestWriteStream() })
+
+        Q.log.metric('orders', { department: 'footwear', types }, { count: 1, sum: 5 })
+        Q.log.metric('orders', { department: 'drugs' }, { count: 2, sum: 3 })
+
+        this.clock.tick(30001)
+        Q.log.metric('orders', { department: 'footwear', types }, { count: 2, sum: 3 })
+
+        this.clock.tick(30000)
+        Q.log.metric('orders', { department: 'drugs' }, { count: 4, sum: 100 })
+
         expect(lastWrittenObject).to.deep.include({
-          d: {
-            metric: 'orders',
-            department: 'footwear'
-          },
-          count: 1,
-          sum: 5,
-          hostname: require('os').hostname(),
-          name: Q.app.name
+          batch: [
+            { d: { department: 'footwear', metric: 'orders', types }, count: 3, sum: 8, time: 0 },
+            { d: { department: 'drugs', metric: 'orders' }, count: 2, sum: 3, time: 0 }
+          ]
         })
       })
     })
