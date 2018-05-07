@@ -1,6 +1,6 @@
 # Custom Errors in Quadro
 
-Quadro exposes the `Q.Errors` namespace which hosts all the errors and 1 utility function to declare a new erorr type.
+Quadro exposes the `Q.Errors` namespace which hosts all the errors and 1 utility function to declare a new error type.
 
 ```js
 // There are a couple of ways to declare an error
@@ -25,8 +25,14 @@ try {
   console.log(err.message)  // something bad happened
 }
 
+// Add extra params while keeping default message
+throw new Q.Errors.MyError({ param: 123 })
+
 // Overriding message
-throw new Q.Errors.MyError('overriden message')
+throw new Q.Errors.MyError('overridden message')
+
+// Parameters order for message, extra params, and nested errors does not matter
+throw new Q.Errors.MyError({ param: 123 }, 'overridden message', err)
 
 // Default extra params
 Q.Errors.declare('RetriableError', { retry: true })
