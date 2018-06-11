@@ -34,7 +34,7 @@ describe('config', function() {
         get() {}
       })
       await expect(Q.config.set('some.key', 5)).to.be.eventually
-        .rejectedWith(Q.Errors.ReadOnlyPropertyError, 'Unable to set')
+        .rejectedWith(Q.Errors.ReadOnlyPropertyError)
     })
 
     it('calls config provider `set`', async function() {
@@ -77,6 +77,11 @@ describe('config', function() {
         expect(level).to.not.eql(null)
         QT.stubConfig('quadro.logger.hello', 123)
         expect(Q.config.get('quadro.logger.level')).to.equal(level)
+      })
+
+      it('does not override default value funtionality', function() {
+        QT.stubConfig('quadro.logger.hello', 123)
+        expect(Q.config.get('foo.bar', 'def')).to.equal('def')
       })
 
       it('allows to stub more than 1 value', function() {
@@ -157,13 +162,13 @@ describe('config', function() {
     })
 
     it('can read the whole document', async function() {
-      await collection.insertOne({ id: 'hello', foo: { a: 1 }})
+      await collection.insertOne({ id: 'hello', foo: { a: 1 } })
       expect(await Q.config.get('locations.hello')).to.eql({ foo: { a: 1 } })
     })
   })
 
   describe('DynamoDBConfigProvider', function() {
-    this.timeout(5000)
+    this.timeout(10000)
 
     let provider
     beforeEach(async function() {

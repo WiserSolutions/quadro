@@ -21,3 +21,23 @@ module.exports = function(logger) {
   logger.addSerializers({ token: serializer })
 }
 ```
+
+## Q.log API
+
+`Q.log` exposes the following methods which directly correspond to bunyan calls:
+
+```js
+Q.log.trace(...)
+Q.log.debug(...)
+Q.log.info(...)
+Q.log.warn(...)
+Q.log.error(...)
+```
+
+In addition `Q.log` exposes:
+
+```js
+Q.log.audit(action, object, status, { group, extra } = {})
+Q.log.metric(name, dimensions, values)
+Q.log.event(type, content)
+```

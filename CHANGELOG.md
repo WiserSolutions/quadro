@@ -1,5 +1,154 @@
+# 1.0.5 (2018-04-28)
+
+- feature: write metrics aggregated and in batches
+
+# 1.0.4 (2018-04-20)
+
+- feature: add `metric()`, `audit()` and `event()` to `Q.log`
+
+# 1.0.3 (2018-04-20)
+
+- feature: support to disable message consumer through config
+
+# 1.0.2 (2018-04-09)
+
+- bugfix: stubbing a config breaks the default-value functionality for other config keys
+
+# 1.0.1 (2018-04-07)
+
+- Bump version
+- Disable CI publishing
+
+### BREAKING CHANGES
+
+* **master:** Rename `Q.Errors.declareError` to `Q.Errors.declare`
+
+
+<a name="1.0.0"></a>
+# 1.0.0 (2018-04-07)
+
+
+### Bug Fixes
+
+* **config:** fix and document config caching ([43e1874](https://github.com/WisePricer/quadro/commit/43e1874))
+* **config:** if provider returns `undefined` return `defaultValue` ([2965684](https://github.com/WisePricer/quadro/commit/2965684))
+* **errors:** Rename InvalidOperation to InvalidOperationError and remove ([696267f](https://github.com/WisePricer/quadro/commit/696267f))
+* **logging:** Change flush timeout from 60ms to 10sec ([c61321f](https://github.com/WisePricer/quadro/commit/c61321f))
+* **mongo:** add `/` delimiter for connection strings with options ([c765626](https://github.com/WisePricer/quadro/commit/c765626))
+* **mongo:** update mongodb driver to a fixed version, remove all the workarounds ([d6b032a](https://github.com/WisePricer/quadro/commit/d6b032a))
+
+
+### Features
+
+* **CI:** migrate CI publishing from V1 beta ([308a748](https://github.com/WisePricer/quadro/commit/308a748))
+* **config:** implement MongoDB configuration provider ([cf2e60c](https://github.com/WisePricer/quadro/commit/cf2e60c))
+* **docker:** add release-it to base image ([ee0baf5](https://github.com/WisePricer/quadro/commit/ee0baf5))
+* **docker:** added conventional-changelog-cli to base image ([2464429](https://github.com/WisePricer/quadro/commit/2464429))
+* **docker:** upgrade base image to node latest ([57c4192](https://github.com/WisePricer/quadro/commit/57c4192))
+* **errors:** Introduced `InvalidOperationError` (`InvalidOperation` does not conform to the convention and usage is discouraged) ([e9d403a](https://github.com/WisePricer/quadro/commit/e9d403a))
+* **mongo:** set bluebird as the promise library ([46e0b6a](https://github.com/WisePricer/quadro/commit/46e0b6a))
+
+
+### rebase
+
+* **master:** Rebased on master ([240e049](https://github.com/WisePricer/quadro/commit/240e049))
+
+
+### BREAKING CHANGES
+
+* **master:** Rename `Q.Errors.declareError` to `Q.Errors.declare`
+
+
+
+<a name="1.0.0-beta.21"></a>
+# 1.0.0-beta.21 (2018-04-07)
+
+
+### rebase
+
+* **master:** Rebased on master ([c4eacb9](https://github.com/WisePricer/quadro/commit/c4eacb9))
+
+
+### BREAKING CHANGES
+
+* **master:** Rename `Q.Errors.declareError` to `Q.Errors.declare`
+
+
+
+<a name="1.0.0-beta.20"></a>
+# 1.0.0-beta.20 (2018-04-07)
+
+
+### Bug Fixes
+
+* **mongo:** add `/` delimiter for connection strings with options ([c765626](https://github.com/WisePricer/quadro/commit/c765626))
+
+
+<a name="1.0.0-beta.19"></a>
+# 1.0.0-beta.19 (2018-03-22)
+
+
+### Bug Fixes
+
+* **errors:** Rename InvalidOperation to InvalidOperationError and remove ([8cdf112](https://github.com/WisePricer/quadro/commit/8cdf112))
+* **logging:** Change flush timeout from 60ms to 10sec ([156f742](https://github.com/WisePricer/quadro/commit/156f742))
+
+
+<a name="1.0.0-beta.18"></a>
+# 1.0.0-beta.18 (2018-03-20)
+
+
+
+## 1.0.0@beta2
+- Rebased onto 0.7.10
+- Add support for AWS Firehose logs streaming
+
+
+
+## 1.0.0@beta1
+- Introduced `QuadroError` (with `Q.Errors.declare`). Breaking changes:
+  - No error initializer option
+- Removed `declareError`
+- Added long stack traces for dev/test environments (NODE_ENV=test|dev|development|<empty>)
+
+
+<a name="0.12.0"></a>
+# 0.12.0 (2018-04-07)
+
+
+### Bug Fixes
+
+* **mongo:** update mongodb driver to a fixed version, remove all the workarounds ([d6b032a](https://github.com/WisePricer/quadro/commit/d6b032a))
+
+
+<a name="0.11.0"></a>
+# 0.11.0 (2018-04-06)
+
+
+### Bug Fixes
+
+* **mongo:** add `/` delimiter for connection strings with options ([c765626](https://github.com/WisePricer/quadro/commit/c765626))
+
+
 <a name="0.10.0"></a>
 # 0.10.0 (2018-03-20)
+
+### Bug Fixes
+
+* **ci:** do not release feature branches ([faafe32](https://github.com/WisePricer/quadro/commit/faafe32))
+
+
+### Features
+
+* **CI:** migrate CI publishing from V1 beta ([308a748](https://github.com/WisePricer/quadro/commit/308a748))
+* **docker:** add release-it to base image ([ee0baf5](https://github.com/WisePricer/quadro/commit/ee0baf5))
+* **docker:** added conventional-changelog-cli to base image ([2464429](https://github.com/WisePricer/quadro/commit/2464429))
+* **docker:** upgrade base image to node latest ([57c4192](https://github.com/WisePricer/quadro/commit/57c4192))
+
+
+
+<a name="0.9.0"></a>
+# 0.9.0 (2018-03-19)
 
 
 ### Bug Fixes
@@ -36,7 +185,6 @@
 * **docker:** add release-it to base image ([32653b5](https://github.com/WisePricer/quadro/commit/32653b5))
 * **docker:** added conventional-changelog-cli to base image ([55121e4](https://github.com/WisePricer/quadro/commit/55121e4))
 * **docker:** upgrade base image to node latest ([fe53744](https://github.com/WisePricer/quadro/commit/fe53744))
-
 
 
 

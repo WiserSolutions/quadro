@@ -14,6 +14,13 @@ describe('Logger', function() {
 
       expect(spy).to.have.been.calledWith({ port: 2000, host: 'localhost' })
     })
+
+    it('validates url starts with tcp', async function() {
+      QT.stubConfig('quadro.logger.logstash', 'udp://localhost:2000')
+      this.sinon.stub(Q.log.LogStashStream, 'createStream')
+
+      await expect(Q.log.reload()).to.be.rejectedWith(Q.Errors.ConfigurationError)
+    })
   })
 
   describe('logger', function() {
@@ -31,6 +38,22 @@ describe('Logger', function() {
       expect(spy).to.have.been.calledWith(this.sinon.match.containSubset({
         hello: [1, 2, 3]
       }))
+    })
+  })
+
+  describe('registerStream', function() {
+    const { Writable } = require('stream')
+
+    it('adds the stream for logging', function() {
+      const write = this.sinon.spy()
+      class Stream extends Writable {
+        _write() { write(...arguments) }
+      }
+      const stream = new Stream()
+      Q.log.registerStream({ stream })
+      Q.log.info('Hello')
+
+      expect(write).to.have.been.calledWith(this.sinon.match.instanceOf(Buffer))
     })
   })
 })

@@ -10,7 +10,8 @@ module.exports = class RabbitMqMessageAdapter {
   async initialize(retry = false) {
     // If consumer configs are not present then don't initialize it
     let serviceName = this.config.get('service.name')
-    if (!serviceName) {
+    let disableConsumer = this.config.get('service.consumer.disable', false)
+    if (!serviceName || disableConsumer) {
       return
     }
 
