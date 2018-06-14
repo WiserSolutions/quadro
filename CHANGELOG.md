@@ -1,3 +1,7 @@
+# 1.0.6 (2018-06-14)
+
+- feature: koa-body options are configurable now
+
 # 1.0.5 (2018-04-28)
 
 - feature: write metrics aggregated and in batches
