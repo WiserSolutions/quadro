@@ -113,7 +113,7 @@ describe('Model Repository', function() {
 
   describe('get', function() {
     it('calls `adapter.get`', async function() {
-      testAdapter.get = this.sinon.stub()
+      testAdapter.get = this.sinon.stub().returns({ hello: 'world' })
       await repo.get(1234)
       expect(testAdapter.get).to.be.calledWith('users', 1234)
     })

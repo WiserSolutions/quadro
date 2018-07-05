@@ -85,6 +85,11 @@ describe('ActiveRecord', function() {
       let user = await User.get(attrs._id)
       expect(user).to.eql(new User({ id: attrs._id, lastName: 'get' }).applyChanges())
     })
+
+    it('throws if record does not exist', async function() {
+      await expect(User.get('missing_id')).to.be
+        .rejectedWith(Q.Errors.RecordNotFound, 'No record matched key/query')
+    })
   })
 
   describe('findOne', function() {

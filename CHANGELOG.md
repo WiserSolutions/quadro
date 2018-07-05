@@ -1,3 +1,7 @@
+# 1.0.7 (2018-07-05)
+
+- bugfix: ActiveRecord `.get` should throw if record not found
+
 # 1.0.6 (2018-06-14)
 
 - feature: koa-body options are configurable now
