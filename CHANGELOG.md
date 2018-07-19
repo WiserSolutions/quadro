@@ -1,3 +1,15 @@
+# 1.0.8 (2018-07-19)
+
+- bugfix: Pubsub should store error message to dead messages even if status code is not present
+
+# 1.0.7 (2018-07-05)
+
+- bugfix: ActiveRecord `.get` should throw if record not found
+
+# 1.0.6 (2018-06-14)
+
+- feature: koa-body options are configurable now
+
 # 1.0.5 (2018-04-28)
 
 - feature: write metrics aggregated and in batches

@@ -99,7 +99,7 @@ module.exports = class HubMessageProcessor {
     this.hubStats.increment(message.messageType, 'failed', messageContext.getStatusCode())
 
     // Set the error to message
-    if (messageContext.getStatusCode()) {
+    if (messageContext.getStatusCode() || messageContext.getError()) {
       messageContext.getRawMessage().lastError = {
         statusCode: messageContext.getStatusCode(),
         body: messageContext.getError()
