@@ -1,3 +1,7 @@
+# 1.0.8 (2018-07-19)
+
+- bugfix: Pubsub should store error message to dead messages even if status code is not present
+
 # 1.0.7 (2018-07-05)
 
 - bugfix: ActiveRecord `.get` should throw if record not found

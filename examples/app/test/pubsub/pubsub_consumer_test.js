@@ -125,7 +125,7 @@ describe('pubsub', function() {
       expect(scheduledEntries).to.be.empty
       let deadLetterEntries = await deadLetterCollection.find({}).toArray()
       expect(deadLetterEntries).to.be.of.length(1)
-      expect(deadLetterEntries[0]).to.containSubset({attemptsMade: 6, maxAttempts: 5, messageType: 'orders.test.consumer', content: {hello: 'world'}})
+      expect(deadLetterEntries[0]).to.containSubset({attemptsMade: 6, maxAttempts: 5, messageType: 'orders.test.consumer', content: {hello: 'world'}, lastError: {statusCode: null, body: 'error while handling message'}})
       expect(deadLetterEntries[0].killedAt).to.not.be.null
     })
 
