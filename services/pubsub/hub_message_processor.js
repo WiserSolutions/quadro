@@ -98,13 +98,6 @@ module.exports = class HubMessageProcessor {
     let message = messageContext.getRawMessage()
     this.hubStats.increment(message.messageType, 'failed', messageContext.getStatusCode())
 
-    // Set the error to message
-    if (messageContext.getStatusCode() || messageContext.getError()) {
-      messageContext.getRawMessage().lastError = {
-        statusCode: messageContext.getStatusCode(),
-        body: messageContext.getError()
-      }
-    }
     // Set the max attempts if not exists
     if (!message.maxAttempts) message.maxAttempts = 5
     // Set the attempt made
@@ -123,6 +116,10 @@ module.exports = class HubMessageProcessor {
    */
   async sendToDeadLetter(messageContext) {
     let message = messageContext.getRawMessage()
+    message.lastError = {
+      statusCode: messageContext.getStatusCode(),
+      body: messageContext.getError()
+    }
     message.killedAt = Date.now()
     await this.deadLetterCollection.insertOne(message)
     this.hubStats.increment(message.messageType, 'killed', messageContext.getStatusCode())
@@ -138,6 +135,10 @@ module.exports = class HubMessageProcessor {
    */
   async scheduleMessage(messageContext) {
     let message = messageContext.getRawMessage()
+    messageContext.lastError = {
+      statusCode: messageContext.getStatusCode(),
+      body: messageContext.getError()
+    }
     let dueTime
     if (messageContext.isFailed()) {
       dueTime = Date.now() + this.getDelay(message)

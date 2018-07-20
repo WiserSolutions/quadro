@@ -1,3 +1,7 @@
+# 1.0.9 (2018-07-20)
+
+- bugfix: Pubsub should reconnect with rabbitmq once disconnected
+
 # 1.0.8 (2018-07-19)
 
 - bugfix: Pubsub should store error message to dead messages even if status code is not present
