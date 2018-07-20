@@ -1,5 +1,5 @@
 const amqp = require('amqplib')
-Q.Errors.declare('PubsubConsomerAlreadyStarted', 'One Consumer already started. No new consumer can be started again')
+Q.Errors.declare('PubsubConsomerAlreadyStartedError', 'One Consumer already started. No new consumer can be started again')
 
 module.exports = class RabbitMqChannel {
   constructor(host, retryDelay) {
