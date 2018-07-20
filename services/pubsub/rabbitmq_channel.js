@@ -1,4 +1,5 @@
 const amqp = require('amqplib')
+Q.Errors.declare('PubsubConsomerAlreadyStarted', 'One Consumer already started. No new consumer can be started again')
 
 module.exports = class RabbitMqChannel {
   constructor(host, retryDelay) {
@@ -20,7 +21,7 @@ module.exports = class RabbitMqChannel {
       this.channel = await this.connection.createChannel()
       // If channel gets closed adruptly then retry to connect again
       this.channel.on('error', async (err) => {
-        Q.log.error({err}, `RabbitMQ channel closed. Retrying to connect after ${this.retryDelay}ms`)
+        Q.log.error({err}, `There was an error in rabbitmq connection. Retrying to connect after ${this.retryDelay}ms`)
         await this.handleError()
       })
     } catch (err) {
@@ -39,22 +40,35 @@ module.exports = class RabbitMqChannel {
   }
 
   async startConsumer(queueName, concurrency, messageHandler) {
+    if (!this.queueName) {
+      this.queueName = queueName
+      this.concurrency = concurrency
+      this.messageHandler = messageHandler
+      return this._startConsumerInternal()
+    } else {
+      throw new Q.Errors.PubsubConsomerAlreadyStarted({existingQueue: this.queueName, newQueue: queueName})
+    }
+  }
+
+  async _startConsumerInternal() {
+    if (!this.queueName) return
     // Make sure queue exists
-    await this.channel.assertQueue(queueName)
+    await this.channel.assertQueue(this.queueName)
 
     // Set concurrency
-    await this.channel.prefetch(concurrency)
+    await this.channel.prefetch(this.concurrency)
 
     // start the consumer
-    await this.channel.consume(queueName, async (message) => {
+    await this.channel.consume(this.queueName, async (message) => {
       // Message would be null if the connection is disconnected or channel is closed
       if (!message) {
-        await this.handleError(queueName, concurrency, messageHandler)
+        Q.log.error(`RabbitMQ channel polled a undefined message. Most likely connection is disconnected or channel is closed. Retrying to connect after ${this.retryDelay}ms`)
+        await this.handleError()
         return
       }
       try {
         // Process message
-        await messageHandler(message)
+        await this.messageHandler(message)
         // Acknowledge message. General error should be taken care by handler
         // and use mongo to schedule event
         await this.channel.ack(message)
@@ -65,12 +79,12 @@ module.exports = class RabbitMqChannel {
     })
   }
 
-  async handleError(queueName, concurrency, messageHandler) {
+  async handleError() {
     await this.closeQuitely(this.channel)
     await this.closeQuitely(this.connection)
     setTimeout(async () => {
       await this.initialize(true)
-      if (queueName) this.startConsumer(queueName, concurrency, messageHandler)
+      await this._startConsumerInternal()
     }, this.retryDelay)
   }
 

@@ -148,12 +148,14 @@ describe('pubsub', function() {
       // Delete the queue and exchange
       await channel.deleteQueue(QUEUE_NAME)
 
+      // Wait for few millis for connection to break
+      await Promise.delay(300)
+
       // Send a message through pub sub
       pubsub.publish('orders.test.consumer', { hello: 'world' })
       // Even a message is sent then it is not recieved by handler as queue is deleted
       expect(handler.handle).to.not.have.been.calledWith(this.sinon.match.containSubset({message: {hello: 'world'}}))
-      // Wait for few millis for connection to break
-      await Promise.delay(300)
+
       // Create the queue again
       await channel.assertQueue(QUEUE_NAME)
       await channel.bindQueue(QUEUE_NAME, 'orders.test.consumer', '')
