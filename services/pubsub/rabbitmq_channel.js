@@ -46,7 +46,7 @@ module.exports = class RabbitMqChannel {
       this.messageHandler = messageHandler
       return this._startConsumerInternal()
     } else {
-      throw new Q.Errors.PubsubConsomerAlreadyStarted({existingQueue: this.queueName, newQueue: queueName})
+      throw new Q.Errors.PubsubConsomerAlreadyStartedError({existingQueue: this.queueName, newQueue: queueName})
     }
   }
 
