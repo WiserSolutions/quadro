@@ -55,9 +55,15 @@ module.exports = class HubMessageProcessor {
     }
 
     let messageContext = new HubMessageContext(parsedMessage)
+
+    if (!this.initialized) {
+      messageContext.failure('The instance is not initialized.')
+      return this.rescheduleMessage(messageContext)
+    }
+
     let messageType = parsedMessage.messageType
     let handler = this.handlers[messageType]
-    if (!this.initialized || !handler) {
+    if (!handler) {
       messageContext.failure('Message handler not found.')
       return this.sendToDeadLetter(messageContext)
     }
