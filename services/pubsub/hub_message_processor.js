@@ -55,18 +55,10 @@ module.exports = class HubMessageProcessor {
     }
 
     let messageContext = new HubMessageContext(parsedMessage)
-
-    if (!this.initialized) {
-      messageContext.failure('The instance is not initialized.')
-      return this.rescheduleMessage(messageContext)
-    }
-
     let messageType = parsedMessage.messageType
     let handler = this.handlers[messageType]
-    if (!handler) {
-      messageContext.failure('Message handler not found.')
-      return this.sendToDeadLetter(messageContext)
-    }
+
+    if (!this.isReadyToProcess(messageContext, handler)) return this.rescheduleMessage(messageContext)
 
     try {
       let timer = new Date()
@@ -95,6 +87,28 @@ module.exports = class HubMessageProcessor {
   }
 
   /**
+   * Check the instance is initialized and
+   * the handler exists
+   *
+   * @param messageContext
+   * @param handler
+   * @returns {boolean}
+   */
+  isReadyToProcess(messageContext, handler) {
+    if (!this.initialized) {
+      messageContext.failure('The instance is not initialized.')
+      return false
+    }
+    if (!handler) {
+      messageContext.failure('Message handler not found.')
+      messageContext.sendToDead = true
+      return false
+    }
+
+    return true
+  }
+
+  /**
    * This method reschedule the message for later time
    * @param  {MessageContext}  messageContext the message context
    * @return {Promise}
@@ -109,7 +123,7 @@ module.exports = class HubMessageProcessor {
     // Set the attempt made
     message.attemptsMade = message.attemptsMade ? message.attemptsMade + 1 : 1
     // If attempt made are more than max attempts
-    if (message.attemptsMade >= message.maxAttempts) await this.sendToDeadLetter(messageContext)
+    if (message.attemptsMade >= message.maxAttempts || messageContext.sendToDead) await this.sendToDeadLetter(messageContext)
     // Else put in the schedule collection
     else await this.scheduleMessage(messageContext)
   }
