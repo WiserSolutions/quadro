@@ -1,5 +1,5 @@
 module.exports = async function(httpServer,
-  rabbitMessageAdapter = 'pubsub:rabbitMessageAdapter',
-  hubMessageConsumer = 'pubsub:hubMessageConsumer') {
+  hubMessageConsumer = 'pubsub:hubMessageConsumer',
+  rabbitMessageAdapter = 'pubsub:rabbitMessageAdapter') {
   // Ensure HTTP server and message consumers are started
 }
