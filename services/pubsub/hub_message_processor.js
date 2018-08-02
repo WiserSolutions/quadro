@@ -5,12 +5,13 @@ const MINUTE = 60 * SECOND
 const HOUR = 60 * MINUTE
 
 module.exports = class HubMessageProcessor {
-  constructor(log, config, hubStats = 'pubsub:hubStats', mongoConnectionFactory) {
+  constructor(log, config, hubStats = 'pubsub:hubStats', mongoConnectionFactory, handlers = 'pubsub:handlersList') {
     this.log = log
     this.config = config
     this.hubStats = hubStats
     this.handlers = {}
     this.defaultDelaySec = 5
+    this.handlers = handlers
     this.mongoConnectionFactory = mongoConnectionFactory
     this.schedule = config.get('service.retrySchedule', [
       5 * SECOND, 3 * MINUTE, 30 * MINUTE, 6 * HOUR
@@ -32,7 +33,15 @@ module.exports = class HubMessageProcessor {
       this.deadLetterCollection = await mongoDB.collection(this.config.get('service.storage.dead', `${serviceName}_dead_v2`))
       await this.deadLetterCollection.createIndex({killedAt: 1}, {name: 'killedAt'})
       await this.deadLetterCollection.createIndex({messageId: 1}, {name: 'messageId'})
+      await this.initailizeHandlers()
     }
+  }
+
+  async initailizeHandlers() {
+    await Promise.map(
+      this.handlers,
+      ({ handler, messageType }) => this.register(messageType, handler)
+    )
   }
 
   /**
