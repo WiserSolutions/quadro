@@ -1,3 +1,5 @@
 ---
 logger:
   level: info
+simpleTasks:
+  - fooTask
