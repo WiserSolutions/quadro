@@ -103,6 +103,22 @@ describe('pubsub', function() {
       expect(scheduledEntries[0].scheduledMessageId).to.not.be.null
     })
 
+    it('push to schedule queue when not initialized', async function() {
+      hubMessageProcessor.initialized = false
+      // Send a message through pub sub
+      pubsub.publish('orders.test.consumer', { hello: 'world' })
+      await Promise.delay(200)
+      hubMessageProcessor.initialized = true
+
+      let deadLetterEntries = await deadLetterCollection.find({}).toArray()
+      expect(deadLetterEntries).to.be.empty
+      let scheduledEntries = await scheduleCollection.find({}).toArray()
+      expect(scheduledEntries).to.be.of.length(1)
+      expect(scheduledEntries[0]).to.containSubset({message: {attemptsMade: 1, maxAttempts: 5, messageType: 'orders.test.consumer', content: {hello: 'world'}}})
+      expect(scheduledEntries[0].dueTime).to.not.be.null
+      expect(scheduledEntries[0].scheduledMessageId).to.not.be.null
+    })
+
     it('push to schedule queue in dead letter on max attempts', async function() {
       // Get the channel
       let handler = {

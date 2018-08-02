@@ -1,3 +1,7 @@
+# 1.0.10 (2018-08-01)
+
+- bugfix: Pubsub reschedule message when not initialized
+
 # 1.0.9 (2018-07-20)
 
 - bugfix: Pubsub should reconnect with rabbitmq once disconnected
