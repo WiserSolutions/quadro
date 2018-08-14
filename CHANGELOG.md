@@ -1,3 +1,7 @@
+# 1.0.10 (218-08-14)
+
+- bugfix: pubsub:HubMessageProcessor should initialize handlers before start to handle messages
+
 # 1.0.9 (2018-07-20)
 
 - bugfix: Pubsub should reconnect with rabbitmq once disconnected
