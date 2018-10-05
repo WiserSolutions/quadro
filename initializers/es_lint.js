@@ -1,5 +1,6 @@
 module.exports = async function(app, log, config) {
   if (app.env === 'production') return
+  if (await config.get('quadro.eslint') === false) return
 
   log.trace('Running ESLint')
 
