@@ -1,3 +1,7 @@
+# 1.0.11 (218-10-09)
+
+- bugfix: Security warning with atob and node-deep-extend
+
 # 1.0.10 (218-08-14)
 
 - bugfix: pubsub:HubMessageProcessor should initialize handlers before start to handle messages
