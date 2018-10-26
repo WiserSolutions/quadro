@@ -109,20 +109,10 @@ describe('di', function() {
       expect(svc.foo).to.eql('bar')
     })
 
-    it('supports generator initialize', async function() {
-      container.register('a', class {
-        *initialize() {
-          return yield Promise.delay(50).then(() => this.foo = 'bar')
-        }
-      })
-      let svc = await container.getAsync('a')
-      expect(svc.foo).to.eql('bar')
-    })
-
     it('throws exception if `get` is called instead of `getAsync`', async function() {
       container.register('a', class {
-        *initialize() {
-          return yield Promise.delay(50).then(() => this.foo = 'bar')
+        async initialize() {
+          return Promise.delay(50).then(() => this.foo = 'bar')
         }
       })
       expect(() => container.get('a')).to.throw(Error, "use 'getAsync' instead")

@@ -5,6 +5,7 @@
 - Plugins: Enhance loading (support for non-local plugins)
 - Plugins: Support conditional plugins
 - Add `@aliases` module property support
+- Remove support for generator functions (in DI container)
 
 # 1.0.11 (2018-10-09)
 
