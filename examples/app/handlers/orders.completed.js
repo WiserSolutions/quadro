@@ -15,10 +15,10 @@ module.exports = function Handler(log) {
       toReturn = ctx.retryAfterSec(60)
       processed = true
     } else if (message.orderId === 'willNotRetry' && ctx.willRetry()) {
-      toReturn = ctx.failure({msg: 'message should not have be retried'})
+      toReturn = ctx.failure({ msg: 'message should not have be retried' })
       processed = true
     } else if (message.orderId === 'willRetry' && !ctx.willRetry()) {
-      toReturn = ctx.failure({msg: 'message should have been retried'})
+      toReturn = ctx.failure({ msg: 'message should have been retried' })
       processed = true
     }
     if (processed) return toReturn

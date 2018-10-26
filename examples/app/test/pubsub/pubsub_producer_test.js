@@ -24,18 +24,20 @@ describe('pubsub', function() {
 
     it('publishes a message', async function() {
       // Get the channel
-      await channel.assertExchange('orders.test.producer', 'fanout', {durable: false})
+      await channel.assertExchange('orders.test.producer', 'fanout', { durable: false })
       await channel.assertQueue('service_producer_queue')
       await channel.bindQueue('service_producer_queue', 'orders.test.producer', '')
       let handler = this.sinon.spy()
-      let tag = await channel.consume('service_producer_queue', handler, {noAck: true})
+      let tag = await channel.consume('service_producer_queue', handler, { noAck: true })
 
       // Send a message through pub sub
       pubsub.publish('orders.test.producer', { hello: 'world' })
       await Promise.delay(200)
       await channel.cancel(tag.consumerTag)
       expect(handler.called).to.be.true
-      expect(JSON.parse(handler.args[0][0].content.toString())).to.be.eql({messageType: 'orders.test.producer', content: {hello: 'world'}})
+      expect(JSON.parse(handler.args[0][0].content.toString())).to.be.eql(
+        { messageType: 'orders.test.producer', content: { hello: 'world' } }
+      )
     })
   })
 })

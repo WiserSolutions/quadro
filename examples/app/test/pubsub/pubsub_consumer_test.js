@@ -32,7 +32,7 @@ describe('pubsub', function() {
       await scheduleCollection.deleteMany({})
       await deadLetterCollection.deleteMany({})
 
-      await channel.assertExchange('orders.test.consumer', 'fanout', {durable: false})
+      await channel.assertExchange('orders.test.consumer', 'fanout', { durable: false })
       await channel.bindQueue(QUEUE_NAME, 'orders.test.consumer', '')
     })
 
@@ -46,7 +46,7 @@ describe('pubsub', function() {
     })
 
     it('recieves a message', async function() {
-      await channel.assertExchange('orders.test.consumer', 'fanout', {durable: false})
+      await channel.assertExchange('orders.test.consumer', 'fanout', { durable: false })
       await channel.bindQueue(QUEUE_NAME, 'orders.test.consumer', '')
       let handler = {
         handle: this.sinon.spy()
@@ -56,7 +56,9 @@ describe('pubsub', function() {
       // Send a message through pub sub
       pubsub.publish('orders.test.consumer', { hello: 'world' })
       await Promise.delay(200)
-      expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset({message: {hello: 'world'}}))
+      expect(handler.handle).to.have.been.calledWith(
+        this.sinon.match.containSubset({ message: { hello: 'world' } })
+      )
       let scheduledEntries = await scheduleCollection.find({}).toArray()
       expect(scheduledEntries).to.be.empty
       let deadLetterEntries = await deadLetterCollection.find({}).toArray()
@@ -73,13 +75,15 @@ describe('pubsub', function() {
       hubMessageProcessor.register('orders.test.consumer', handler)
       pubsub.publish('orders.test.consumer', { hello: 'world_retry_after' })
       await Promise.delay(200)
-      expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset({message: MSG}))
+      expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset({ message: MSG }))
 
       let scheduledEntries = await scheduleCollection.find({}).toArray()
       expect(scheduledEntries).to.be.of.length(1)
       expect(scheduledEntries[0]).to.not.have.nested.property('message.attemptsMade')
       expect(scheduledEntries[0]).to.not.have.nested.property('message.maxAttempts')
-      expect(scheduledEntries[0]).to.containSubset({message: {messageType: 'orders.test.consumer', content: MSG}})
+      expect(scheduledEntries[0]).to.containSubset(
+        { message: { messageType: 'orders.test.consumer', content: MSG } }
+      )
       expect(scheduledEntries[0].dueTime).to.not.be.null
       expect(scheduledEntries[0].scheduledMessageId).to.not.be.null
     })
@@ -93,12 +97,21 @@ describe('pubsub', function() {
       // Send a message through pub sub
       pubsub.publish('orders.test.consumer', { hello: 'world' })
       await Promise.delay(200)
-      expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset({message: {hello: 'world'}}))
+      expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset(
+        { message: { hello: 'world' } }
+      ))
       let deadLetterEntries = await deadLetterCollection.find({}).toArray()
       expect(deadLetterEntries).to.be.empty
       let scheduledEntries = await scheduleCollection.find({}).toArray()
       expect(scheduledEntries).to.be.of.length(1)
-      expect(scheduledEntries[0]).to.containSubset({message: {attemptsMade: 1, maxAttempts: 5, messageType: 'orders.test.consumer', content: {hello: 'world'}}})
+      expect(scheduledEntries[0]).to.containSubset({
+        message: {
+          attemptsMade: 1,
+          maxAttempts: 5,
+          messageType: 'orders.test.consumer',
+          content: { hello: 'world' }
+        }
+      })
       expect(scheduledEntries[0].dueTime).to.not.be.null
       expect(scheduledEntries[0].scheduledMessageId).to.not.be.null
     })
@@ -120,12 +133,20 @@ describe('pubsub', function() {
           maxAttempts: 5
         })))
       await Promise.delay(200)
-      expect(handler.handle).to.be.calledWith(this.sinon.match.containSubset({message: {hello: 'world'}}))
+      expect(handler.handle).to.be.calledWith(this.sinon.match.containSubset(
+        { message: { hello: 'world' } }
+      ))
       let scheduledEntries = await scheduleCollection.find({}).toArray()
       expect(scheduledEntries).to.be.empty
       let deadLetterEntries = await deadLetterCollection.find({}).toArray()
       expect(deadLetterEntries).to.be.of.length(1)
-      expect(deadLetterEntries[0]).to.containSubset({attemptsMade: 6, maxAttempts: 5, messageType: 'orders.test.consumer', content: {hello: 'world'}, lastError: {statusCode: null, body: 'error while handling message'}})
+      expect(deadLetterEntries[0]).to.containSubset({
+        attemptsMade: 6,
+        maxAttempts: 5,
+        messageType: 'orders.test.consumer',
+        content: { hello: 'world' },
+        lastError: { statusCode: null, body: 'error while handling message' }
+      })
       expect(deadLetterEntries[0].killedAt).to.not.be.null
     })
 
@@ -138,7 +159,9 @@ describe('pubsub', function() {
       // Send a message through pub sub
       pubsub.publish('orders.test.consumer', { hello: 'world' })
       await Promise.delay(200)
-      expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset({message: {hello: 'world'}}))
+      expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset(
+        { message: { hello: 'world' } }
+      ))
       let scheduledEntries = await scheduleCollection.find({}).toArray()
       expect(scheduledEntries).to.be.empty
       let deadLetterEntries = await deadLetterCollection.find({}).toArray()
@@ -154,7 +177,9 @@ describe('pubsub', function() {
       // Send a message through pub sub
       pubsub.publish('orders.test.consumer', { hello: 'world' })
       // Even a message is sent then it is not recieved by handler as queue is deleted
-      expect(handler.handle).to.not.have.been.calledWith(this.sinon.match.containSubset({message: {hello: 'world'}}))
+      expect(handler.handle).to.not.have.been.calledWith(this.sinon.match.containSubset(
+        { message: { hello: 'world' } }
+      ))
 
       // Create the queue again
       await channel.assertQueue(QUEUE_NAME)
@@ -162,7 +187,9 @@ describe('pubsub', function() {
       handler.handle.reset()
       pubsub.publish('orders.test.consumer', { hello: 'world' })
       await Promise.delay(200)
-      expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset({message: {hello: 'world'}}))
+      expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset(
+        { message: { hello: 'world' } }
+      ))
     })
 
     it('test final retry on final attempt', async function() {
@@ -183,7 +210,8 @@ describe('pubsub', function() {
       await channel.publish('orders.test.consumer', '', Buffer.from(JSON.stringify(message)))
       await Promise.delay(200)
       expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset({
-        message: {hello: 'world'}}))
+        message: { hello: 'world' } }
+      ))
       let deadLetterEntries = await deadLetterCollection.find({}).toArray()
       expect(deadLetterEntries).to.be.empty
     })
@@ -205,7 +233,8 @@ describe('pubsub', function() {
       await channel.publish('orders.test.consumer', '', Buffer.from(JSON.stringify(message)))
       await Promise.delay(200)
       expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset({
-        message: {hello: 'world'}}))
+        message: { hello: 'world' } }
+      ))
       let deadLetterEntries = await deadLetterCollection.find({}).toArray()
       expect(deadLetterEntries).to.be.empty
     })
@@ -227,8 +256,9 @@ describe('pubsub', function() {
       // Send a message through pub sub
       await channel.publish('orders.test.consumer', '', Buffer.from(JSON.stringify(message)))
       await Promise.delay(200)
-      expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset({
-        message: {hello: 'world'}}))
+      expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset(
+        { message: { hello: 'world' } }
+      ))
       let deadLetterEntries = await deadLetterCollection.find({}).toArray()
       expect(deadLetterEntries).to.be.empty
     })
@@ -242,7 +272,9 @@ describe('pubsub', function() {
       expect(scheduledEntries).to.be.empty
       let deadLetterEntries = await deadLetterCollection.find({}).toArray()
       expect(deadLetterEntries).to.be.of.length(1)
-      expect(deadLetterEntries[0]).to.containSubset({messageType: 'orders.test.consumer', content: {hello: 'delete'}})
+      expect(deadLetterEntries[0]).to.containSubset(
+        { messageType: 'orders.test.consumer', content: { hello: 'delete' } }
+      )
     })
   })
 })
