@@ -22,7 +22,9 @@
     "httpTest": false,
     "nock": false,
     "requirep": false,
-    "pubsub": false
+    "pubsub": false,
+    "get": false,
+    "def": false
   },
   "parserOptions": {
     "ecmaVersion": 2017

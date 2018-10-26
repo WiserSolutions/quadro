@@ -1,8 +1,12 @@
-# 1.0.11 (218-10-09)
+# 2.0.0 (2018-10-26)
+- deps: upgrade packages
+- Add **bdd-lazy-var** to tests
+
+# 1.0.11 (2018-10-09)
 
 - bugfix: Security warning with atob and node-deep-extend
 
-# 1.0.10 (218-08-14)
+# 1.0.10 (2018-08-14)
 
 - bugfix: pubsub:HubMessageProcessor should initialize handlers before start to handle messages
 

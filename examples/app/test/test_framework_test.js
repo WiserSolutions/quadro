@@ -14,4 +14,18 @@ describe('Test framework', function() {
       })
     })
   })
+
+  describe('BDD', function() {
+    def('string', 'hello')
+    def('processed', () => get.string.toUpperCase())
+
+    context('inner context', function() {
+      def('string', 'hi')
+
+      it('behaves like RSpec', function() {
+        console.log(get.string)
+        expect(get.processed).to.eql('HI')
+      })
+    })
+  })
 })
