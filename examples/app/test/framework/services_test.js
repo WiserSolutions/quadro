@@ -4,6 +4,10 @@ describe('Services', function() {
       expect(Q.container.get('testSvc')).to.not.eql(null)
     })
 
+    it('supports module @aliases property', function() {
+      expect(Q.container.get('my-alias')).to.be.equal(Q.container.get('testSvc'))
+    })
+
     it('is being load on startup', function() {
       let services = Q.container.find(/^services:/)
       expect(services.length).to.be.gt(0)
