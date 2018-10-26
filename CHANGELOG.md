@@ -1,6 +1,9 @@
 # 2.0.0 (2018-10-26)
 - deps: upgrade packages
 - Add **bdd-lazy-var** to tests
+- Add **Q.app.isXXXEnv** (e.g. `Q.app.isTestEnv` instead of `Q.app.env === 'test'`)
+- Plugins: Enhance loading (support for non-local plugins)
+- Plugins: Support conditional plugins
 
 # 1.0.11 (2018-10-09)
 

@@ -1,6 +1,6 @@
 {
   "name": "quadro",
-  "version": "1.0.11",
+  "version": "2.0.0",
   "keywords": [
     "framework",
     "quadro",
@@ -70,7 +70,7 @@
     "supertest": "^3.3.0"
   },
   "scripts": {
-    "test": "nyc --reporter=text-summary --reporter=lcov node examples/app/app.js test"
+    "test": "node examples/app/app.js test"
   },
   "devDependencies": {}
 }
