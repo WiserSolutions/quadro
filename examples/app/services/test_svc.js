@@ -7,3 +7,5 @@ module.exports = class {
     this.counter++
   }
 }
+
+module.exports['@aliases'] = ['my-alias']

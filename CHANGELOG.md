@@ -1,16 +1,19 @@
-# 1.0.13 (218-12-06)
+# 1.0.14 (2019-02-04)
+- feature: Add `@aliases` module property support 
+
+# 1.0.13 (2018-12-06)
 - feature: support https protocol in external api
 
-# 1.0.12 (218-12-05)
+# 1.0.12 (2018-12-05)
 
 - bugfix: Security warning with event-stream and flatmap-stream
 - Bump up versions for sinon-chai, shortid, nodemon, mongodb, koa, dot-object, bluebird, aws-sdk and amqplib
 
-# 1.0.11 (218-10-09)
+# 1.0.11 (2018-10-09)
 
 - bugfix: Security warning with atob and node-deep-extend
 
-# 1.0.10 (218-08-14)
+# 1.0.10 (2018-08-14)
 
 - bugfix: pubsub:HubMessageProcessor should initialize handlers before start to handle messages
 
