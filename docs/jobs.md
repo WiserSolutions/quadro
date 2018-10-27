@@ -19,6 +19,22 @@ module.exports = class {
 module.exports['@interval'] = 0.5
 ```
 
+## Jobs and environments
+
+Jobs are not being run when in `test` environment and in `repl` mode.
+
+## Configuration
+
+```yaml
+# quadro.yml
+jobs:
+  all:
+    enabled: false
+  my_job_name:
+    enabled: true
+    interval: 50
+```
+
 ## Job interval
 
 Job interval can be specified in 2 ways:

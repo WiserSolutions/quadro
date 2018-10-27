@@ -1,3 +1,6 @@
 ---
 initializers:
   disabled_variable_initializer: false
+jobs:
+  recurring:
+    enabled: true

@@ -55,7 +55,7 @@
     "statsd-client": "^0.4.2"
   },
   "scripts": {
-    "test": "node examples/app/app.js test"
+    "test": "nyc --reporter=text-summary --reporter=lcov node examples/app/app.js test"
   },
   "devDependencies": {}
 }

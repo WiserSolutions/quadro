@@ -60,4 +60,20 @@ describe('app', function() {
         ])
     })
   })
+
+  describe('#isREPL', function() {
+    context('command is repl', function() {
+      it('returns true', function() {
+        this.sinon.stub(Q.app, 'getAppCommand').returns('repl')
+        expect(Q.app.isREPL).to.equal(true)
+      })
+    })
+
+    context('command is not repl', function() {
+      it('returns false', function() {
+        this.sinon.stub(Q.app, 'getAppCommand').returns('test')
+        expect(Q.app.isREPL).to.equal(false)
+      })
+    })
+  })
 })

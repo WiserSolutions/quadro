@@ -7,6 +7,8 @@
 - Add `@aliases` module property support
 - Remove support for generator functions (in DI container)
 - Move test framework (and dependenciers) to `quadro-test` plugin
+- Do not run jobs in test env and in repl modes
+- Implement `Q.app.isREPL`
 
 # 1.0.11 (2018-10-09)
 

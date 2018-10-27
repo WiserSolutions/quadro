@@ -110,7 +110,20 @@ git update-index --skip-worktree **/config/local/*
 ```
 
 ## Tests runner
-To run tests use:
+To run tests, install `quadro-test` plugin:
+
+```sh
+npm i --save-dev quadro-test
+```
+
+Make sure you load this plugin in test env. For this, your entry point should look similar to this:
+
+```js
+const Quadro = require('quadro')
+Quadro({
+  plugins: [{ name: 'quadro-test', condition: () => Q.app.isTestEnv }]
+})
+```
 
 ```sh
 node app.js test
