@@ -9,6 +9,8 @@
 - Move test framework (and dependenciers) to `quadro-test` plugin
 - Do not run jobs in test env and in repl modes
 - Implement `Q.app.isREPL`
+- Logging: remove support for firehose
+- Move local-dynamo to dev dependencies
 
 # 1.0.11 (2018-10-09)
 
