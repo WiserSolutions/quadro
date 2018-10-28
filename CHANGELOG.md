@@ -12,6 +12,7 @@
 - Logging: remove support for firehose
 - Move local-dynamo to dev dependencies
 - Removed pubsub from quadro (move to quadro-pusub module)
+- HTTP Server won't start in `task` and `repl` modes (e.g. when running `node app.js [task|repl] XXX`)
 
 # 1.0.11 (2018-10-09)
 
