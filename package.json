@@ -16,7 +16,6 @@
     "url": "https://github.com/WisePricer/quadro.git"
   },
   "dependencies": {
-    "amqplib": "^0.5.2",
     "await-outside": "^2.1.2",
     "aws-sdk": "^2.330.0",
     "babel-eslint": "^10.0.1",

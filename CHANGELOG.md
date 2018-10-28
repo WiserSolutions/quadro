@@ -11,6 +11,7 @@
 - Implement `Q.app.isREPL`
 - Logging: remove support for firehose
 - Move local-dynamo to dev dependencies
+- Removed pubsub from quadro (move to quadro-pusub module)
 
 # 1.0.11 (2018-10-09)
 

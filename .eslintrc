@@ -22,7 +22,6 @@
     "httpTest": false,
     "nock": false,
     "requirep": false,
-    "pubsub": false,
     "get": false,
     "def": false
   },
