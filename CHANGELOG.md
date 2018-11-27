@@ -14,6 +14,7 @@
 - Removed pubsub from quadro (move to quadro-pusub module)
 - HTTP Server won't start in `task` and `repl` modes (e.g. when running `node app.js [task|repl] XXX`)
 - Allow specifying `#{env}` in mongo endpoints
+- Rollback event-stream to 3.3.4 because of added malicious code
 
 # 1.0.11 (2018-10-09)
 

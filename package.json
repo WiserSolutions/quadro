@@ -28,6 +28,7 @@
     "dot-object": "^1.6.0",
     "eslint": "^5.9.0",
     "events-async": "^1.1.0",
+    "event-stream": "3.3.4",
     "forever-agent": "^0.6.1",
     "gitlog": "^3.1.2",
     "glob": "^7.1.3",
