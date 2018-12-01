@@ -23,7 +23,6 @@ describe('Test framework', function() {
       def('string', 'hi')
 
       it('behaves like RSpec', function() {
-        console.log(get.string)
         expect(get.processed).to.eql('HI')
       })
     })
