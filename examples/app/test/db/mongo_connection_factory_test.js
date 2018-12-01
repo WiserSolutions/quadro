@@ -21,7 +21,7 @@ describe('MongoConnectionFactory', function() {
     })
 
     it('returns a db', async function() {
-      const db = mcf.connectToDB('mongodb://host/hello')
+      const db = await mcf.connectToDB('mongodb://localhost/hello')
       expect(db).to.be.ok
     })
   })
