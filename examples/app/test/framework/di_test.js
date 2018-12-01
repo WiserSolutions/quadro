@@ -9,6 +9,14 @@ describe('di', function() {
     expect(container.get('svc')).to.eql('123')
   })
 
+  describe('getDefinition', function() {
+    it('returns the definition', function() {
+      const definition = function() {}
+      container.register('svc', definition)
+      expect(container.getDefinition('svc')).to.eql(definition)
+    })
+  })
+
   describe('aliases', function() {
     it('supports aliases', function() {
       class Test {}
