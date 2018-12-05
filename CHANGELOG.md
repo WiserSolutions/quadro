@@ -1,3 +1,8 @@
+# 1.0.12 (218-12-05)
+
+- bugfix: Security warning with event-stream and flatmap-stream
+- Bump up versions for sinon-chai, shortid, nodemon, mongodb, koa, dot-object, bluebird, aws-sdk and amqplib
+
 # 1.0.11 (218-10-09)
 
 - bugfix: Security warning with atob and node-deep-extend
