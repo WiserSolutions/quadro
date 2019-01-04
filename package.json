@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "await-outside": "^2.1.2",
-    "aws-sdk": "^2.382.0",
+    "aws-sdk": "^2.383.0",
     "babel-eslint": "^10.0.1",
     "backoff": "^2.5.0",
     "bluebird": "^3.5.3",
