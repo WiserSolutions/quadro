@@ -28,6 +28,29 @@ describe('External APIs', function() {
     })
   })
 
+  describe('Https APIs', function() {
+    let api
+    beforeEach(function() {
+      api = Q.externalAPI.register('httpstest', { host: 'apihost.com', protocol: 'https' })
+    })
+
+    it('supports arbitrary requests', async function() {
+      nock('https://apihost.com')
+        .options('/hello')
+        .reply(201, { method: 'options' }, JSON_CONTENT)
+      expect(await api.request('/hello', { method: 'options' }))
+        .to.eql({ method: 'options' })
+    })
+
+    it('fails when no https server found', async function() {
+      nock('http://apihost.com')
+        .options('/hello')
+        .reply(201, { method: 'options' }, JSON_CONTENT)
+      await expect(api.request('/hello', { method: 'options' }))
+        .to.be.rejectedWith(Q.Errors.APIRequestError)
+    })
+  })
+
   describe('APIs', function() {
     let api
     beforeEach(function() {

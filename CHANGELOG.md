@@ -1,3 +1,6 @@
+# 1.0.13 (218-12-06)
+- feature: support https protocol in external api
+
 # 1.0.12 (218-12-05)
 
 - bugfix: Security warning with event-stream and flatmap-stream

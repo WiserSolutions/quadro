@@ -112,5 +112,4 @@ Tags:
 
 ## Known issues
 
-- All APIs are assumed to be `http` (`https` not yet supported)
 - Configured timeouts/retries apply to all requests to the API
