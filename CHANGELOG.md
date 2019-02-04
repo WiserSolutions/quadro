@@ -1,5 +1,6 @@
 # 1.0.14 (2019-02-04)
-- feature: Add `@aliases` module property support 
+- feature: Add `@aliases` module property support
+- feature: Support custom headers with external API verbs
 
 # 1.0.13 (2018-12-06)
 - feature: support https protocol in external api

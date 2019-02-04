@@ -25,13 +25,16 @@ const api = Q.externalAPI.register('orders', {
   }
 })
 
+
+
 // Can be used either through the returned instance
 const order = await api.get('/orders/1')
 // or through the Q.externalAPI namespace
 const order = await Q.externalAPI.orders.get('/orders/1')
 
 // Supported REST methods:
-api.get('/orders/1', { invalidateCache: true })
+//api.{verb(get/post/delete/put/head)}(path, body/queryString, headers)
+api.get('/orders/1', { invalidateCache: true }, {'Content-Type': 'application/json'})
 api.post('/orders', { id: 123, customerId: 'cstm_1' })
 api.delete('/orders/1', ...)
 api.put('/orders/1', { id: 123, customerId: 'cstm_2' })
