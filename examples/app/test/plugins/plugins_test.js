@@ -25,6 +25,10 @@ describe('Plugins', function() {
       expect(svc).to.be.ok
       expect(svc.whoAmI()).to.equal('plugin')
     })
+
+    it('supports module @aliases property in plugins', function() {
+      expect(Q.container.get('plugin-alias')).to.be.equal(Q.container.get('plugin:testSvc'))
+    })
   })
 
   describe('tasks', function() {

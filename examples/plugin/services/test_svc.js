@@ -3,3 +3,4 @@ module.exports = class {
     return 'plugin'
   }
 }
+module.exports['@aliases'] = ['plugin-alias']
