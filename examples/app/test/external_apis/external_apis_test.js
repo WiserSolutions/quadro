@@ -73,6 +73,20 @@ describe('External APIs', function() {
         expect(await api.get('/users', { param: 'get' })).to.eql({ method: 'get' })
       })
 
+      it('supports GET with custom headers', async function() {
+        nock('http://apihost.com', {reqheaders: {header1: 'val1', header2: 'val2'}})
+          .get('/users?param=get')
+          .reply(201, { method: 'get' }, JSON_CONTENT)
+        expect(await api.get('/users', { param: 'get' }, {header1: 'val1', header2: 'val2'})).to.eql({ method: 'get' })
+      })
+
+      it('failed GET when custom headers do not match', async function() {
+        nock('http://apihost.com', {reqheaders: {header1: 'val3', header2: 'val2'}})
+          .get('/users?param=get')
+          .reply(201, { method: 'get' }, JSON_CONTENT)
+        await expect(api.get('/users', { param: 'get' }, {header1: 'val1', header2: 'val2'})).to.be.rejectedWith(Q.Errors.APIRequestError)
+      })
+
       it('supports POST', async function() {
         nock('http://apihost.com')
           .post('/users', { body: 'post' })
