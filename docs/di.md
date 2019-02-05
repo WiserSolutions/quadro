@@ -63,6 +63,16 @@ Q.container.run(function(svc = 'myNamespace:svc') {
 })
 ```
 
+## Alias
+
+You can also specify an alias to the dependency.
+The following construct register the dependency with name `my-alias`
+
+```js
+module.exports['@aliases'] = ['my-alias']
+```
+
+
 ## API
 
 ### container.register(name, dependency, options)
