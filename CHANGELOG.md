@@ -1,3 +1,6 @@
+# 1.0.15 (2019-02-07)
+- bugfix: Security warning for just-extend
+
 # 1.0.14 (2019-02-04)
 - feature: Add `@aliases` module property support
 - feature: Support custom headers with external API verbs
