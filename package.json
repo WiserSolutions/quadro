@@ -1,6 +1,6 @@
 {
   "name": "quadro",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "keywords": [
     "framework",
     "quadro",
@@ -18,7 +18,7 @@
   "dependencies": {
     "amqplib": "^0.5.3",
     "await-outside": "^2.1.2",
-    "aws-sdk": "^2.395.0",
+    "aws-sdk": "^2.399.0",
     "babel-eslint": "^8.2.6",
     "backoff": "^2.5.0",
     "bluebird": "^3.5.3",
