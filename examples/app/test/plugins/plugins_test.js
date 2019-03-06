@@ -17,6 +17,11 @@ describe('Plugins', function() {
     it('loads env specific configs', function() {
       expect(Q.config.get('plugin_test_config.testKey')).to.equal('pluginTestValue')
     })
+
+    it('loads conflicting configs', function() {
+      expect(Q.config.get('quadro.aws.awsTestKey')).to.equal('awsDummyValue')
+      expect(Q.config.get('quadro.aws.region')).to.equal('us-east-5')
+    })
   })
 
   describe('services', function() {

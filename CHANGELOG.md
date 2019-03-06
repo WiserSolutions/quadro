@@ -1,3 +1,6 @@
+# 1.0.16 (2019-03-06)
+- bugfix: Issue 275, Fix loading config with plugins
+
 # 1.0.15 (2019-02-07)
 - bugfix: Security warning for just-extend
 
