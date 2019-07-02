@@ -71,5 +71,7 @@
   "scripts": {
     "test": "nyc --reporter=text-summary --reporter=lcov node examples/app/app.js test"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@release-it/conventional-changelog": "^1.1.0"
+  }
 }
