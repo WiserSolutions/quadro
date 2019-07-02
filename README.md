@@ -20,7 +20,7 @@ TOC:
 
 ## Requirements
 
-- NodeJS v7.6.0+
+- NodeJS v10+
 
 ## Installation
 
