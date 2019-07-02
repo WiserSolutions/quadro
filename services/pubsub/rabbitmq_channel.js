@@ -35,8 +35,19 @@ module.exports = class RabbitMqChannel {
   }
 
   async publish(messageType, message) {
-    return this.channel.publish(messageType, '',
+    const messageAccepted = this.channel.publish(messageType, '',
       Buffer.from(JSON.stringify(message)), { persistent: true })
+
+    if (messageAccepted === false) {
+      Q.log.metric('quadro_rabbit_await_drain', {
+        messageType,
+        service: Q.config.get('service.name', '[unknown]')
+      }, { count: 1 })
+      await new Promise(resolve => this.channel.once('drain', resolve))
+      return this.publish(messageType, message)
+    }
+
+    return messageAccepted
   }
 
   async startConsumer(queueName, concurrency, messageHandler) {
