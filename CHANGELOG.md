@@ -1,3 +1,6 @@
+# 1.0.17 (2019-07-02)
+- bugfix: Treating return value from amqplib `publish()` correctly, waiting for `drain` event and re-publishing
+
 # 1.0.16 (2019-03-06)
 - bugfix: Issue 275, Fix loading config with plugins
 
