@@ -46,7 +46,6 @@ git checkout .
 # https://github.com/webpro/release-it
 
 release-it $1 $2 $3 $4 $5 --force \
-  --increment=conventional:angular \
   --beforeChangelogCommand="conventional-changelog -p angular -i CHANGELOG.md -s" \
   --changelogCommand="conventional-changelog -p angular | tail -n +3" \
   --no-safeBump \
