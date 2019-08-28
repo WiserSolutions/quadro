@@ -1,3 +1,5 @@
+## [1.0.19](https://github.com/WisePricer/quadro/compare/1.0.18...1.0.19) (2019-08-28)
+
 ## [1.0.18](https://github.com/WisePricer/quadro/compare/v1.0.17...v1.0.18) (2019-07-02)
 
 # 1.0.17 (2019-07-02)
