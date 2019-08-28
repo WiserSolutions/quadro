@@ -66,12 +66,15 @@ module.exports = class HubMessageProcessor {
     let messageContext = new HubMessageContext(parsedMessage)
     let messageType = parsedMessage.messageType
     let handler = this.handlers[messageType]
-    if (!this.initialized || !handler) {
-      messageContext.failure('Message handler not found.')
+    if (!handler) {
+      messageContext.failure(`Message handler for '${messageType}' not found.`)
       return this.sendToDeadLetter(messageContext)
     }
 
     try {
+      if (!this.initialized) {
+        throw new Error('Application not yet fully initialized. Going to retry later.')
+      }
       let timer = new Date()
       await handler.handle(messageContext)
       Q.log.debug({ messageType, parsedMessage }, 'Message received')

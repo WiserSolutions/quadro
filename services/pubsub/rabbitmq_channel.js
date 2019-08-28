@@ -5,6 +5,8 @@ module.exports = class RabbitMqChannel {
   constructor(host, retryDelay) {
     this.host = host
     this.retryDelay = retryDelay
+    this.hostname = require('os').hostname()
+    this.serviceName = Q.config.get('service.name', '[unknown]')
   }
 
   async initialize(retry = false) {
@@ -34,17 +36,27 @@ module.exports = class RabbitMqChannel {
     }
   }
 
-  async publish(messageType, message) {
+  async publish(messageType, message, attempt = 0) {
     const messageAccepted = this.channel.publish(messageType, '',
       Buffer.from(JSON.stringify(message)), { persistent: true })
 
     if (messageAccepted === false) {
+      if (attempt === 10) {
+        throw new Error('Failing after 10 attempts at putting the message to the amqplib buffer.')
+      }
       Q.log.metric('quadro_rabbit_await_drain', {
         messageType,
-        service: Q.config.get('service.name', '[unknown]')
+        hostname: this.hostname,
+        service: this.serviceName
       }, { count: 1 })
+      const waitStart = Date.now()
       await new Promise(resolve => this.channel.once('drain', resolve))
-      return this.publish(messageType, message)
+      Q.log.metric('quadro_rabbit_await_drain_time', {
+        messageType,
+        hostname: this.hostname,
+        service: this.serviceName
+      }, { sum: Date.now() - waitStart })
+      return this.publish(messageType, message, attempt + 1)
     }
 
     return messageAccepted
