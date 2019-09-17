@@ -77,7 +77,7 @@ module.exports = class HubMessageProcessor {
       }
       let timer = new Date()
       await handler.handle(messageContext)
-      Q.log.debug({ messageType, parsedMessage }, 'Message received')
+      Q.log.trace({ messageType, parsedMessage }, 'Message received')
       this.hubStats.timing(parsedMessage.messageType, 'response_time', timer)
       // reschdule message if it failed
       if (messageContext.isFailed()) {
