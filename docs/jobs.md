@@ -2,7 +2,9 @@
 
 Quadro allows you to easily execute recurring jobs in you application.
 
-Simply create a file in `jobs/` and it will be ran within the specified interval.
+Simply create a file in `jobs/` and it will be ran with the specified delay between executions.
+Quadro jobs, although implemented using promises, are synchronous in the sense that "interval" only starts ticking after a job run completes. Therefore jobs never
+overlap.
 
 ```js
 // jobs/demo.js
