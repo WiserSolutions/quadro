@@ -1,4 +1,5 @@
 const RabbitMqChannel = require('./pubsub/rabbitmq_channel')
+const RedisSimpleMqChannel = require('./pubsub/rsmq_channel');
 
 module.exports = class Pubsub {
   constructor(log, request, config, hubStats = 'pubsub:hubStats') {
@@ -11,8 +12,13 @@ module.exports = class Pubsub {
 
   async initialize(retry = false) {
     if (this.config.get('service.messages.host')) {
-      this.rabbitmqChannel = new RabbitMqChannel(this.config.get('service.messages.host'), this.config.get('service.messages.retryDelay', 5000))
-      return this.rabbitmqChannel.initialize()
+      if (this.config.get('service.messages.type') === 'redis') {
+        this.channel = new RedisSimpleMqChannel(this.config.get('service.messages.host'), this.config.get('service.messages.retryDelay', 5000))
+      } else {
+        this.channel = new RabbitMqChannel(this.config.get('service.messages.host'), this.config.get('service.messages.retryDelay', 5000))
+      }
+
+      return this.channel.initialize()
     }
   }
 

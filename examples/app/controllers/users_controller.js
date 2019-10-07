@@ -6,6 +6,8 @@ module.exports = class {
   }
 
   async show(ctx) {
+    console.log(ctx)
+    console.log(this)
     ctx.body = `${this.dep} ${ctx.params.id}`
   }
 

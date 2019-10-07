@@ -1,4 +1,4 @@
 module.exports = async function(httpServer,
-  rabbitMessageAdapter = 'pubsub:rabbitMessageAdapter') {
+  rabbitMessageAdapter = 'pubsub:messageAdapter') {
   // Ensure HTTP server and message consumers are started
 }

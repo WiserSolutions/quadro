@@ -1,6 +1,7 @@
 name: 'service'
 messages:
-  host: 'amqp://localhost'
+  type: 'redis'
+  host: 'localhost'
   retryDelay: 100
 storage:
   host: 'mongodb://localhost:27017/hub'

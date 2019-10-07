@@ -1,6 +1,6 @@
-const RabbitMqChannel = require('./rabbitmq_channel')
+const MqChannel = require('./rsmq_channel')
 
-module.exports = class RabbitMqMessageAdapter {
+module.exports = class MessageAdapter {
   constructor(log, config, messageProcessor = 'pubsub:hubMessageProcessor') {
     this.log = log
     this.config = config
@@ -16,7 +16,7 @@ module.exports = class RabbitMqMessageAdapter {
     }
 
     // Get the channel
-    let channel = new RabbitMqChannel(this.config.get('service.messages.host'), this.config.get('service.messages.retryDelay', 5000))
+    let channel = new MqChannel(this.config.get('service.messages.host'), this.config.get('service.messages.retryDelay', 5000))
     await channel.initialize()
 
     // Get the queue name and concurrency
