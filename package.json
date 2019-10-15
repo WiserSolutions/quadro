@@ -13,7 +13,7 @@
   "main": "lib/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/WisePricer/quadro.git"
+    "url": "https://github.com/WiserSolutions/quadro.git"
   },
   "dependencies": {
     "amqplib": "^0.5.3",
