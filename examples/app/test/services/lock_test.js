@@ -1,4 +1,5 @@
 /* eslint no-unused-expressions: 0 */
+const _ = require('lodash')
 
 describe('Lock', function() {
   let Lock
@@ -16,9 +17,11 @@ describe('Lock', function() {
       expect(lock).to.be.ok
     })
 
-    it('can not acquire the lock twice', async function() {
-      expect(await Lock.acquire('some_name', { timeout: 100 })).to.be.ok
-      expect(await Lock.acquire('some_name', { timeout: 100 })).to.not.be.ok
+    it('only one client can acquire a lock', async function() {
+      const swarm = _.fill(Array(10), 'some_name')
+      const results = await Promise.all(
+        swarm.map(lockName => (Lock.acquire('some_name', { timeout: 1000 }))))
+      expect(_.compact(results).length).to.be.equal(1)
     })
   })
 })
