@@ -1,0 +1,5 @@
+name: 'service'
+messages:
+  type: 'redis'
+  host: 'localhost'
+  retryDelay: 100

@@ -1,0 +1,11 @@
+{
+  "name": "quadro-demo-rsmq",
+  "version": "0.0.1",
+  "scripts": {
+    "start-producer": "cd redis-msg-producer && node app.js",
+    "start-consumer": "cd redis-msg-consumer && node app.js"
+  },
+  "dependencies": {
+    "quadro": "./../../../quadro"
+  }
+}

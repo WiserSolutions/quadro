@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quadro-rsmq-producer
+  labels:
+    app: quadro-rsmq-producer
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: quadro-rsmq-producer
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.7.9
+        ports:
+        - containerPort: 80
