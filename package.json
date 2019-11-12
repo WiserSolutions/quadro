@@ -16,7 +16,7 @@
     "url": "https://github.com/WiserSolutions/quadro.git"
   },
   "dependencies": {
-    "amqplib": "^0.5.3",
+    "amqplib": "^0.5.5",
     "await-outside": "^2.1.2",
     "aws-sdk": "^2.415.0",
     "babel-eslint": "^8.2.6",
