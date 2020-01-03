@@ -55,7 +55,7 @@
     "mongodb": "^3.3.4",
     "mongodb-uri": "^0.9.7",
     "mz": "^2.6.0",
-    "nock": "^9.6.1",
+    "nock": "^11.7.1",
     "nodemon": "^1.18.10",
     "set-value": ">=2.0.1",
     "prettyjson": "^1.2.1",
