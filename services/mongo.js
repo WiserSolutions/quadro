@@ -7,13 +7,25 @@ module.exports = function(config, app, mongoConnectionFactory, prometheus) {
   const query_count = prometheus.Counter({
     name: 'mongodb_query_count',
     help: 'Total number of mongodb queries.',
-    labelNames: ['caller', 'callee']
+    labelNames: ['function', 'collectionFunc']
+  })
+
+  const error_count = prometheus.Counter({
+    name: 'mongodb_query_errors',
+    help: 'Number of failed mongodb queries.',
+    labelNames: ['function', 'collectionFunc']
+  })
+
+  const success_count = prometheus.Counter({
+    name: 'mongodb_query_sucesses',
+    help: 'Number of faiuled mongodb queries.',
+    labelNames: ['function', 'collectionFunc']
   })
 
   const query_time = prometheus.Histogram({
     name: 'mongodb_query_time',
     help: 'Time taken by mongodb queries.',
-    labelnames: ['caller', 'callee']
+    labelnames: ['function', 'collectionFunction']
   })
   
   // wrap the db connection with metrics logic
@@ -26,33 +38,40 @@ module.exports = function(config, app, mongoConnectionFactory, prometheus) {
       if (typeof k != 'function') continue
       const fn = collection[k]
       collection[k] = function metricsWrapper() {
-        const caller = metricsWrapper.caller()
-        const callee = k
+        const labels = {
+          function: metricsWrapper.caller().name,
+          collectionFunction: k
+        }
 
         const startTime = new Date()
-        query_count.labels(caller, callee).inc(1, startTime)
+
+        // couple helper lambdas for reporting
+        const recordSuccess = () => {
+          const endTime = new Date()
+          query_time.observe(labels, (endTime - startTime) / 1000)
+          success_count.inc(labels, 1, endTime)
+        }
+        const recordFailure = () => {
+          error_count.inc(labels, 1, new Date())
+        }
+
+        query_count.inc(labels, 1, startTime)
 
         // run wrapped function
         let result
         try {
           result = fn(...arguments)
         } catch (e) {
+          // count errors for non-promises
+          recordFailure()
           throw e
         }
-
-        // time the operation
-        if ('then' in result) {
-          // result is a promise
-          result.then(() => {
-            const endTime = new Date()
-            query_time.labels(caller, callee).observe((endTime - startTime) / 1000)
-          })
-        } else {
-          // result is not a promise
-          const endTime = new Date()
-          query_time.labels(caller, callee).observe((endTime - startTime) / 1000)
-        }
-
+        
+        // record completion and return
+        if ('then' in result)  // result is a promise
+          result.then(recordSuccess).catch(recordFailure)
+        else
+          recordSuccess()
         return result
       }
     }
