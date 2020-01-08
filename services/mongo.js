@@ -4,43 +4,48 @@ module.exports = function(config, app, mongoConnectionFactory, prometheus) {
   const connectionString = config.get('db.endpoint', defaultConnectionUrl)
   const db = mongoConnectionFactory.connectToDB(connectionString)
 
-  const query_count = prometheus.Counter({
-    name: 'mongodb_query_count',
-    help: 'Total number of mongodb queries.',
-    labelNames: ['function', 'collectionFunc']
-  })
-
-  const error_count = prometheus.Counter({
-    name: 'mongodb_query_errors',
-    help: 'Number of failed mongodb queries.',
-    labelNames: ['function', 'collectionFunc']
-  })
-
-  const success_count = prometheus.Counter({
-    name: 'mongodb_query_sucesses',
-    help: 'Number of faiuled mongodb queries.',
-    labelNames: ['function', 'collectionFunc']
-  })
-
-  const query_time = prometheus.Histogram({
-    name: 'mongodb_query_time',
-    help: 'Time taken by mongodb queries.',
-    labelnames: ['function', 'collectionFunction']
-  })
+  const labelNames = ['function', 'mongoFunc']
+  const metrics = {
+    queryCount: prometheus.Counter({
+      name: 'mongodb_query_count',
+      help: 'Total number of mongodb queries.',
+      labelNames
+    }),
+    errorCount: prometheus.Counter({
+      name: 'mongodb_query_errors',
+      help: 'Number of failed mongodb queries.',
+      labelNames
+    }),
+    successCount: prometheus.Counter({
+      name: 'mongodb_query_sucesses',
+      help: 'Number of faiuled mongodb queries.',
+      labelNames
+    }),
+    queryTime: prometheus.Histogram({
+      name: 'mongodb_query_time',
+      help: 'Time taken by mongodb queries.',
+      labelnames
+    })
+  }
   
   // wrap the db connection with metrics logic
-  // first wrap the collection "constructor" to wrap new collections with metrics logic
-  const getCollection = db.collection
-  db.collection = function metricsCollectionWrapper() {
-    const collection = getCollection(...arguments)
-    // wrap all of the new collection's methods
-    for (k in collection) {
+  db.collection = metricsConstructorWrapper(db.collection, metrics)
+  db.db = metricsConstructorWrapper(db.db, metrics)
+  return db
+}
+
+function metricsConstructorWrapper(constructor, metrics) {
+  return function metricsObjectWrapper() {
+    const obj = constructor(...arguments)
+    // wrap all of the new obj's methods
+    for (k in obj) {
       if (typeof k != 'function') continue
-      const fn = collection[k]
-      collection[k] = function metricsWrapper() {
+      const fn = obj[k]
+      obj[k] = function metricsWrapper() {
+        // labels for all metrics
         const labels = {
           function: metricsWrapper.caller().name,
-          collectionFunction: k
+          mongoFunc: k
         }
 
         const startTime = new Date()
@@ -48,14 +53,14 @@ module.exports = function(config, app, mongoConnectionFactory, prometheus) {
         // couple helper lambdas for reporting
         const recordSuccess = () => {
           const endTime = new Date()
-          query_time.observe(labels, (endTime - startTime) / 1000)
-          success_count.inc(labels, 1, endTime)
+          metrics.queryTime.observe(labels, (endTime - startTime) / 1000)
+          metrics.successCount.inc(labels, 1, endTime)
         }
         const recordFailure = () => {
-          error_count.inc(labels, 1, new Date())
+          metrics.errorCount.inc(labels, 1, new Date())
         }
 
-        query_count.inc(labels, 1, startTime)
+        metrics.queryCount.inc(labels, 1, startTime)
 
         // run wrapped function
         let result
@@ -77,5 +82,4 @@ module.exports = function(config, app, mongoConnectionFactory, prometheus) {
     }
     return collection
   }
-  return db
 }
