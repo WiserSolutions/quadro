@@ -85,13 +85,13 @@ function metricsConstructorWrapper(constructor, metrics) {
         const recordSuccess = () => {
           const endTime = new Date()
           metrics.queryTime.observe(labels, (endTime - startTime) / 1000)
-          metrics.successCount.inc(labels, 1)
+          metrics.successCount.inc(labels)
         }
         const recordFailure = () => {
-          metrics.errorCount.inc(labels, 1)
+          metrics.errorCount.inc(labels)
         }
 
-        metrics.queryCount.inc(labels, 1)
+        metrics.queryCount.inc(labels)
 
         // run wrapped function
         let result
