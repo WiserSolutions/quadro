@@ -4,7 +4,7 @@ module.exports = function(config, app, mongoConnectionFactory, prometheus) {
   const connectionString = config.get('db.endpoint', defaultConnectionUrl)
   const db = mongoConnectionFactory.connectToDB(connectionString)
 
-  const labelNames = ['function', 'operation']
+  const labelNames = ['function', 'filename', 'operation']
   const metrics = {
     queryCount: prometheus.Counter({
       name: 'mongodb_query_count',
@@ -24,7 +24,7 @@ module.exports = function(config, app, mongoConnectionFactory, prometheus) {
     queryTime: prometheus.Histogram({
       name: 'mongodb_query_time',
       help: 'Time taken by mongodb queries.',
-      labelnames
+      labelNames
     })
   }
 
@@ -34,6 +34,35 @@ module.exports = function(config, app, mongoConnectionFactory, prometheus) {
   return db
 }
 
+/**
+ * Get information about the function which called the current function.
+ * (i.e. get the caller of the caller of this function)
+ * This will ignore unamed lambda functions if it is able to find a named function in the call stack.
+ * @return {Object} {name, file, line, column}
+ */
+function getCaller() {
+  const FUNCTION_NAME = /^at ([\w.]+) \(.+\)$/
+  const FUNCTION_LOCATION = /\/([-\w]+?\.(?:\w+)):(\d+):(\d+)/
+  let stack = new Error().stack
+    .split('\n')
+    .map(s => s.trim())
+    .slice(3) // remove Error line and stack entry for this function and the calling fn (want caller of the caller)
+  for (const i of stack) {
+    let m = FUNCTION_NAME.exec(i)
+    if (!m) continue
+    const name = m[1]
+    m = FUNCTION_LOCATION.exec(i)
+    if (m) {
+      return {name, file: m[1], line: m[2], column: m[3]}
+    } else {
+      return {name}
+    }
+  }
+  // can't find a named function, just find first lambda
+  const m = FUNCTION_LOCATION.exec(stack[0])
+  return m ? {file: m[1], line: m[2], column: m[3]} : {}
+}
+
 function metricsConstructorWrapper(constructor, metrics) {
   return function metricsObjectWrapper() {
     const apiObj = constructor(...arguments)
@@ -41,10 +70,12 @@ function metricsConstructorWrapper(constructor, metrics) {
     for (const k in apiObj) {
       if (typeof k !== 'function') continue
       const fn = apiObj[k]
-      apiObj[k] = function metricsWrapper() {
+      apiObj[k] = function metricsFunctionWrapper() {
         // labels for all metrics
+        const caller = getCaller()
         const labels = {
-          function: metricsWrapper.caller().name,
+          function: caller.name,
+          filename: caller.file,
           operation: k // mongo api function name
         }
 
