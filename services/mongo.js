@@ -6,22 +6,22 @@ module.exports = function(config, app, mongoConnectionFactory, prometheus) {
 
   const labelNames = ['function', 'filename', 'operation']
   const metrics = {
-    queryCount: prometheus.Counter({
+    queryCount: new prometheus.Counter({
       name: 'mongodb_query_count',
       help: 'Total number of mongodb queries.',
       labelNames
     }),
-    errorCount: prometheus.Counter({
+    errorCount: new prometheus.Counter({
       name: 'mongodb_query_errors',
       help: 'Number of failed mongodb queries.',
       labelNames
     }),
-    successCount: prometheus.Counter({
+    successCount: new prometheus.Counter({
       name: 'mongodb_query_successes',
       help: 'Number of successful mongodb queries.',
       labelNames
     }),
-    queryTime: prometheus.Histogram({
+    queryTime: new prometheus.Histogram({
       name: 'mongodb_query_time',
       help: 'Time taken by mongodb queries.',
       labelNames
