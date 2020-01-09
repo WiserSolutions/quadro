@@ -1,10 +1,12 @@
+const { parse, sep } = require('path')
+
 module.exports = function(config, app, mongoConnectionFactory, prometheus) {
   const dbName = `${app.name}_${app.env}`
   const defaultConnectionUrl = `mongodb://localhost:27017/${dbName}`
   const connectionString = config.get('db.endpoint', defaultConnectionUrl)
   const db = mongoConnectionFactory.connectToDB(connectionString)
 
-  const labelNames = ['function', 'filename', 'operation']
+  const labelNames = ['function', 'filename', 'lineno', 'operation']
   const metrics = {
     queryCount: new prometheus.Counter({
       name: 'mongodb_query_count',
@@ -42,25 +44,29 @@ module.exports = function(config, app, mongoConnectionFactory, prometheus) {
  */
 function getCaller() {
   const FUNCTION_NAME = /^at ([\w.]+) \(.+\)$/
-  const FUNCTION_LOCATION = /\/([-\w]+?\.(?:\w+)):(\d+):(\d+)/
+  const FUNCTION_LOCATION = /([/\\-\w]+\.(?:\w+)):(\d+):(\d+)/
   let stack = new Error().stack
     .split('\n')
     .map(s => s.trim())
     .slice(3) // remove Error line and stack entry for this function and the calling fn (want caller of the caller)
   for (const i of stack) {
-    let m = FUNCTION_NAME.exec(i)
+    const m = FUNCTION_NAME.exec(i)
     if (!m) continue
     const name = m[1]
-    m = FUNCTION_LOCATION.exec(i)
-    if (m) {
-      return {name, file: m[1], line: m[2], column: m[3]}
-    } else {
-      return {name}
-    }
+
+    // make suere it is not a lib function such as Array.map or _.map
+    const callerloc = FUNCTION_LOCATION.exec(i)
+    if (!callerloc) continue // common failiure with `<anonymous>` for stdlib function
+    const callerPath = parse(callerloc[1])
+    const isModuleFunction = callerPath.dir
+      .split(sep)
+      .find(j => j === 'node_modules')
+    if (isModuleFunction) continue // handle _.map and other module provided functions
+    return {name, file: callerPath.name, line: callerloc[2], column: callerloc[3]}
   }
-  // can't find a named function, just find first lambda
-  const m = FUNCTION_LOCATION.exec(stack[0])
-  return m ? {file: m[1], line: m[2], column: m[3]} : {}
+
+  // failed to find function
+  return {}
 }
 
 function metricsConstructorWrapper(constructor, metrics) {
@@ -76,6 +82,7 @@ function metricsConstructorWrapper(constructor, metrics) {
         const labels = {
           function: caller.name,
           filename: caller.file,
+          lineno: `${caller.line}:${caller.column}`,
           operation: k // mongo api function name
         }
 
