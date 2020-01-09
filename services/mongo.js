@@ -27,7 +27,7 @@ module.exports = function(config, app, mongoConnectionFactory, prometheus) {
       labelnames
     })
   }
-  
+
   // wrap the db connection with metrics logic
   db.collection = metricsConstructorWrapper(db.collection, metrics)
   db.db = metricsConstructorWrapper(db.db, metrics)
@@ -36,16 +36,16 @@ module.exports = function(config, app, mongoConnectionFactory, prometheus) {
 
 function metricsConstructorWrapper(constructor, metrics) {
   return function metricsObjectWrapper() {
-    const obj = constructor(...arguments)
+    const apiObj = constructor(...arguments)
     // wrap all of the new obj's methods
-    for (k in obj) {
-      if (typeof k != 'function') continue
-      const fn = obj[k]
-      obj[k] = function metricsWrapper() {
+    for (const k in apiObj) {
+      if (typeof k !== 'function') continue
+      const fn = apiObj[k]
+      apiObj[k] = function metricsWrapper() {
         // labels for all metrics
         const labels = {
           function: metricsWrapper.caller().name,
-          operation: k  // mongo api function name
+          operation: k // mongo api function name
         }
 
         const startTime = new Date()
@@ -71,15 +71,17 @@ function metricsConstructorWrapper(constructor, metrics) {
           recordFailure()
           throw e
         }
-        
+
         // record completion and return
-        if ('then' in result)  // result is a promise
+        if ('then' in result) {
+          // result is a promise
           result.then(recordSuccess).catch(recordFailure)
-        else
+        } else {
           recordSuccess()
+        }
         return result
       }
     }
-    return collection
+    return apiObj
   }
 }
