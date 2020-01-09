@@ -4,7 +4,7 @@ module.exports = function(config, app, mongoConnectionFactory, prometheus) {
   const connectionString = config.get('db.endpoint', defaultConnectionUrl)
   const db = mongoConnectionFactory.connectToDB(connectionString)
 
-  const labelNames = ['function', 'mongoFunc']
+  const labelNames = ['function', 'operation']
   const metrics = {
     queryCount: prometheus.Counter({
       name: 'mongodb_query_count',
@@ -17,8 +17,8 @@ module.exports = function(config, app, mongoConnectionFactory, prometheus) {
       labelNames
     }),
     successCount: prometheus.Counter({
-      name: 'mongodb_query_sucesses',
-      help: 'Number of faiuled mongodb queries.',
+      name: 'mongodb_query_successes',
+      help: 'Number of successful mongodb queries.',
       labelNames
     }),
     queryTime: prometheus.Histogram({
@@ -45,7 +45,7 @@ function metricsConstructorWrapper(constructor, metrics) {
         // labels for all metrics
         const labels = {
           function: metricsWrapper.caller().name,
-          mongoFunc: k
+          operation: k  // mongo api function name
         }
 
         const startTime = new Date()
@@ -54,13 +54,13 @@ function metricsConstructorWrapper(constructor, metrics) {
         const recordSuccess = () => {
           const endTime = new Date()
           metrics.queryTime.observe(labels, (endTime - startTime) / 1000)
-          metrics.successCount.inc(labels, 1, endTime)
+          metrics.successCount.inc(labels, 1)
         }
         const recordFailure = () => {
-          metrics.errorCount.inc(labels, 1, new Date())
+          metrics.errorCount.inc(labels, 1)
         }
 
-        metrics.queryCount.inc(labels, 1, startTime)
+        metrics.queryCount.inc(labels, 1)
 
         // run wrapped function
         let result
