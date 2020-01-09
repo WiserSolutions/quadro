@@ -18,14 +18,10 @@ module.exports = function(config, app, mongoConnectionFactory, prometheus) {
       help: 'Number of failed mongodb queries.',
       labelNames
     }),
-    successCount: new prometheus.Counter({
-      name: 'mongodb_query_successes',
-      help: 'Number of successful mongodb queries.',
-      labelNames
-    }),
     queryTime: new prometheus.Histogram({
       name: 'mongodb_query_time',
       help: 'Time taken by mongodb queries.',
+      buckets: config.get('db.queryTimeBuckets', [0.1, 0.5, 2, 10, 60]),
       labelNames
     })
   }
@@ -92,7 +88,6 @@ function metricsConstructorWrapper(constructor, metrics) {
         const recordSuccess = () => {
           const endTime = new Date()
           metrics.queryTime.observe(labels, (endTime - startTime) / 1000)
-          metrics.successCount.inc(labels)
         }
         const recordFailure = () => {
           metrics.errorCount.inc(labels)
