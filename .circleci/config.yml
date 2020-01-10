@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: /tmp/quadro
     environment:
-      CC_TEST_REPORTER_ID: da250b6b8867751c0836db63df399d114d40394edf42b2e269fb0edf7e5704cb
+      CC_TEST_REPORTER_ID: 3d18819215fd7b98812a2b5f1489a6706968b93a947ad1dbe278cffd41c99b38
     docker:
       - image: shapigor/quadro
       - image: redis@sha256:54057dd7e125ca41afe526a877e8bd35ec2cdd33b9217e022ed37bdcf7d09673
@@ -24,7 +24,7 @@ jobs:
           && ./cc-test-reporter after-build --exit-code $?
         environment:
           TERM: dumb
-          CC_TEST_REPORTER_ID: da250b6b8867751c0836db63df399d114d40394edf42b2e269fb0edf7e5704cb
+          CC_TEST_REPORTER_ID: 3d18819215fd7b98812a2b5f1489a6706968b93a947ad1dbe278cffd41c99b38
       - save_cache:
           key: quadro-{{ checksum "package.json" }}-{{ checksum "examples/app/package.json" }}-1
           paths:
