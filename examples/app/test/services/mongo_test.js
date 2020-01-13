@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-describe.only('Mongo Service', () => {
+describe('Mongo Service', () => {
   it('exists', async () => {
     const mongo = await Q.container.getAsync('mongo')
     expect(await mongo.collections()).to.not.be.empty

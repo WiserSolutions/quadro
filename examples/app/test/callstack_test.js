@@ -1,6 +1,6 @@
 const callstack = require('../../../lib/callstack.js')
 
-describe.only('Callstack', () => {
+describe('Callstack', () => {
   it('detects correct calling function', () => {
     function fn2() {
       return [0].map(() => callstack.getCaller())[0]
