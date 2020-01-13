@@ -55,7 +55,7 @@ function metricsWrapFunction(fn, fnName, metrics) {
     const caller = getCaller()
     const labels = {
       function: caller.name,
-      filename: caller.file,
+      filename: caller.fileName,
       lineno: caller.line && caller.column ? `${caller.line}:${caller.column}` : undefined,
       operation: fnName // mongo api function name
     }
