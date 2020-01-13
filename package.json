@@ -74,6 +74,7 @@
     "test": "nyc --reporter=text-summary --reporter=lcov node examples/app/app.js test"
   },
   "devDependencies": {
-    "@release-it/conventional-changelog": "^1.1.0"
+    "@release-it/conventional-changelog": "^1.1.0",
+    "nyc": "^15.0.0"
   }
 }
