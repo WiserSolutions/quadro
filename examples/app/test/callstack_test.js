@@ -3,7 +3,7 @@ const callstack = require('../../../lib/callstack.js')
 describe('Callstack', () => {
   it('detects correct calling function', () => {
     function fn2() {
-      return [0].map(function named() { callstack.getCaller() })[0]
+      return [0].map(function named() { return callstack.getCaller() })[0]
     }
 
     function fn1() {
