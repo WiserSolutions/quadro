@@ -1,4 +1,4 @@
-const { parse, sep } = require('path')
+const {getCaller} = require('../lib/callstack.js')
 
 module.exports = function(config, app, mongoConnectionFactory, prometheus) {
   const dbName = `${app.name}_${app.env}`
@@ -27,94 +27,68 @@ module.exports = function(config, app, mongoConnectionFactory, prometheus) {
   }
 
   // wrap the db connection with metrics logic
-  db.collection = metricsConstructorWrapper(db.collection, metrics)
-  db.db = metricsConstructorWrapper(db.db, metrics)
-  return db
+  return db.then(db => {
+    db.collection = metricsWrapConstructor(db.collection.bind(db), metrics)
+    db.eval = metricsWrapFunction(db.eval.bind(db), 'eval', metrics)
+    db.aggregate = metricsWrapFunction(db.aggregate.bind(db), 'aggregate', metrics)
+    return db
+  })
 }
 
-/**
- * Get information about the function which called the current function.
- * (i.e. get the caller of the caller of this function)
- * This will ignore unamed lambda functions if it is able to find a named function in the call stack.
- * @return {Object} {name, file, line, column}
- */
-function getCaller() {
-  const FUNCTION_NAME = /^at ([\w.]+) \(.+\)$/
-  const FUNCTION_LOCATION = /([/\\-\w]+\.(?:\w+)):(\d+):(\d+)/
-  let stack = new Error().stack
-    .split('\n')
-    .map(s => s.trim())
-    .slice(3) // remove Error line and stack entry for this function and the calling fn (want caller of the caller)
-  for (const i of stack) {
-    const m = FUNCTION_NAME.exec(i)
-    if (!m) continue
-    const name = m[1]
+function metricsWrapConstructor(constructor, metrics) {
+  return function metricsConstructorWrapper() {
+    let obj = constructor(...arguments)
+    for (const k in obj) {
+      if (typeof obj[k] !== 'function') continue
 
-    // make suere it is not a lib function such as Array.map or _.map
-    const callerloc = FUNCTION_LOCATION.exec(i)
-    if (!callerloc) continue // common failiure with `<anonymous>` for stdlib function
-    const callerPath = parse(callerloc[1])
-    const isModuleFunction = callerPath.dir
-      .split(sep)
-      .find(j => j === 'node_modules')
-    if (isModuleFunction) continue // handle _.map and other module provided functions
-    return {name, file: callerPath.name, line: callerloc[2], column: callerloc[3]}
-  }
-
-  // failed to find function
-  return {}
-}
-
-function metricsConstructorWrapper(constructor, metrics) {
-  return function metricsObjectWrapper() {
-    const apiObj = constructor(...arguments)
-    // wrap all of the new obj's methods
-    for (const k in apiObj) {
-      if (typeof k !== 'function') continue
-      const fn = apiObj[k]
-      apiObj[k] = function metricsFunctionWrapper() {
-        // labels for all metrics
-        const caller = getCaller()
-        const labels = {
-          function: caller.name,
-          filename: caller.file,
-          lineno: `${caller.line}:${caller.column}`,
-          operation: k // mongo api function name
-        }
-
-        const startTime = new Date()
-
-        // couple helper lambdas for reporting
-        const recordSuccess = () => {
-          const endTime = new Date()
-          metrics.queryTime.observe(labels, (endTime - startTime) / 1000)
-        }
-        const recordFailure = () => {
-          metrics.errorCount.inc(labels)
-        }
-
-        metrics.queryCount.inc(labels)
-
-        // run wrapped function
-        let result
-        try {
-          result = fn(...arguments)
-        } catch (e) {
-          // count errors for non-promises
-          recordFailure()
-          throw e
-        }
-
-        // record completion and return
-        if ('then' in result) {
-          // result is a promise
-          result.then(recordSuccess).catch(recordFailure)
-        } else {
-          recordSuccess()
-        }
-        return result
-      }
+      const fn = obj[k].bind(obj)
+      obj[k] = metricsWrapFunction(fn, k, metrics)
     }
-    return apiObj
+    return obj
+  }
+}
+
+function metricsWrapFunction(fn, fnName, metrics) {
+  return function metricsFunctionWrapper() {
+    // SETUP
+    // labels for all metrics
+    const caller = getCaller()
+    const labels = {
+      function: caller.name,
+      filename: caller.file,
+      lineno: caller.line && caller.column ? `${caller.line}:${caller.column}` : undefined,
+      operation: fnName // mongo api function name
+    }
+    const startTime = new Date()
+
+    // couple helpers for reporting
+    function recordSuccess() {
+      const endTime = new Date()
+      metrics.queryTime.observe(labels, (endTime - startTime) / 1000)
+    }
+    function recordFailure() {
+      metrics.errorCount.inc(labels)
+    }
+
+    // WRAP AND REPORT
+    metrics.queryCount.inc(labels)
+    // run wrapped function
+    let result
+    try {
+      result = fn(...arguments)
+    } catch (e) {
+      // count errors for non-promises
+      recordFailure()
+      throw e
+    }
+
+    // record completion and return
+    if ('then' in result) {
+      // result is a promise
+      result.then(recordSuccess).catch(recordFailure)
+    } else {
+      recordSuccess()
+    }
+    return result
   }
 }
