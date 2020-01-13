@@ -25,6 +25,7 @@
     "buffered-queue": "^0.1.4",
     "bunyan": "^1.8.12",
     "bunyan-logstash-tcp": "^1.0.0",
+    "callsite": "^1.0.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "chai-subset": "^1.5.0",

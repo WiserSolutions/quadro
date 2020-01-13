@@ -15,7 +15,7 @@ describe('Callstack', () => {
     // get fn1, however, until node v12, it will name the lambda 'map' which means it will still
     // find the answer to be fn2 instead of fn1
     expect(res.name).to.equal('fn2')
-    expect(res.file).to.equal('callstack_test')
+    expect(res.fileName).to.equal('callstack_test')
   })
 
   it('handles aliases', () => {
@@ -30,6 +30,6 @@ describe('Callstack', () => {
     }
     const res = caller()
     expect(res.name).to.equal('caller')
-    expect(res.file).to.equal('callstack_test')
+    expect(res.fileName).to.equal('callstack_test')
   })
 })
