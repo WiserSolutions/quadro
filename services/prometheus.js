@@ -10,9 +10,9 @@ module.exports = function(config) {
   }
 
   http.createServer((req, res) => {
-    if (req === '/metrics') {
+    if (req.method === 'GET' && req.url === '/metrics') {
       res.writeHead(200, { 'Content-Type': 'text/plain' })
-        .end(client.register.metrics())
+      res.end(client.register.metrics())
     } else {
       res.writeHead(404).end()
     }
