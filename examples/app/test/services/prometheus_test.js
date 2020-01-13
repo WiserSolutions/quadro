@@ -7,11 +7,16 @@ describe('Prometheus Service', () => {
     expect(prom).is.not.null
   })
 
-  it('launches webserver', (callback) => {
-    http.get({url: 'http://localhost/metrics', port: 9230}, (res) => {
+  it('launches webserver', done => {
+    http.get('http://localhost:9230/metrics', (res) => {
       expect(res.statusCode).to.equal(200)
-      expect(res.body).to.contain('quadro_process_cpu_user_seconds_total')
-      callback()
+      res.setEncoding('utf8')
+      let body = ''
+      res.on('data', d => body += d)
+      res.on('end', () => {
+        expect(body).to.contain('quadro_process_cpu_user_seconds_total')
+        done()
+      })
     })
   })
 })
