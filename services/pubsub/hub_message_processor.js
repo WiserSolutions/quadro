@@ -5,10 +5,36 @@ const MINUTE = 60 * SECOND
 const HOUR = 60 * MINUTE
 
 module.exports = class HubMessageProcessor {
-  constructor(log, config, hubStats = 'pubsub:hubStats', mongoConnectionFactory, handlers = 'pubsub:handlersList') {
+  constructor(log, config, hubStats = 'pubsub:hubStats', prometheus, mongoConnectionFactory, handlers = 'pubsub:handlersList') {
     this.log = log
     this.config = config
     this.hubStats = hubStats
+    this.metrics = {
+      responseTime: new prometheus.Histogram({
+        name: 'rabbitmq_response_time',
+        help: 'How long it takes for messages to be handled.'
+      }),
+      successfulMessageCount: new prometheus.Counter({
+        name: 'rabbitmq_successful',
+        help: 'Total number of messages which were handled.',
+        labelNames: ['messageType']
+      }),
+      failedMessageCount: new prometheus.Counter({
+        name: 'rabbitmq_failed',
+        help: 'Total number of messages which were not handled.',
+        labelNames: ['messageType', 'statusCode']
+      }),
+      killedMessageCount: new prometheus.Counter({
+        name: 'rabbitmq_killed',
+        help: 'Total number of messages which where killed.',
+        labelNames: ['messageType', 'statusCode']
+      }),
+      scheduledMessageCount: new prometheus.Counter({
+        name: 'rabbitmq_scheduled',
+        help: 'Total number of of scheduled messages',
+        labelNames: ['messageType', 'statusCode']
+      })
+    }
     this.handlers = {}
     this.defaultDelaySec = 5
     this.handlers = handlers
@@ -75,10 +101,10 @@ module.exports = class HubMessageProcessor {
       if (!this.initialized) {
         throw new Error('Application not yet fully initialized. Going to retry later.')
       }
-      let timer = new Date()
+      const timer = this.metrics.responseTime.startTimer()
       await handler.handle(messageContext)
+      timer()
       Q.log.debug({ messageType, parsedMessage }, 'Message received')
-      this.hubStats.timing(parsedMessage.messageType, 'response_time', timer)
       // reschdule message if it failed
       if (messageContext.isFailed()) {
         let data = { messageType, statusCode: messageContext.getStatusCode() }
@@ -91,7 +117,7 @@ module.exports = class HubMessageProcessor {
 
         return this.scheduleMessage(messageContext)
       }
-      this.hubStats.increment(parsedMessage.messageType, 'succeeded')
+      this.metrics.successfulMessageCount.inc({messageType: parsedMessage.messageType})
     } catch (err) {
       Q.log.error({ messageType, err }, 'Unhandled exception while handling message')
       messageContext.failure(err)
@@ -108,7 +134,10 @@ module.exports = class HubMessageProcessor {
   async rescheduleMessage(messageContext) {
     // Get the message from context
     let message = messageContext.getRawMessage()
-    this.hubStats.increment(message.messageType, 'failed', messageContext.getStatusCode())
+    this.metrics.failedMessageCount.inc({
+      messageType: message.messageType,
+      statusCode: messageContext.getStatusCode()
+    })
 
     // Set the max attempts if not exists
     if (!message.maxAttempts) message.maxAttempts = 5
@@ -134,7 +163,10 @@ module.exports = class HubMessageProcessor {
     }
     message.killedAt = Date.now()
     await this.deadLetterCollection.insertOne(message)
-    this.hubStats.increment(message.messageType, 'killed', messageContext.getStatusCode())
+    this.metrics.killedMessageCount.inc({
+      messageType: message.messageType,
+      statusCode: messageContext.getStatusCode()
+    })
   }
 
   /**
@@ -169,7 +201,10 @@ module.exports = class HubMessageProcessor {
       scheduledMessageId: shortid.generate()
     }
     await this.scheduleCollection.insert(scheduledItem)
-    this.hubStats.increment(message.messageType, 'scheduled', messageContext.getStatusCode())
+    this.metrics.scheduledMessageCount.inc({
+      messageType: message.messageType,
+      statusCode: messageContext.getStatusCode()
+    })
   }
 
   getDelay(msg) {
