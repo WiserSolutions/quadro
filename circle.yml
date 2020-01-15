@@ -3,7 +3,7 @@ machine:
   services:
     - redis
   node:
-    version: 7.7.2
+    version: 10.18.1
 
 dependencies:
   override:

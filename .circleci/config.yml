@@ -5,7 +5,7 @@ jobs:
     environment:
       CC_TEST_REPORTER_ID: 3d18819215fd7b98812a2b5f1489a6706968b93a947ad1dbe278cffd41c99b38
     docker:
-      - image: shapigor/quadro
+      - image: eadword/quadro
       - image: redis@sha256:54057dd7e125ca41afe526a877e8bd35ec2cdd33b9217e022ed37bdcf7d09673
       - image: mongo:3
       - image: rabbitmq:3.7
