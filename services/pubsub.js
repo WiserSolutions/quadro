@@ -7,12 +7,12 @@ module.exports = class Pubsub {
     this.config = config
     this.metrics = {
       publishedCount: new prometheus.Counter({
-        name: 'rabbitmq_published',
+        name: `${prometheus.prefix}rabbitmq_published`,
         help: 'Total number of messages published to rabbitmq.',
         labelNames: ['messageType']
       }),
       missedCount: new prometheus.Counter({
-        name: 'rabbitmq_missed',
+        name: `${prometheus.prefix}rabbitmq_missed`,
         help: 'Total number of messages which could not be published.',
         labelNames: ['messageType']
       })

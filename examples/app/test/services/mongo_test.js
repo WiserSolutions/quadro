@@ -10,7 +10,7 @@ describe('Mongo Service', () => {
     const collection = mongo.collection('locations_config')
     expect(await collection.countDocuments({})).to.be.gt(0)
     const prom = await Q.container.getAsync('prometheus')
-    const pattern = /^mongodb_query_count{.*?function="testMongo".*?operation="countDocuments".*} 1/
+    const pattern = /^quadro_mongodb_query_count{.*?function="testMongo".*?operation="countDocuments".*} 1/
     expect(prom.register.metrics().split('\n').filter(i => pattern.test(i))).to.be.length(1)
   })
 })

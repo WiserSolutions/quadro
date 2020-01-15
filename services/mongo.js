@@ -10,17 +10,17 @@ module.exports = function(config, app, mongoConnectionFactory, prometheus) {
   const metricsBlacklist = config.get('db.metricsBlacklist', ['createIndex'])
   const metrics = {
     queryCount: new prometheus.Counter({
-      name: 'mongodb_query_count',
+      name: `${prometheus.prefix}mongodb_query_count`,
       help: 'Total number of mongodb queries.',
       labelNames
     }),
     errorCount: new prometheus.Counter({
-      name: 'mongodb_query_errors',
+      name: `${prometheus.prefix}mongodb_query_errors`,
       help: 'Number of failed mongodb queries.',
       labelNames
     }),
     queryTime: new prometheus.Histogram({
-      name: 'mongodb_query_time',
+      name: `${prometheus.prefix}mongodb_query_time`,
       help: 'Time taken by mongodb queries.',
       buckets: config.get('db.queryTimeBuckets', [0.1, 0.5, 2, 10, 60]),
       labelNames
