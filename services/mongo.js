@@ -7,6 +7,7 @@ module.exports = function(config, app, mongoConnectionFactory, prometheus) {
   const db = mongoConnectionFactory.connectToDB(connectionString)
 
   const labelNames = ['function', 'filename', 'lineno', 'operation']
+  const metricsBlacklist = config.get('db.metricsBlacklist', ['createIndex'])
   const metrics = {
     queryCount: new prometheus.Counter({
       name: 'mongodb_query_count',
@@ -28,18 +29,19 @@ module.exports = function(config, app, mongoConnectionFactory, prometheus) {
 
   // wrap the db connection with metrics logic
   return db.then(db => {
-    db.collection = metricsWrapConstructor(db.collection.bind(db), metrics)
+    db.collection = metricsWrapConstructor(db.collection.bind(db), metrics, metricsBlacklist)
     db.eval = metricsWrapFunction(db.eval.bind(db), 'eval', metrics)
     db.aggregate = metricsWrapFunction(db.aggregate.bind(db), 'aggregate', metrics)
     return db
   })
 }
 
-function metricsWrapConstructor(constructor, metrics) {
+function metricsWrapConstructor(constructor, metrics, metricsBlacklist) {
   return function metricsConstructorWrapper() {
     let obj = constructor(...arguments)
     for (const k in obj) {
       if (typeof obj[k] !== 'function') continue
+      if (metricsBlacklist.indexOf(k) >= 0) continue
 
       const fn = obj[k].bind(obj)
       obj[k] = metricsWrapFunction(fn, k, metrics)
