@@ -11,26 +11,26 @@ module.exports = class HubMessageProcessor {
     this.hubStats = hubStats
     this.metrics = {
       responseTime: new prometheus.Histogram({
-        name: 'rabbitmq_response_time',
+        name: `${prometheus.prefix}rabbitmq_response_time`,
         help: 'How long it takes for messages to be handled.'
       }),
       successfulMessageCount: new prometheus.Counter({
-        name: 'rabbitmq_successful',
+        name: `${prometheus.prefix}rabbitmq_successful`,
         help: 'Total number of messages which were handled.',
         labelNames: ['messageType']
       }),
       failedMessageCount: new prometheus.Counter({
-        name: 'rabbitmq_failed',
+        name: `${prometheus.prefix}rabbitmq_failed`,
         help: 'Total number of messages which were not handled.',
         labelNames: ['messageType', 'statusCode']
       }),
       killedMessageCount: new prometheus.Counter({
-        name: 'rabbitmq_killed',
+        name: `${prometheus.prefix}rabbitmq_killed`,
         help: 'Total number of messages which where added to the dead letter queue.',
         labelNames: ['messageType', 'statusCode']
       }),
       scheduledMessageCount: new prometheus.Counter({
-        name: 'rabbitmq_scheduled',
+        name: `${prometheus.prefix}rabbitmq_scheduled`,
         help: 'Number of message due time updates made.',
         labelNames: ['messageType', 'statusCode']
       })
