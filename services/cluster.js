@@ -6,10 +6,13 @@ let initlized = false
 
 module.exports = class {
   // only a single instance should be consturcted.
-  constructor(config, log) {
+  constructor(app, config, log) {
     this.config = config
     this.numCPUs = os.cpus().length
-    this.clusteringActive = this.config.get('quadro.clustering', false)
+    this.clusteringActive = (
+      ['task', 'test', 'repl'].getIndex(app.getAppCommand()) < 0 &&
+      this.config.get('quadro.clustering', false)
+    )
     this.isMaster = cluster.isMaster
     this.workers = []
 
@@ -28,26 +31,32 @@ module.exports = class {
 
       cluster.on('exit', (worker, code, signal) => {
         log.info(`Worker ${worker.process.pid} exited with code ${code} from signal ${signal}.`)
-        for (const w of this.workers) {
-          if (w.isDead()) continue
-          try {
-            w.process.kill()
-          } catch (err) {
-            log.debug(err, 'Error sending sigterm to worker.')
-          }
-          if (w.isDead()) continue
-          try {
-            w.process.kill('SIGKILL')
-          } catch (err) {
-            log.error(err, 'Error killing worker!')
-          }
-          if (!w.isDead()) log.error('Worker still alive after attempting to kill!')
-        }
-
-        process.exit(1)
+        this.shutdown(1)
       })
+      process.on('SIGINT', () => this.shutdown())
+      process.on('SIGTERM', () => this.shutdown())
     } else {
       log.info(`Worker ${process.pid} started.`)
     }
+  }
+
+  shutdown(code = 0) {
+    for (const w of this.workers) {
+      if (w.isDead()) continue
+      try {
+        w.process.kill()
+      } catch (err) {
+        Q.log.debug(err, 'Error sending sigterm to worker.')
+      }
+      if (w.isDead()) continue
+      try {
+        w.process.kill('SIGKILL')
+      } catch (err) {
+        Q.log.error(err, 'Error killing worker!')
+      }
+      if (!w.isDead()) Q.log.error('Worker still alive after attempting to kill!')
+    }
+
+    process.exit(code)
   }
 }
