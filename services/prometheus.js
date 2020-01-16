@@ -13,12 +13,13 @@ module.exports = function(config, cluster) {
     })
   }
 
-  http.createServer(metricsServerHandler)
-    .listen(config.get('prometheus.port', 9230))
-  if (cluster.isMaster) {
+  if (cluster.clusteringActive && cluster.isMaster) {
     http.createServer(aggregatedMetricsServerHandler)
-      .listen(config.get('prometheus.aggregatorPort', 9231))
-  }
+      .listen(config.get('prometheus.aggregatorPort', 9230))
+  } else if (!cluster.clusteringActive) {
+    http.createServer(metricsServerHandler)
+      .listen(config.get('prometheus.port', 9230))
+  } // else, there is clustering, and this is not the master, so do nothing
 
   return client
 }
@@ -33,7 +34,7 @@ function metricsServerHandler(req, res) {
 }
 
 function aggregatedMetricsServerHandler(req, res) {
-  if (req.method === 'GET' && req.url === '/cluster_metrics') {
+  if (req.method === 'GET' && req.url === '/metrics') {
     aggr.clusterMetrics((err, metrics) => {
       if (err) {
         Q.log.warn(err)
