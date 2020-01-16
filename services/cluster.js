@@ -10,7 +10,7 @@ module.exports = class {
     this.config = config
     this.numCPUs = os.cpus().length
     this.clusteringActive = (
-      ['task', 'test', 'repl'].getIndex(app.getAppCommand()) < 0 &&
+      ['task', 'test', 'repl'].indexOf(app.getAppCommand()) < 0 &&
       this.config.get('quadro.clustering', false)
     )
     this.isMaster = cluster.isMaster
