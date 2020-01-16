@@ -6,7 +6,7 @@ let initlized = false
 
 module.exports = class {
   // only a single instance should be consturcted.
-  constructor(config) {
+  constructor(config, log) {
     this.config = config
     this.numCPUs = os.cpus().length
     this.clusteringActive = this.config.get('quadro.clustering', false)
@@ -18,14 +18,14 @@ module.exports = class {
     if (this.isMaster) {
       if (initlized) return
       initlized = true
-      console.log(`Master ${process.pid} initlizing workers.`)
+      log.debug(`Master ${process.pid} initlizing workers.`)
       // start numCPUs - 1 workers.
       for (let i = 0; i < this.numCPUs - 1; ++i) cluster.fork()
       cluster.on('exit', (worker, code, signal) => {
-        console.log(`worker ${worker.process.pid} exited with code ${code} from signal ${signal}.`)
+        log.info(`Worker ${worker.process.pid} exited with code ${code} from signal ${signal}.`)
       })
     } else {
-      console.log(`Worker ${process.pid} startd.`)
+      log.info(`Worker ${process.pid} started.`)
     }
   }
 }
