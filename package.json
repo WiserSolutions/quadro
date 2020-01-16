@@ -68,7 +68,7 @@
     "shortid": "^2.2.15",
     "sinon": "^4.5.0",
     "sinon-chai": "^3.3.0",
-    "statsd-client": "^0.4.2",
+    "statsd-client": "^0.4.4",
     "supertest": "^4.0.2"
   },
   "scripts": {
