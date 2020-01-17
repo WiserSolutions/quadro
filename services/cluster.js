@@ -31,6 +31,7 @@ module.exports = class {
 
     Q.log.debug(`Master ${process.pid} initlizing workers.`)
     // start numCPUs - 1 workers.
+    console.log(this.numCPUs)
     for (let i = 0; i < this.numCPUs - 1; ++i) {
       this.workers.push(cluster.fork())
     }
@@ -53,6 +54,8 @@ module.exports = class {
       }
     }
 
+    initlized = false // for testing
+    cluster.workers = []
     process.exit(code)
   }
 }
