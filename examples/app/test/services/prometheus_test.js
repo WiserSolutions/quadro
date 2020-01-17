@@ -10,8 +10,6 @@ describe('Prometheus Service', () => {
   it('launches webserver', async () => {
     const cluster = await Q.container.getAsync('cluster')
     const prometheus = await Q.container.getAsync('prometheus')
-    // make sure init is run before this test
-    prometheus.init(cluster)
 
     const body = await new Promise((resolve, reject) => {
       http.get('http://localhost:9230/metrics', (res) => {
