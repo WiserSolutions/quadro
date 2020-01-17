@@ -22,17 +22,15 @@ describe('Prometheus Service', () => {
 
   it('launches aggregated server', async function() {
     // have to bypass quadro to construct it again with different options
-    const promConstructor = require('../../../../services/prometheus.js')
     const cluster = await Q.container.getAsync('cluster')
-    const config = await Q.container.getAsync('container')
+    const prometheus = await Q.container.getAsync('prometheus')
 
-    const aggport = this.sinon.stub(config, 'get').returns(9231)
-
-    cluster.clusteringActive = true
     // start clustered server
-    const prom = promConstructor(config, cluster)
+    prometheus.initialized = false
+    prometheus.aggregatorPort = 9231
+    cluster.clusteringActive = true
+    prometheus.init(cluster)
     cluster.clusteringActive = false
-    aggport.restore()
 
     const body = await new Promise((resolve, reject) => {
       http.get('http://localhost:9231/metrics', (res) => {

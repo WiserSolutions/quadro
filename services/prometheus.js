@@ -1,27 +1,36 @@
+const _ = require('lodash')
 const client = require('prom-client')
 const http = require('http')
 
 const aggr = new client.AggregatorRegistry()
 
-module.exports = function(config, cluster) {
-  client.prefix = config.get('promethues.prefix', 'quadro_')
+module.exports = class {
+  constructor(config) {
+    _.extend(this, client)
+    this.initialized = false
+    this.prefix = config.get('promethues.prefix', 'quadro_')
+    this.aggregatorPort = config.get('prometheus.aggregatorPort', 9230)
+    this.port = config.get('prometheus.port', 9230)
 
-  if (!config.get('prometheus.disableDefaultCollection')) {
-    client.collectDefaultMetrics({
-      timeout: config.get('promotheus.timeout', 15000),
-      prefix: client.prefix
-    })
+    if (!config.get('prometheus.disableDefaultCollection')) {
+      client.collectDefaultMetrics({
+        timeout: config.get('promotheus.timeout', 15000),
+        prefix: this.prefix
+      })
+    }
   }
 
-  if (cluster.clusteringActive && cluster.isMaster) {
-    http.createServer(aggregatedMetricsServerHandler)
-      .listen(config.get('prometheus.aggregatorPort', 9230))
-  } else if (!cluster.clusteringActive) {
-    http.createServer(metricsServerHandler)
-      .listen(config.get('prometheus.port', 9230))
-  } // else, there is clustering, and this is not the master, so do nothing
-
-  return client
+  init(cluster) {
+    if (this.initialized) return
+    if (cluster.clusteringActive && cluster.isMaster) {
+      http.createServer(aggregatedMetricsServerHandler)
+        .listen(this.aggregatorPort)
+    } else if (!cluster.clusteringActive) {
+      http.createServer(metricsServerHandler)
+        .listen(this.port)
+    } // else, there is clustering, and this is not the master, so do nothing
+    this.initialized = true
+  }
 }
 
 function metricsServerHandler(req, res) {

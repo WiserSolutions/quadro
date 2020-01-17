@@ -6,7 +6,15 @@ let initlized = false
 
 module.exports = class {
   // only a single instance should be consturcted.
-  constructor(app, config) {
+  constructor(app, config, prometheus) {
+    this.metrics = {
+      workerCount: new prometheus.Gauge({
+        name: `${prometheus.prefix}cluster_workers`,
+        help: 'Total number of active processes in the cluster including the master.'
+      })
+    }
+    this.metrics.workerCount.set(1)
+
     this.config = config
     this.numCPUs = os.cpus().length
     this.clusteringActive = (
@@ -15,12 +23,9 @@ module.exports = class {
     )
     this.isMaster = cluster.isMaster
     this.workers = []
-
-    // go ahead and start things up
-    if (this.clusteringActive) this._init()
   }
 
-  _init() {
+  init() {
     if (!this.isMaster) {
       Q.log.info(`Worker ${process.pid} started.`)
       return
@@ -34,10 +39,12 @@ module.exports = class {
     Q.log.debug(`Master ${process.pid} initlizing ${wc} workers.`)
     for (let i = 0; i < wc; ++i) {
       this.workers.push(cluster.fork())
+      this.metrics.workerCount.inc()
     }
 
     cluster.on('exit', (worker, code, signal) => {
       Q.log.info(`Worker ${worker.process.pid} exited with code ${code} from signal ${signal}.`)
+      this.metrics.workerCount.dec()
       this.shutdown(1)
     })
     process.on('SIGINT', () => this.shutdown())
@@ -49,6 +56,7 @@ module.exports = class {
       if (w.isDead()) continue
       try {
         w.process.kill('SIGKILL')
+        this.metrics.workerCount.dec()
       } catch (err) {
         Q.log.error(err, 'Error killing worker!')
       }
