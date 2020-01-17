@@ -7,17 +7,23 @@ describe('Prometheus Service', () => {
     expect(prom).is.not.null
   })
 
-  it('launches webserver', done => {
-    http.get('http://localhost:9230/metrics', (res) => {
-      expect(res.statusCode).to.equal(200)
-      res.setEncoding('utf8')
-      let body = ''
-      res.on('data', d => body += d)
-      res.on('end', () => {
-        expect(body).to.contain('quadro_process_cpu_user_seconds_total')
-        done()
-      })
+  it('launches webserver', async () => {
+    const cluster = await Q.container.getAsync('cluster')
+    const prometheus = await Q.container.getAsync('prometheus')
+    // make sure init is run before this test
+    prometheus.init(cluster)
+
+    const body = await new Promise((resolve, reject) => {
+      http.get('http://localhost:9230/metrics', (res) => {
+        expect(res.statusCode).to.equal(200)
+        res.setEncoding('utf8')
+        let body = ''
+        res.on('data', d => body += d)
+        res.on('end', () => resolve(body))
+      }).on('error', reject)
     })
+
+    expect(body).to.contain('quadro_process_cpu_user_seconds_total')
   })
 
   it('launches aggregated server', async function() {
@@ -38,10 +44,8 @@ describe('Prometheus Service', () => {
         res.setEncoding('utf8')
         let body = ''
         res.on('data', d => body += d)
-        res.on('end', () => {
-          resolve(body)
-        })
-      }).on('error', e => reject(e))
+        res.on('end', () => resolve(body))
+      }).on('error', reject)
     })
 
     expect(body).to.contain('quadro_process_cpu_user_seconds_total')
