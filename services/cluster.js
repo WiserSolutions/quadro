@@ -29,10 +29,10 @@ module.exports = class {
     if (initlized) return
     initlized = true
 
-    Q.log.debug(`Master ${process.pid} initlizing workers.`)
     // start numCPUs - 1 workers.
-    console.log(this.numCPUs)
-    for (let i = 0; i < this.numCPUs - 1; ++i) {
+    const wc = this.numCPUs - 1
+    Q.log.debug(`Master ${process.pid} initlizing ${wc} workers.`)
+    for (let i = 0; i < wc; ++i) {
       this.workers.push(cluster.fork())
     }
 
