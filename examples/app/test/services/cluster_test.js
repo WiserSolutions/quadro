@@ -8,7 +8,7 @@ describe('Cluster Service', () => {
     expect(cluster.workers).to.be.length(0)
 
     cluster.numCPUs = 1
-    cluster._init()
+    cluster.init()
     expect(cluster.workers).to.be.length(0)
     const exit = this.sinon.stub(process, 'exit')
 
@@ -30,11 +30,11 @@ describe('Cluster Service', () => {
     // manually force there to be 1 worker created
     expect(cluster.workers).to.be.length(0)
     cluster.numCPUs = 2
-    cluster._init()
+    cluster.init()
     expect(cluster.workers).to.be.length(1)
 
     // verify it does not double-init
-    cluster._init()
+    cluster.init()
     expect(cluster.workers).to.be.length(1)
 
     const exit = this.sinon.stub(process, 'exit')
