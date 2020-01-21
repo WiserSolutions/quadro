@@ -72,7 +72,7 @@
     "supertest": "^4.0.2"
   },
   "scripts": {
-    "test": "nyc --reporter=text-summary --reporter=lcov --reporter=html node examples/app/app.js test"
+    "test": "nyc --reporter=text-summary --reporter=lcov node examples/app/app.js test"
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "^1.1.0",
