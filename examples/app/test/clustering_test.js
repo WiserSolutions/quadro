@@ -11,7 +11,7 @@ describe('Clustering', () => {
 
   it('detects if clustering is active', function() {
     expect(clustering.clusteringActive()).to.be.false
-    sandbox.stub(os, 'cpus').returns(2)
+    sandbox.stub(os, 'cpus').returns(['one', 'two'])
 
     this.sinon.stub(Q.config, 'get').withArgs('quadro.clustering', false).returns(true)
     expect(clustering.clusteringActive()).to.be.false
@@ -24,15 +24,10 @@ describe('Clustering', () => {
 
   it('spawns workers', function() {
     sandbox.stub(os, 'cpus').returns(['onecpu', 'twocpu'])
-    const workers = cluster.workers
+    const fork = sandbox.stub(cluster, 'fork')
 
-    expect(Object.keys(workers)).to.be.length(0)
-    clustering.spawnWorkers({ silent: true })
-    expect(Object.keys(workers)).to.be.length(2)
-    Object.keys(workers).forEach(id => {
-      workers[id].kill()
-      delete workers[id]
-    })
+    clustering.spawnWorkers()
+    expect(fork).to.have.been.calledTwice
   })
 
   it('Handles non-clustered metrics requests', async () => {
