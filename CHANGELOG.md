@@ -1,3 +1,5 @@
+# [1.2.0](https://github.com/WiserSolutions/quadro/compare/1.1.1...1.2.0) (2020-01-23)
+
 ## [1.1.1](https://github.com/WiserSolutions/quadro/compare/1.1.0...1.1.1) (2020-01-15)
 
 # [1.1.0](https://github.com/WiserSolutions/quadro/compare/1.0.19...1.1.0) (2020-01-15)
