@@ -20,7 +20,7 @@ TOC:
 
 ## Requirements
 
-- NodeJS v10+
+- See `.nvmrc` in the root of the project for Node version requirements and if possible use NVM to install Node.
 
 ## Installation
 
