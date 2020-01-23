@@ -144,7 +144,7 @@ describe('pubsub', function() {
       let deadLetterEntries = await deadLetterCollection.find({}).toArray()
       expect(deadLetterEntries).to.be.empty
 
-      handler.handle.reset()
+      handler.handle.resetHistory()
       // Delete the queue and exchange
       await channel.deleteQueue(QUEUE_NAME)
 
@@ -159,7 +159,7 @@ describe('pubsub', function() {
       // Create the queue again
       await channel.assertQueue(QUEUE_NAME)
       await channel.bindQueue(QUEUE_NAME, 'orders.test.consumer', '')
-      handler.handle.reset()
+      handler.handle.resetHistory()
       pubsub.publish('orders.test.consumer', { hello: 'world' })
       await Promise.delay(200)
       expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset({message: {hello: 'world'}}))
