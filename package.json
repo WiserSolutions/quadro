@@ -22,7 +22,7 @@
     "babel-eslint": "^10.0.3",
     "backoff": "^2.5.0",
     "bluebird": "^3.7.2",
-    "buffered-queue": "^0.1.4",
+    "buffered-queue": "^1.0.0",
     "bunyan": "^1.8.12",
     "bunyan-logstash-tcp": "^1.0.0",
     "callsite": "^1.0.0",
