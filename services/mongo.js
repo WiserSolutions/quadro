@@ -61,12 +61,11 @@ function metricsWrapFunction(fn, fnName, metrics) {
       lineno: caller.line && caller.column ? `${caller.line}:${caller.column}` : undefined,
       operation: fnName // mongo api function name
     }
-    const startTime = new Date()
+    const timer = metrics.queryTime.startTimer(labels)
 
     // couple helpers for reporting
     function recordSuccess() {
-      const endTime = new Date()
-      metrics.queryTime.observe(labels, (endTime - startTime) / 1000)
+      timer()
     }
     function recordFailure() {
       metrics.errorCount.inc(labels)
