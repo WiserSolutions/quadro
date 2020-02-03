@@ -12,7 +12,8 @@ module.exports = class HubMessageProcessor {
     this.metrics = {
       responseTime: new prometheus.Histogram({
         name: `${prometheus.prefix}rabbitmq_response_time`,
-        help: 'How long it takes for messages to be handled.'
+        help: 'How long it takes for messages to be handled.',
+        labelNames: ['messageType']
       }),
       successfulMessageCount: new prometheus.Counter({
         name: `${prometheus.prefix}rabbitmq_successful`,
@@ -101,7 +102,7 @@ module.exports = class HubMessageProcessor {
       if (!this.initialized) {
         throw new Error('Application not yet fully initialized. Going to retry later.')
       }
-      const timer = this.metrics.responseTime.startTimer()
+      const timer = this.metrics.responseTime.startTimer({messageType})
       await handler.handle(messageContext)
       timer()
       Q.log.debug({ messageType, parsedMessage }, 'Message received')
