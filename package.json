@@ -18,7 +18,7 @@
   "dependencies": {
     "amqplib": "^0.5.5",
     "await-outside": "^3.0.0",
-    "aws-sdk": "^2.611.0",
+    "aws-sdk": "^2.617.0",
     "babel-eslint": "^10.0.3",
     "backoff": "^2.5.0",
     "bluebird": "^3.7.2",
