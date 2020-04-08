@@ -84,7 +84,7 @@ function metricsWrapFunction(fn, fnName, metrics) {
     }
 
     // record completion and return
-    if ('then' in result) {
+    if (result && 'then' in result) {
       // result is a promise
       result.then(recordSuccess).catch(recordFailure)
     } else {
