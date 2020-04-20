@@ -55,6 +55,10 @@ function metricsWrapFunction(fn, fnName, metrics) {
     // SETUP
     // labels for all metrics
     const caller = getCaller()
+    if (caller.fileName === 'mongo' && caller.fn === 'metricsFunctionWrapper') {
+      // escape hatch for when mongo calls itself (we don't want to double record metrics)
+      return fn(...arguments)
+    }
     const labels = {
       function: caller.name,
       filename: caller.fileName,
