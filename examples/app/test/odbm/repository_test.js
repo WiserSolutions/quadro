@@ -28,9 +28,11 @@ describe('Model Repository', function() {
       },
       {
         name: 'custom physical name',
-        model: Q.Model('customPhysName', { attributes: {
-          myField: { physicalName: 'W_e_i_r_d___f_i_e_l_d' }
-        }}),
+        model: Q.Model('customPhysName', {
+          attributes: {
+            myField: { physicalName: 'W_e_i_r_d___f_i_e_l_d' }
+          }
+        }),
         collectionName: 'custom_phys_names',
         attrs: { myField: 'weirdValue' },
         fields: { W_e_i_r_d___f_i_e_l_d: 'weirdValue' }

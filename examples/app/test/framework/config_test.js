@@ -190,7 +190,7 @@ describe('config', function() {
       const cache = await Q.container.getAsync('cache')
       await cache.clear()
       await Q.config.registerConfigRoot('currencies', provider, {
-        cache: { ttl: 0.1 }     // 100ms TTL
+        cache: { ttl: 0.1 } // 100ms TTL
       })
     })
 
