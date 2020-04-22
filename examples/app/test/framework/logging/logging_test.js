@@ -6,7 +6,7 @@ describe('Logging', function() {
     const NestedError = Q.Errors.declare('NestedError')
     const TopLevelError = Q.Errors.declare('TopLevelError', 'Default message')
 
-    let err = new TopLevelError('something happened', {a: 1}, new NestedError('because of this'))
+    let err = new TopLevelError('something happened', { a: 1 }, new NestedError('because of this'))
     let output = STDOUT.inspectSync(function() {
       Q.log.error({ err })
     }).map(stripAnsi)
