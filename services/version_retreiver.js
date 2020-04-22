@@ -19,7 +19,7 @@ module.exports = class {
   }
 
   async getGitVersion() {
-    const gitlog = requirep('gitlog')
+    const gitlog = requirep('gitlog').default
     const fields = [
       'hash', 'abbrevHash', 'authorName', 'subject',
       'body', 'authorDate', 'authorDateRel'

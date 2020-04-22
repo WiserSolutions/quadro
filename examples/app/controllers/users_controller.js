@@ -11,12 +11,18 @@ module.exports = class {
 
   async create(ctx) {
     try {
-      const file = ctx.request.body.files.file
+      const file = ctx.request.files.file
       const fileContent = await AsyncFs.readFile(file.path, 'utf8')
       ctx.body = fileContent
       ctx.status = 201
     } catch (e) {
       this.handleError(e, ctx)
     }
+  }
+
+  async handleError(e, ctx) {
+    ctx.status = 500
+    ctx.message = e.message
+    Q.log.error('User controller error', e, ctx)
   }
 }
