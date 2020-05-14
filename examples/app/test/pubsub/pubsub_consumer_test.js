@@ -45,7 +45,7 @@ describe('pubsub', function() {
       } catch (err) {}
     })
 
-    it('recieves a message', async function() {
+    it('receives a message', async function() {
       await channel.assertExchange('orders.test.consumer', 'fanout', { durable: false })
       await channel.bindQueue(QUEUE_NAME, 'orders.test.consumer', '')
       let handler = {
@@ -130,6 +130,7 @@ describe('pubsub', function() {
     })
 
     it('test reconnect', async function() {
+      this.timeout(30000)
       let handler = {
         handle: this.sinon.spy()
       }
@@ -159,9 +160,13 @@ describe('pubsub', function() {
       // Create the queue again
       await channel.assertQueue(QUEUE_NAME)
       await channel.bindQueue(QUEUE_NAME, 'orders.test.consumer', '')
+      // pubsub.rabbitmqChannel.channel._connectionManager._currentConnection = false
+      // pubsub.rabbitmqChannel.channel._connectionManager._connect()
+      // await Promise.delay(15000) // heartbeat is 5 by default
+
       handler.handle.resetHistory()
       pubsub.publish('orders.test.consumer', { hello: 'world' })
-      await Promise.delay(200)
+      await Promise.delay(1000)
       expect(handler.handle).to.have.been.calledWith(this.sinon.match.containSubset({ message: { hello: 'world' } }))
     })
 

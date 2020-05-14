@@ -18,12 +18,11 @@ module.exports = class Pubsub {
       })
     }
     this.hubStats = hubStats
-    this.retryDelay = this.config.get('service.messages.retryDelay', 5000)
   }
 
-  async initialize(retry = false) {
+  async initialize() {
     if (this.config.get('service.messages.host')) {
-      this.rabbitmqChannel = new RabbitMqChannel(this.config.get('service.messages.host'), this.config.get('service.messages.retryDelay', 5000))
+      this.rabbitmqChannel = new RabbitMqChannel(this.config.get('service.messages.host'))
       return this.rabbitmqChannel.initialize()
     }
   }

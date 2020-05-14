@@ -1,119 +1,88 @@
-const amqp = require('amqplib')
+const amqp = require('amqp-connection-manager')
+
 Q.Errors.declare('PubsubConsomerAlreadyStartedError', 'One Consumer already started. No new consumer can be started again')
 
+async function closeQuietly(closeable) {
+  if (closeable) {
+    try {
+      await closeable.close()
+    } catch (err) {
+      Q.log.error('Error while closing channel/connection')
+    }
+  }
+}
+
 module.exports = class RabbitMqChannel {
-  constructor(host, retryDelay) {
+  constructor(host) {
     this.host = host
-    this.retryDelay = retryDelay
     this.hostname = require('os').hostname()
     this.serviceName = Q.config.get('service.name', '[unknown]')
   }
 
-  async initialize(retry = false) {
-    try {
-      this.connection = await amqp.connect(this.host)
-
-      // On connection close retry to initialize after few minutes
-      this.connection.on('close', async (err) => {
-        Q.log.info({err}, `RabbitMQ connection closed. Retrying to connect after ${this.retryDelay}ms`)
-        await this.handleError()
-      })
-
-      // Get the channel
-      this.channel = await this.connection.createChannel()
-      // If channel gets closed adruptly then retry to connect again
-      this.channel.on('error', async (err) => {
-        Q.log.error({err}, `There was an error in rabbitmq connection. Retrying to connect after ${this.retryDelay}ms`)
-        await this.handleError()
-      })
-    } catch (err) {
-      if (retry) {
-        Q.log.error({err}, `Error while connecting to rabbit mq. Retrying to connect after ${this.retryDelay}ms`)
-        this.handleError()
-      } else {
-        throw err
-      }
-    }
+  async initialize() {
+    this.connection = await amqp.connect(this.host, { heartbeatIntervalInSeconds: 1 })
+    this.connection.on('connect', () => Q.log.info('Connected to amqp server'))
+    this.connection.on('disconnect', err => Q.log.warn('Disconnected from amqp server', err))
+    this.channel = this.connection.createChannel({ json: true })
   }
 
   async publish(messageType, message) {
-    const messageAccepted = this.channel.publish(messageType, '',
-      Buffer.from(JSON.stringify(message)), { persistent: true })
-
-    if (messageAccepted === false) {
-      Q.log.metric('quadro_rabbit_await_drain', {
-        messageType,
-        hostname: this.hostname,
-        service: this.serviceName
-      }, { count: 1 })
-      const waitStart = Date.now()
-      await new Promise(resolve => this.channel.once('drain', resolve))
-      Q.log.metric('quadro_rabbit_await_drain_time', {
-        messageType,
-        hostname: this.hostname,
-        service: this.serviceName
-      }, { sum: Date.now() - waitStart })
+    for (let attempt = 0; attempt < 10; attempt++) {
+      // TODO: do we really need to try 10 times with the wrapper lib?
+      try {
+        await this.channel.publish(messageType, '', message, { persistent: true })
+        // IDK why this should return true given that "false" is throwing an error, but backwards
+        // compatibility time I guess
+        return true
+      } catch (err) { /* Try again, used `drain` before which is not emitted by this wrapper */ }
     }
-
-    return true
+    throw new Error('Failing after 10 attempts at putting the message to the amqplib buffer.')
   }
 
   async startConsumer(queueName, concurrency, messageHandler) {
-    if (!this.queueName) {
-      this.queueName = queueName
-      this.concurrency = concurrency
-      this.messageHandler = messageHandler
-      return this._startConsumerInternal()
-    } else {
-      throw new Q.Errors.PubsubConsomerAlreadyStartedError({existingQueue: this.queueName, newQueue: queueName})
+    if (this.queueName) {
+      throw new Q.Errors.PubsubConsomerAlreadyStartedError({
+        existingQueue: this.queueName,
+        newQueue: queueName
+      })
     }
-  }
 
-  async _startConsumerInternal() {
+    this.queueName = queueName
+    this.concurrency = concurrency
+    this.messageHandler = messageHandler
+
     if (!this.queueName) return
-    // Make sure queue exists
-    await this.channel.assertQueue(this.queueName)
+    await this.channel.addSetup(channel => Promise.all([
+      // Make sure queue exists
+      channel.assertQueue(this.queueName),
+      // Set concurrency
+      channel.prefetch(this.concurrency),
+      // Start the consumer
+      channel.consume(this.queueName, this.onMessage.bind(this))
+    ]))
 
-    // Set concurrency
-    await this.channel.prefetch(this.concurrency)
-
-    // start the consumer
-    await this.channel.consume(this.queueName, async (message) => {
-      // Message would be null if the connection is disconnected or channel is closed
-      if (!message) {
-        Q.log.error(`RabbitMQ channel polled a undefined message. Most likely connection is disconnected or channel is closed. Retrying to connect after ${this.retryDelay}ms`)
-        await this.handleError()
-        return
-      }
-      try {
-        // Process message
-        await this.messageHandler(message)
-        // Acknowledge message. General error should be taken care by handler
-        // and use mongo to schedule event
-        await this.channel.ack(message)
-      } catch (err) {
-        // Unacknowledge only in case there is unhandled message
-        await this.channel.nack(message)
-      }
-    })
+    await this.channel.waitForConnect()
+    Q.log.info(`Listening to ${this.queueName}`)
   }
 
-  async handleError() {
-    await this.closeQuitely(this.channel)
-    await this.closeQuitely(this.connection)
-    setTimeout(async () => {
-      await this.initialize(true)
-      await this._startConsumerInternal()
-    }, this.retryDelay)
-  }
-
-  async closeQuitely(closeable) {
-    if (closeable) {
-      try {
-        await closeable.close()
-      } catch (err) {
-        Q.log.error('Error while closing channel/connection')
-      }
+  async onMessage(message) {
+    // Message would be null if the connection is disconnected or channel is closed
+    if (!message) {
+      Q.log.error('RabbitMQ channel polled a undefined message.')
+      // force reconnection (only known case for this is if a queue is deleted and then recreated)
+      await closeQuietly(this.connection._currentConnection)
+      return
+    }
+    console.log('Received message', JSON.parse(message.content.toString()))
+    try { // TODO: we should probably remove this try/catch to prevent an infinite loop
+      // Process message
+      await this.messageHandler(message)
+      // Acknowledge message. General error should be taken care by handler
+      // and use mongo to schedule event
+      await this.channel.ack(message)
+    } catch (err) {
+      // Unacknowledge only in case there is unhandled message
+      await this.channel.nack(message)
     }
   }
 }
