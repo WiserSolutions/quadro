@@ -1,0 +1,45 @@
+name: Test
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+    services:
+      mongo:
+        image: mongo:3
+        ports: ['27017:27017']
+      rabbitmq:
+        image: rabbitmq:3-alpine
+        ports: ['5672:5672']
+      redis:
+        image: redis:6-alpine
+        ports: ['6379:6379']
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Install Nodejs
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{matrix.node-version}}
+    - name: Install Quadro dependencies
+      run: |
+        npm ci
+        npm link .
+    - name: Install test app dependencies
+      working-directory: ./examples/app
+      run: |
+        npm install
+        npm link quadro
+    - name: Run tests
+      uses: paambaati/codeclimate-action@v2.6.0
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        TERM: dumb
+      with:
+        coverageCommand: npm test
+        debug: true
