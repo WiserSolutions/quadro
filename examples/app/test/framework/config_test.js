@@ -167,21 +167,6 @@ describe('config', function() {
     })
   })
 
-  describe('DynamoDBConfigProvider', function() {
-    this.timeout(10000)
-
-    let provider
-    beforeEach(async function() {
-      provider = await Q.container.getAsync('config:dynamodbConfigProvider')
-      Q.config.registerConfigRoot('currencies', await provider('dynamodb-config-provider-test'))
-    })
-
-    it('can write value', async function() {
-      await Q.config.set('currencies.usd', 123)
-      expect(await Q.config.get('currencies.usd')).to.equal('123')
-    })
-  })
-
   describe('caching', function() {
     let counter
     const provider = { get(s) { return ++counter && `${s}${counter}`.toUpperCase() } }

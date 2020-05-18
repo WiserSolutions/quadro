@@ -14,7 +14,6 @@
 - [Configuration providers](#configuration-providers)
 	- [Caching](#caching)
 	- [Built in configuration providers](#built-in-configuration-providers)
-		- [DynamoDB](#dynamodb)
 		- [MongoDB](#mongodb)
 
 <!-- /TOC -->
@@ -209,17 +208,6 @@ module.exports = async function(configSetup, config) {
 ```
 
 **NOTE** When using configuration providers it's *HIGHLY RECOMMENDED* to call `config.get` with `await`, as you can not be sure the underlying implementation is synchronous
-
-### DynamoDB
-
-```js
-module.exports = function(provider = 'config:dynamodbConfigProvider', config) {
-  return config.registerConfigRoot(
-    'currencies',                       // Namespace
-    provider('currencies_table_name')   // Provider for table `currencies_table_name`
-  )
-}
-```
 
 ### MongoDB
 

@@ -1,5 +1,1 @@
 ---
-aws:
-  dynamodb:
-    local: true
-    port: 4567
