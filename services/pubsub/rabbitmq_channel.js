@@ -27,16 +27,10 @@ module.exports = class RabbitMqChannel {
   }
 
   async publish(messageType, message) {
-    for (let attempt = 0; attempt < 10; attempt++) {
-      // TODO: do we really need to try 10 times with the wrapper lib?
-      try {
-        await this.channel.publish(messageType, '', message, { persistent: true })
-        // IDK why this should return true given that "false" is throwing an error, but backwards
-        // compatibility time I guess
-        return true
-      } catch (err) { /* Try again, used `drain` before which is not emitted by this wrapper */ }
-    }
-    throw new Error('Failing after 10 attempts at putting the message to the amqplib buffer.')
+    await this.channel.publish(messageType, '', message, { persistent: true })
+    // IDK why this should return true given that "false" is throwing an error, but backwards
+    // compatibility time I guess
+    return true
   }
 
   async startConsumer(queueName, concurrency, messageHandler) {
@@ -74,15 +68,13 @@ module.exports = class RabbitMqChannel {
       return
     }
     console.log('Received message', JSON.parse(message.content.toString()))
-    try { // TODO: we should probably remove this try/catch to prevent an infinite loop
-      // Process message
+    // Process message
+    try {
       await this.messageHandler(message)
-      // Acknowledge message. General error should be taken care by handler
-      // and use mongo to schedule event
-      await this.channel.ack(message)
     } catch (err) {
-      // Unacknowledge only in case there is unhandled message
-      await this.channel.nack(message)
+      Q.log.error('Message handler threw an error; dropping message.', err)
     }
+    // Acknowledge message. If an error happened, it almost certainly would lead to an infinite "loop"
+    await this.channel.ack(message)
   }
 }
