@@ -33,7 +33,14 @@ module.exports = class RabbitMqChannel {
    * @returns {Promise<boolean>}
    */
   async publish(messageType, message) {
-    return this.channel.publish(messageType, '', message, { persistent: true })
+    let result = false
+    for (let i = 0; i < 10 && !result; i++) {
+      result = await this.channel.publish(messageType, '', message, { persistent: true })
+      if (!result) {
+        await new Promise(resolve => this.channel._channel.once('drain', resolve))
+      }
+    }
+    return result
   }
 
   /**
