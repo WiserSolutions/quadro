@@ -26,13 +26,23 @@ module.exports = class RabbitMqChannel {
     this.channel = this.connection.createChannel({ json: true })
   }
 
+  /**
+   * Publish a message to an exchange
+   * @param {string} messageType (in this case also the exchange)
+   * @param {object} message JSON serializable message content
+   * @returns {Promise<boolean>}
+   */
   async publish(messageType, message) {
-    await this.channel.publish(messageType, '', message, { persistent: true })
-    // IDK why this should return true given that "false" is throwing an error, but backwards
-    // compatibility time I guess
-    return true
+    return this.channel.publish(messageType, '', message, { persistent: true })
   }
 
+  /**
+   * Start listening to messages and register a listener.
+   * @param {string} queueName Queue to listen to
+   * @param {number} concurrency AMQP `prefetch` setting
+   * @param {(Buffer) => Promise<*>} messageHandler
+   * @returns {Promise<void>}
+   */
   async startConsumer(queueName, concurrency, messageHandler) {
     if (this.queueName) {
       throw new Q.Errors.PubsubConsomerAlreadyStartedError({
@@ -59,6 +69,11 @@ module.exports = class RabbitMqChannel {
     Q.log.info(`Listening to ${this.queueName}`)
   }
 
+  /**
+   * Called when a new message is received before calling the registered message handler.
+   * @param {Buffer?} message
+   * @returns {Promise<void>}
+   */
   async onMessage(message) {
     // Message would be null if the connection is disconnected or channel is closed
     if (!message) {
@@ -67,7 +82,6 @@ module.exports = class RabbitMqChannel {
       await closeQuietly(this.connection._currentConnection)
       return
     }
-    console.log('Received message', JSON.parse(message.content.toString()))
     // Process message
     try {
       await this.messageHandler(message)
