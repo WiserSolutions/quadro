@@ -5,10 +5,9 @@ const MINUTE = 60 * SECOND
 const HOUR = 60 * MINUTE
 
 module.exports = class HubMessageProcessor {
-  constructor(log, config, hubStats = 'pubsub:hubStats', prometheus, mongoConnectionFactory, handlers = 'pubsub:handlersList') {
+  constructor(log, config, prometheus, mongoConnectionFactory, handlers = 'pubsub:handlersList') {
     this.log = log
     this.config = config
-    this.hubStats = hubStats
     this.metrics = {
       responseTime: new prometheus.Histogram({
         name: `${prometheus.prefix}rabbitmq_response_time`,

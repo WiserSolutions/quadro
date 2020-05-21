@@ -1,7 +1,7 @@
 const RabbitMqChannel = require('./pubsub/rabbitmq_channel')
 
 module.exports = class Pubsub {
-  constructor(log, request, config, prometheus, hubStats = 'pubsub:hubStats') {
+  constructor(log, request, config, prometheus) {
     this.log = log
     this.request = request
     this.config = config
@@ -17,7 +17,6 @@ module.exports = class Pubsub {
         labelNames: ['messageType']
       })
     }
-    this.hubStats = hubStats
   }
 
   async initialize() {
