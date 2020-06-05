@@ -1,3 +1,9 @@
+* Remove semicolon (cad3acd)
+* Increment patch version (7645f47)
+* Handle case where message is not an object (d496ebf)
+* Github actions (88034a0)
+* Removed dynamodb (f88b268)
+
 # [1.3.0](https://github.com/WiserSolutions/quadro/compare/1.2.3...1.3.0) (2020-04-22)
 
 ## [1.2.3](https://github.com/WiserSolutions/quadro/compare/1.2.2...1.2.3) (2020-03-13)
