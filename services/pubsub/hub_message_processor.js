@@ -85,6 +85,10 @@ module.exports = class HubMessageProcessor {
     let parsedMessage
     try {
       parsedMessage = JSON.parse(message.content.toString())
+
+      if (typeof parsedMessage !== 'object' || Array.isArray(parsedMessage)) {
+        throw new Error('Message was not an object');
+      }
     } catch (err) {
       this.log.error({err}, `Error while parsing message: ${parsedMessage}`)
       return
