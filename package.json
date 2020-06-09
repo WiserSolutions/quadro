@@ -65,7 +65,7 @@
     "request-promise": "^4.2.5",
     "set-value": "^3.0.2",
     "shortid": "^2.2.15",
-    "sinon": "^8.1.1",
+    "sinon": "^9.0.2",
     "sinon-chai": "^3.5.0",
     "statsd-client": "^0.4.4",
     "supertest": "^4.0.2"
