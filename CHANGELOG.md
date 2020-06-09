@@ -1,3 +1,8 @@
+* Bump redis from 2.8.0 to 3.0.2 (1faa619)
+* Bump mongodb from 3.5.6 to 3.5.8 (2c1817d)
+* Bump aws-sdk from 2.660.0 to 2.691.0 (9058779)
+* Remove retry logic from RMQ publish function (eccac8d)
+
 * Remove semicolon (cad3acd)
 * Increment patch version (7645f47)
 * Handle case where message is not an object (d496ebf)
