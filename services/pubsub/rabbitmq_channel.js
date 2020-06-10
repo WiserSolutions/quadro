@@ -1,4 +1,4 @@
-const amqp = require('amqp-connection-manager')
+const amqp = require('../../lib/amqp')
 
 Q.Errors.declare('PubsubConsomerAlreadyStartedError', 'One Consumer already started. No new consumer can be started again')
 
@@ -20,10 +20,11 @@ module.exports = class RabbitMqChannel {
   }
 
   async initialize() {
-    this.connection = await amqp.connect(this.host, { heartbeatIntervalInSeconds: 1 })
+    this.connection = await amqp.connect(this.host)
     this.connection.on('connect', () => Q.log.info('Connected to amqp server'))
     this.connection.on('disconnect', err => Q.log.warn('Disconnected from amqp server', err))
-    this.channel = this.connection.createChannel({ json: true })
+    this.connection.on('close', () => Q.log.info('AMQP connection closed'))
+    this.channel = this.connection.createChannel()
   }
 
   /**
@@ -34,8 +35,9 @@ module.exports = class RabbitMqChannel {
    */
   async publish(messageType, message) {
     let result = false
+    const msg = Buffer.from(JSON.serialize(message))
     for (let i = 0; i < 10 && !result; i++) {
-      result = await this.channel.publish(messageType, '', message, { persistent: true })
+      result = await this.channel.publish(messageType, '', msg, { persistent: true })
       if (!result) {
         await new Promise(resolve => this.channel._channel.once('drain', resolve))
       }
