@@ -2,16 +2,6 @@ const amqp = require('../../lib/amqp')
 
 Q.Errors.declare('PubsubConsomerAlreadyStartedError', 'One Consumer already started. No new consumer can be started again')
 
-async function closeQuietly(closeable) {
-  if (closeable) {
-    try {
-      await closeable.close()
-    } catch (err) {
-      Q.log.error('Error while closing channel/connection')
-    }
-  }
-}
-
 module.exports = class RabbitMqChannel {
   constructor(host) {
     this.host = host
@@ -31,18 +21,12 @@ module.exports = class RabbitMqChannel {
    * Publish a message to an exchange
    * @param {string} messageType (in this case also the exchange)
    * @param {object} message JSON serializable message content
-   * @returns {Promise<boolean>}
+   * @returns {Promise<true>}
    */
   async publish(messageType, message) {
-    let result = false
-    const msg = Buffer.from(JSON.serialize(message))
-    for (let i = 0; i < 10 && !result; i++) {
-      result = await this.channel.publish(messageType, '', msg, { persistent: true })
-      if (!result) {
-        await new Promise(resolve => this.channel._channel.once('drain', resolve))
-      }
-    }
-    return result
+    const msg = Buffer.from(JSON.stringify(message))
+    await this.channel.publish(messageType, '', msg, { persistent: true })
+    return true // legacy support
   }
 
   /**
@@ -74,7 +58,7 @@ module.exports = class RabbitMqChannel {
       channel.consume(this.queueName, this.onMessage.bind(this))
     ]))
 
-    await this.channel.waitForConnect()
+    await this.channel.waitForConnection()
     Q.log.info(`Listening to ${this.queueName}`)
   }
 
@@ -87,8 +71,8 @@ module.exports = class RabbitMqChannel {
     // Message would be null if the connection is disconnected or channel is closed
     if (!message) {
       Q.log.error('RabbitMQ channel polled a undefined message.')
-      // force reconnection (only known case for this is if a queue is deleted and then recreated)
-      await closeQuietly(this.connection._currentConnection)
+      // (only known case for this is if a queue is deleted and then recreated)
+      await this.connection.forceReconnect()
       return
     }
     // Process message
