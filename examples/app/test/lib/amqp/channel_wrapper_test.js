@@ -111,7 +111,8 @@ describe('ChannelWrapper', function() {
 
     let t = false
     ch.addSetup(() => Promise.resolve(t = true))
-    await 0 // cycle event loop
+    // cycle event loop, takes multiple cycles on node < 12
+    for (let i = 0; i < 5; ++i) await 0
     expect(t).to.be.true
   })
 
@@ -298,7 +299,9 @@ describe('ChannelWrapper', function() {
 
     ch.ack('a')
     ch.nack('b')
-    await 0 // make sure they resolve instantly as we are already connected
+    // make sure they resolve instantly as we are already connected
+    // node < 12 requires multiple cycles
+    for (let i = 0; i < 5; ++i) await 0
 
     const channel = ch._channel
     expect(channel.ack).to.have.been.calledOnce
