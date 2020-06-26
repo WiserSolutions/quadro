@@ -1,6 +1,6 @@
 const amqp = require('../../lib/amqp')
 
-Q.Errors.declare('PubsubConsomerAlreadyStartedError', 'One Consumer already started. No new consumer can be started again')
+Q.Errors.declare('PubsubConsumerAlreadyStartedError', 'One Consumer already started. No new consumer can be started again')
 
 module.exports = class RabbitMqChannel {
   constructor(host) {
@@ -38,7 +38,7 @@ module.exports = class RabbitMqChannel {
    */
   async startConsumer(queueName, concurrency, messageHandler) {
     if (this.queueName) {
-      throw new Q.Errors.PubsubConsomerAlreadyStartedError({
+      throw new Q.Errors.PubsubConsumerAlreadyStartedError({
         existingQueue: this.queueName,
         newQueue: queueName
       })
@@ -79,9 +79,11 @@ module.exports = class RabbitMqChannel {
     try {
       await this.messageHandler(message)
     } catch (err) {
-      Q.log.error('Message handler threw an error; dropping message.', err)
+      Q.log.error('Message handler threw an error!!!', err)
+      // this should never happen because it would mean there is an error in the hub message
+      // processor itself; if that happens a fix to quadro is needed.
+      await this.channel.nack(message)
     }
-    // Acknowledge message. If an error happened, it almost certainly would lead to an infinite "loop"
     await this.channel.ack(message)
   }
 }
