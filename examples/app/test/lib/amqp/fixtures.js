@@ -77,6 +77,12 @@ class FakeConfirmChannel extends EventEmitter {
 
     this.close = sinon.spy(() => this.emit('close'))
   }
+
+  kill() {
+    const err = new Error('Died in a fire')
+    this.emit('error', err)
+    this.emit('close', err)
+  }
 }
 
 class FakeConnection extends EventEmitter {
@@ -100,7 +106,22 @@ class FakeAmqpConnectionManager extends EventEmitter {
   constructor() {
     super()
     this.connected = false
+    this._reconnecting = false
     this._channels = []
+  }
+
+  forceReconnect() {
+    if (!this.connected) return
+    this.simulateDisconnect()
+
+    // in the real version, multiple calls to connect return the same connection promise
+    if (this._reconnecting) return
+
+    this._reconnecting = true
+    setTimeout(() => {
+      this._reconnecting = false
+      this.simulateConnect()
+    }, 10)
   }
 
   isConnected() {

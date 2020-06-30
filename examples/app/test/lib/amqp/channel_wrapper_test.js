@@ -342,4 +342,18 @@ describe('ChannelWrapper', function() {
     await ch.close()
     expect(ch._closed).to.be.true
   })
+
+  it('should handle channel errors', async () => {
+    cm.simulateConnect()
+    const ch = new AmqpChannelWrapper(cm)
+    let errors = 0
+    ch.on('error', () => ++errors)
+
+    await ch.waitForConnection()
+    ch._channel.kill()
+    await 0
+    expect(cm._reconnecting).is.true
+    expect(ch._channel).to.be.null
+    expect(errors).to.equal(1)
+  })
 })
