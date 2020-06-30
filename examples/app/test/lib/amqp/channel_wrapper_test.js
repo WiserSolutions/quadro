@@ -262,6 +262,28 @@ describe('ChannelWrapper', function() {
     expect(m2Sent).to.be.true
   })
 
+  it('should wait for drain event if sending message returns false', async () => {
+    cm.simulateConnect()
+    const ch = new AmqpChannelWrapper(cm)
+    await ch.waitForConnection()
+
+    // sends normally...
+    let m1Sent = false
+    let m2Sent = false
+    ch._channel.expectDrain = true
+    let m1 = ch.sendToQueue('queue', 'content').then(() => m1Sent = true)
+    await m1
+    expect(m1Sent).to.be.true
+
+    // worker should not be "frozen" until the drain event
+    let m2 = ch.sendToQueue('exchange', 'routingKey', 'content').then(() => m2Sent = true)
+    await new Promise(resolve => setTimeout(resolve, 20))
+    expect(m2Sent).to.be.false
+    ch._channel.emitDrain()
+    await m2
+    expect(m2Sent).to.be.true
+  })
+
   it('should run all configurators before sending any queued messages', async () => {
     let configRun = false
     let msgSent = false

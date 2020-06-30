@@ -53,18 +53,19 @@ class FakeAmqp {
 class FakeConfirmChannel extends EventEmitter {
   constructor() {
     super()
+    this.expectDrain = false
     this.publish = sinon.spy((exchange, routingKey, content, options, callback) => {
       console.log('publish')
       this.emit('publish', { exchange, routingKey, content, options })
       callback(null)
-      return true
+      return !this.expectDrain
     })
 
     this.sendToQueue = sinon.spy((queue, content, options, callback) => {
       console.log('sendToQueue')
       this.emit('sendToQueue', { queue, content, options })
       callback(null)
-      return true
+      return !this.expectDrain
     })
 
     this.ack = sinon.spy(function(message, allUpTo) {})
@@ -76,6 +77,11 @@ class FakeConfirmChannel extends EventEmitter {
     this.assertExchange = sinon.spy(function(exchange, type, options) {})
 
     this.close = sinon.spy(() => this.emit('close'))
+  }
+
+  emitDrain() {
+    this.expectDrain = false
+    this.emit('drain')
   }
 
   kill() {
