@@ -1,3 +1,7 @@
+## [1.3.4](https://github.com/WiserSolutions/quadro/compare/1.3.3...1.3.4) (2020-08-28)
+
+
+
 * Bump redis from 2.8.0 to 3.0.2 (1faa619)
 * Bump mongodb from 3.5.6 to 3.5.8 (2c1817d)
 * Bump aws-sdk from 2.660.0 to 2.691.0 (9058779)
