@@ -41,3 +41,7 @@ Q.log.audit(action, object, status, { group, extra } = {})
 Q.log.metric(name, dimensions, values)
 Q.log.event(type, content)
 ```
+
+## Configuration
+`quadro.logger.logstash` - Set a custom logstash URL
+`quadro.logger.noFileLogging` - Disable file logging, will cause Quadro to only log to stdout.
