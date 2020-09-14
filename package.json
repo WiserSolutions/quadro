@@ -41,7 +41,7 @@
     "events-async": "^1.2.1",
     "firehose-writer": "^0.2.0",
     "forever-agent": "^0.6.1",
-    "gitlog": "^3.3.6",
+    "gitlog": "^4.0.0",
     "glob": "^7.1.6",
     "inflected": "^2.0.4",
     "js-yaml": "^3.13.1",
