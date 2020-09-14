@@ -1,3 +1,5 @@
+## [1.3.5](https://github.com/WiserSolutions/quadro/compare/version-1.3.4...v1.3.5) (2020-09-14)
+
 ## [1.3.4](https://github.com/WiserSolutions/quadro/compare/1.3.3...1.3.4) (2020-08-28)
 
 
