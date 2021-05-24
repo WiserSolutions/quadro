@@ -56,7 +56,7 @@ module.exports = class HubMessageProcessor {
       const mongoDB = await this.mongoConnectionFactory.connectToDB(mongoConnectionString)
       const serviceName = this.config.get('service.name')
       this.scheduleCollection = await mongoDB.collection(this.config.get('service.storage.schedule', `${serviceName}_schedule`))
-      await this.scheduleCollection.createIndex({scheduledMessageId: 1}, {unique: true, name: 'scheduledMessageId'})
+      await this.scheduleCollection.createIndex({ scheduledMessageId: 1 }, { unique: true, name: 'scheduledMessageId' })
       this.deadLetterCollection = await mongoDB.collection(this.config.get('service.storage.dead', `${serviceName}_dead_v2`))
       await this.deadLetterCollection.createIndex({ killedAt: 1 }, {
         name: 'killedAt',
@@ -94,7 +94,7 @@ module.exports = class HubMessageProcessor {
         throw new Error('Message was not an object')
       }
     } catch (err) {
-      this.log.error({err}, `Error while parsing message: ${parsedMessage}`)
+      this.log.error({ err }, `Error while parsing message: ${parsedMessage}`)
       return
     }
 
@@ -110,7 +110,7 @@ module.exports = class HubMessageProcessor {
       if (!this.initialized) {
         throw new Error('Application not yet fully initialized. Going to retry later.')
       }
-      const timer = this.metrics.responseTime.startTimer({messageType})
+      const timer = this.metrics.responseTime.startTimer({ messageType })
       await handler.handle(messageContext)
       timer()
       Q.log.debug({ messageType, parsedMessage }, 'Message received')
@@ -126,7 +126,7 @@ module.exports = class HubMessageProcessor {
 
         return this.scheduleMessage(messageContext)
       }
-      this.metrics.successfulMessageCount.inc({messageType: parsedMessage.messageType})
+      this.metrics.successfulMessageCount.inc({ messageType: parsedMessage.messageType })
     } catch (err) {
       Q.log.error({ messageType, err }, 'Unhandled exception while handling message')
       messageContext.failure(err)
