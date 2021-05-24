@@ -58,8 +58,12 @@ module.exports = class HubMessageProcessor {
       this.scheduleCollection = await mongoDB.collection(this.config.get('service.storage.schedule', `${serviceName}_schedule`))
       await this.scheduleCollection.createIndex({scheduledMessageId: 1}, {unique: true, name: 'scheduledMessageId'})
       this.deadLetterCollection = await mongoDB.collection(this.config.get('service.storage.dead', `${serviceName}_dead_v2`))
-      await this.deadLetterCollection.createIndex({killedAt: 1}, {name: 'killedAt'})
-      await this.deadLetterCollection.createIndex({messageId: 1}, {name: 'messageId'})
+      await this.deadLetterCollection.createIndex({ killedAt: 1 }, {
+        name: 'killedAt',
+        background: true,
+        expireAfterSeconds: 60 * 60 * 24 * 7 // 1 week
+      })
+      await this.deadLetterCollection.createIndex({ messageId: 1 }, { name: 'messageId' })
       await this.initailizeHandlers()
     }
   }
