@@ -55,7 +55,7 @@
     "mongodb": "^3.5.8",
     "mongodb-uri": "^0.9.7",
     "mz": "^2.6.0",
-    "nock": "^12.0.3",
+    "nock": "^13.0.11",
     "nodemon": "^2.0.3",
     "prettyjson": "^1.2.1",
     "prom-client": "^12.0.0",
